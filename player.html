@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html ng-app="player">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title></title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<link rel="stylesheet" href="vendor/mathquill-0.9.4/mathquill.css">
+		<link rel="stylesheet" href="stylesheets/player.css">
+	</head>
+	<body ng-controller="PlayerController" ng-class="{'parse-error':parseError}">
+
+		<header>
+			<h1>Equation Sandbox</h1>
+		</header>
+
+		<main>
+
+			<div class="box eq">
+				<h2>Equation:</h2>
+				<div class="eq-container">
+					<div id="eq-input" class="eq-input mathquill-embedded-latex"></div>
+				</div>
+			</div>
+
+			<div class="interactive-section">
+				<div class="help">
+					<h2>Instructions:</h2>
+					<p>
+						Input different values for the variables of the equation to see how it impacts the result.
+					</p>
+				</div>
+				<div class="box variables">
+					<h3>Variables</h3>
+					<ul>
+						<li ng-repeat="variable in variables">
+							<span class="variable-equals"><i>{{variable}}</i> = </span><input type="number" ng-model="userInputs[variable]" ng-change="calculateResult()" ng-class="{empty:userInputs[variable] == null}">
+						</li>
+					</ul>
+				</div>
+
+				<div class="box output">
+					<h3>Result</h3>
+					<div class="result"><i>{{mainVar}}</i> = <b>{{equationResult}}</b></div>
+				</div>
+			</div>
+
+		</main>
+
+
+
+
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script>window.jQuery || document.write('<script src="vendor/jquery-1.11.1.min.js"><\/script>')</script>
+
+		<script src="vendor/mathquill-0.9.4/mathquill.min.js"></script>
+		<script src="bower_components/angular/angular.min.js"></script>
+
+		<script src="scripts/player.js"></script>
+	</body>
+</html>
