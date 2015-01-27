@@ -1,0 +1,270 @@
+//@TODO - Preparse, turn stuff like "sin" to "\\sin"
+
+{
+	/*
+	function add(a, b)
+	{
+		return a.getValue() + b.getValue();
+	}
+
+	function Addition(a, b)
+	{
+		this.a = a;
+		this.b = b;
+	}
+	Addition.prototype.getValue = function() {
+		return this.a.getValue() + this.b.getValue();
+	}*/
+
+	var variables = {};
+	var helpers = {};
+	var usedHelpers = {};
+	var mainVar = "";
+	var mainExpr = "";
+
+	helpers["__factorial"] = function(n)
+	{
+		switch(n)
+		{
+			case 0: return 0
+			case 1: return 1
+		}
+
+		return n * helpers["__factorial"](n - 1);
+	}
+
+	function registerVar(variableName)
+	{
+		variables[variableName] = true;
+	}
+
+	function registerHelper(helperName)
+	{
+		usedHelpers[helperName] = helpers[helperName];
+	}
+
+	function getSymbolName(name)
+	{
+		switch(name)
+		{
+			case "+": return "plus";
+			case "-": return "minus";
+			case "*":
+			case "\\times":
+			case "\\cdot":
+				return "times";
+			case "/":
+			case "\\div":
+				return "divide";
+			case "^": return "exponent";
+		}
+	}
+
+	function expandFactorial(n)
+	{
+		return helpers["__factorial"](n);
+		// a = [];
+		// while(n > 0) a.push(n--);
+
+		// return a.join("*");
+	}
+}
+
+start
+	= eq:equation {
+		delete variables[mainVar];
+		vars = Object.keys(variables);
+		return {
+			variables: vars,
+			helpers:   usedHelpers,
+			mainVar:   mainVar,
+			mainExpr:  mainExpr,
+			fn:        new Function(vars, 'return ' + mainExpr + ';')
+		};
+	}
+
+equation
+	= lhs:variable s* "=" s* rhs:expr {
+		mainVar = lhs;
+		mainExpr = rhs;
+		return lhs + "=" + rhs;
+	}
+
+expr
+	= "-" expr:symbolicExpr { return "-" + expr }
+	/ symbolicExpr
+	/ "-" expr:nonSymbolicExpr { return "-" + expr }
+	/ nonSymbolicExpr
+
+nonSymbolicExpr
+	= unaryExpr
+	/ fracExpr
+	/ binomExpr
+	/ parentheticalMultiplicativeExpr
+	/ assumedMultiplicativeExpr
+	/ functionExpr
+	/ nonBracketedFunctionExpr
+	/ bracketedExpr
+	/ value
+
+fn
+	= "\\sqrt" { return "Math.sqrt" }
+	/ fnThatDoNotRequireBrackets
+
+fnThatDoNotRequireBrackets
+	= "\\sin" { return "Math.sin" }
+	/ "\\cos" { return "Math.cos" }
+	/ "\\tan" { return "Math.tan" }
+
+unknownFn
+	= fnChars:[a-zA-Z0-9_\\]+ { return fnChars.join(""); }
+
+
+parentheticalMultiplicativeExpr
+	= lhs:bracketedExpr rhs:bracketedExpr+ { return lhs + "*" + rhs.join("*"); }
+	/ lhs:value rhs:bracketedExpr+ { return lhs + "*" + rhs.join("*"); }
+	/ lhs:bracketedExpr+ rhs:value { return lhs.join("*") + "*" + rhs; }
+
+assumedMultiplicativeExpr
+	= expr:nonSymbolicExpr_excludingAssumedMultiplicativeExpr exprs:nonSymbolicExpr+ { return expr + "*" + exprs.join("*"); }
+//	/ values:value+ { return values.join("*"); }
+//	/ v:value exprs:expr+ { return v + "*" + exprs.join("*"); }
+
+nonSymbolicExpr_excludingAssumedMultiplicativeExpr
+	= unaryExpr
+	/ fracExpr
+	/ binomExpr
+	/ parentheticalMultiplicativeExpr
+	/ functionExpr
+	/ nonBracketedFunctionExpr
+	/ bracketedExpr
+	/ value
+
+
+fracExpr
+	= "\\frac{" lhs:expr "}{" rhs:expr "}" { return "(" + lhs + ")/(" + rhs + ")"; }
+
+binomExpr
+	= "\\binom{" top:expr "}{" bottom:expr "}" { return "Math.binom(" + top + "," + bottom + ")"; }
+
+bracketedExpr
+	= leftBracket s* expr:expr s* rightBracket { return "(" + expr + ")"; }
+
+nonBracketedFunctionExpr
+	= fn:fnThatDoNotRequireBrackets expr:nonSymbolicExpr { return fn + "(" + expr + ")"; }
+	/ fn:fnThatDoNotRequireBrackets s+ expr:exponentialExpr { return fn + "(" + expr + ")"; }
+	/ fn:fnThatDoNotRequireBrackets n:numericValue { return fn + "(" + n + ")"; }
+	/ fn:fnThatDoNotRequireBrackets s+ v:value { return fn + "(" + v + ")"; }
+
+
+functionExpr
+	= fn:fn expr:bracketedExpr { return fn + expr; }
+
+operator
+	= "-"
+	/ "+"
+	/ "*"
+	/ "/"
+	/ "\\times" { return "*" }
+	/ "\\cdot" { return "*" }
+	/ "\\div" { return "/" }
+
+leftBracket
+	= "\\left(" { return "("; }
+	/ "\\left[" { return "("; }
+	/ "\\left{" { return "("; }
+	/ "\\{"     { return "("; }
+	/ "("       { return "("; }
+	/ "["       { return "("; }
+	/ "{"       { return "("; }
+
+rightBracket
+	= "\\right(" { return ")"; }
+	/ "\\right[" { return ")"; }
+	/ "\\right{" { return ")"; }
+	/ "\\}"      { return ")"; }
+	/ ")"        { return ")"; }
+	/ "]"        { return ")"; }
+	/ "}"        { return ")"; }
+
+//singleSymbolicExpr
+//	= lhs:nonSymbolicExpr "^{" s* rhs:symbolicExpr s* "}" { return "Math.pow(" + lhs + "," + rhs + ")"; }
+//	/ lhs:nonSymbolicExpr "^" val:value { return "Math.pow(" + lhs + "," + val + ")"; }
+//	/ lhs:nonSymbolicExpr s* operator:operator s* rhs:nonSymbolicExpr { return lhs + operator + rhs; }
+
+symbolicExpr
+	= exp:exponentialExpr rest:restSymbolicExpr* { return exp + rest.join("");}
+	/ lhs:nonSymbolicExpr rhs:restSymbolicExpr* { return lhs + rhs.join(""); }
+
+exponentialExpr
+	= lhs:nonSymbolicExpr "^{" s* rhs:symbolicExpr s* "}" { return "Math.pow(" + lhs + "," + rhs + ")"; }
+	/ lhs:nonSymbolicExpr "^" val:value { return "Math.pow(" + lhs + "," + val + ")"; }
+
+restSymbolicExpr
+	= s* operator:operator s* rhs:expr { return operator + rhs; }
+	/ s* operator:operator s* finalExpr:nonSymbolicExpr { return operator + finalExpr; }
+
+unaryExpr
+	= v:value "!" { return "Math.factorial(" + v + ")"; }
+
+value
+	= numericValue
+	/ subscriptedVariable
+	/ variable
+
+subscriptedVariable
+	= v:variable "_" subs:subscript+ {
+		variable = v + "_" + subs.join("");
+		registerVar(variable);
+		return variable;
+	}
+
+subscript
+	= "_{" { return "_"; }
+	/ "{" { return ""; }
+	/ "}" { return ""; }
+	/ "_" { return "_"; }
+	/ "^" { return "_exponent_"; }
+	/ op:operator { return "_" + getSymbolName(op) + "_"; }
+	/ n:numericValue
+	/ v:variable
+
+latexDefinedVariable
+	//= "A"       { return "Alpha"; }
+	= "\\alpha" { return "_alpha"; }
+
+	/// "B"       { return "Beta"; }
+	/ "\\beta"  { return "_beta"; }
+
+	/// "Γ"       { return "Gamma"; }
+	/ "\\Gamma" { return "_Gamma"; }
+	/// "γ"       { return "gamma"; }
+	/ "\\gamma" { return "_gamma"; }
+
+variable
+	= variable:latexDefinedVariable { registerVar(variable); return variable; }
+	/ variable:customVariable { registerVar(variable); return variable; }
+
+customVariable
+	= v:[a-zA-Z] primes:"'"+ { return v + primes.map(function(p) { return '_prime'; }).join(""); }
+	/ [a-zA-Z]
+
+numericValue
+	= latexDefinedValue
+	/ float
+	/ int
+
+latexDefinedValue
+	= "\\infty" { return "Infinity"; }
+	/ "\\Pi" { return "Math.PI"; }
+	/ "\\pi" { return "Math.PI"; }
+	/ "e" { return "Math.E"; }
+
+float
+	= left:[0-9]* "." right:[0-9]+ { return left.join("") + '.' + right.join(""); }
+
+int
+	= digits:[0-9]+ { return digits.join(""); }
+
+s
+	= [' '\t\r\n]
