@@ -59,6 +59,11 @@ main
 	border: 1px solid rgba(0, 0, 0, .25);
 	box-shadow: 0 2px 0 rgba(0, 0, 0, .25);
 
+	h2
+	{
+		font-size: 11pt;
+	}
+
 	.eq-container
 	{
 		position: absolute;
@@ -73,7 +78,7 @@ main
 
 			display: block;
 
-			font-size: 22pt;
+			font-size: 18pt;
 			text-align: center;
 
 			transform: translateY(-50%);
