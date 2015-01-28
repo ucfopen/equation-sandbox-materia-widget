@@ -57,11 +57,9 @@ angular.module 'player', []
 				$scope.parseError = yes
 				console.log equationFn, e if console?.log?
 
-		decodeStr = (s) -> decodeURIComponent escape(window.atob(s))
-
 		decodeLatex = ->
 			encodedLatex = window.location.search.substr window.location.search.indexOf('=') + 1
-			latex = decodeStr encodedLatex
+			latex = decodeURIComponent encodedLatex
 
 		parseLatex = ->
 			o = module.exports.parse latex

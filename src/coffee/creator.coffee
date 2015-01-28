@@ -39,11 +39,9 @@ angular.module 'creator', []
 				$scope.playerUrl = $scope.playerEmbed = ''
 				return
 
-			encodedLatex = encodeStr $scope.latex
+			encodedLatex = encodeURIComponent $scope.latex
 			$scope.playerUrl = PLAYER_QUERY_URL + encodedLatex
 			$scope.playerEmbed = '<iframe src="' + $scope.playerUrl + '" width="' + PLAYER_WIDTH + '" height="' + PLAYER_HEIGHT + '" style="margin:0;padding:0;border:0;"></iframe>'
-
-		encodeStr = (s) -> window.btoa unescape(encodeURIComponent(s))
 
 		init = ->
 			$('#eq-input').mathquill('latex', DEFAULT_EQUATION)
