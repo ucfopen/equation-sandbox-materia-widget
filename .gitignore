@@ -3,5 +3,5 @@ node_modules
 bower_components
 css
 js
-stylesheets
-scripts
+public/stylesheets
+public/scripts

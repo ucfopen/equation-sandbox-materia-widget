@@ -29,21 +29,21 @@ gulp.task('creator-css', ['sass'], function() {
 	return gulp
 		.src(['./css/creator.css'])
 		.pipe(concat('./creator.css'))
-		.pipe(gulp.dest('./stylesheets/'));
+		.pipe(gulp.dest('./public/stylesheets/'));
 });
 
 gulp.task('player-css', ['sass'], function() {
 	return gulp
 		.src(['./css/player.css'])
 		.pipe(concat('./player.css'))
-		.pipe(gulp.dest('./stylesheets/'));
+		.pipe(gulp.dest('./public/stylesheets/'));
 });
 
 gulp.task('creator-js', ['coffee', 'peg'], function() {
 	return gulp
 		.src(['js/_bootstrap.js', 'js/latex.js', 'js/creator.js'])
 		.pipe(concat('creator.js'))
-		.pipe(gulp.dest('./scripts/'))
+		.pipe(gulp.dest('./public/scripts/'))
 });
 
 gulp.task('creator-min-js', ['creator-js'], function() {
@@ -51,14 +51,14 @@ gulp.task('creator-min-js', ['creator-js'], function() {
 		.src('./scripts/creator.js')
 		.pipe(uglify())
 		.pipe(concat('creator.min.js'))
-		.pipe(gulp.dest('./scripts/'))
+		.pipe(gulp.dest('./public/scripts/'))
 });
 
 gulp.task('player-js', ['coffee', 'peg'], function() {
 	return gulp
 		.src(['js/_bootstrap.js', 'js/latex.js', 'js/player.js'])
 		.pipe(concat('player.js'))
-		.pipe(gulp.dest('./scripts/'))
+		.pipe(gulp.dest('./public/scripts/'))
 });
 
 gulp.task('player-min-js', ['player-js'], function() {
@@ -66,10 +66,10 @@ gulp.task('player-min-js', ['player-js'], function() {
 		.src('./scripts/player.js')
 		.pipe(uglify())
 		.pipe(concat('player.min.js'))
-		.pipe(gulp.dest('./scripts/'))
+		.pipe(gulp.dest('./public/scripts/'))
 });
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['build']);
 
 gulp.task('build', ['peg', 'coffee', 'sass', 'creator-js', 'creator-min-js', 'player-js', 'player-min-js', 'creator-css', 'player-css']);
 
