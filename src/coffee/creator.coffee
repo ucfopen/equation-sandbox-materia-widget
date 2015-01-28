@@ -32,10 +32,6 @@ angular.module 'creator', []
 		parseLatex = ->
 			o = module.exports.parse $scope.latex
 
-			console.log $scope.latex, o
-			if o.variables.indexOf(o.mainVar) > -1
-				throw "No"
-
 			$scope.expression = o.mainExpr
 
 		generatePlayerCode = ->
@@ -51,6 +47,7 @@ angular.module 'creator', []
 
 		init = ->
 			$('#eq-input').mathquill('latex', DEFAULT_EQUATION)
+			$scope.latex = DEFAULT_EQUATION
 			update()
 
 		# we instantly update if there's a parse error so the user could

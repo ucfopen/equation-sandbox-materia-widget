@@ -25,6 +25,12 @@ gulp.task('sass', function() {
 		.pipe(gulp.dest('./css/'));
 });
 
+gulp.task('copy-bower-components', function() {
+	return gulp
+		.src(['./bower_components/angular/angular.min.js', './bower_components/angular/angular.min.js.map'])
+		.pipe(gulp.dest('./public/vendor/'))
+});
+
 gulp.task('creator-css', ['sass'], function() {
 	return gulp
 		.src(['./css/creator.css'])
@@ -71,7 +77,7 @@ gulp.task('player-min-js', ['player-js'], function() {
 
 gulp.task('default', ['build']);
 
-gulp.task('build', ['peg', 'coffee', 'sass', 'creator-js', 'creator-min-js', 'player-js', 'player-min-js', 'creator-css', 'player-css']);
+gulp.task('build', ['peg', 'coffee', 'sass', 'copy-bower-components', 'creator-js', 'creator-min-js', 'player-js', 'player-min-js', 'creator-css', 'player-css']);
 
 gulp.task('watch', ['build'], function() {
 	gulp.watch(['./src/**/*'], ['build']);
