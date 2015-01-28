@@ -9,6 +9,40 @@ angular.module 'player', []
 		$scope.variables = []
 		$scope.userInputs = {}
 		$scope.equationResult = '?'
+		$scope.parseError = no
+
+
+		# Required extensions to Math
+		Math.factorial = (n) ->
+			return NaN if isNaN(n) or n < 0
+			return 1 if n <= 1
+			n * Math.factorial(n - 1)
+
+		Math.binom = (top, bottom) ->
+			Math.factorial(top) / (Math.factorial(bottom) * Math.factorial(top - bottom))
+
+		Math.cot = (a) ->
+			Math.cos(a) / Math.sin(a)
+
+		Math.sec = (a) ->
+			1 / Math.cos(a)
+
+		Math.csc = (a) ->
+			1 / Math.sin(a)
+
+		if not Math.sinh?
+			Math.sinh = (x) ->
+				(Math.exp(x) - Math.exp(-x)) / 2
+
+		if not Math.cosh?
+			Math.cosh = (x) ->
+				(Math.exp(x) + Math.exp(-x)) / 2
+
+		if not Math.tanh?
+			Math.tanh = (x) ->
+				return 1 if x is Infinity
+				return -1 if x is -Infinity
+				(Math.exp(x) - Math.exp(-x)) / (Math.exp(x) + Math.exp(-x))
 
 
 		init = ->
@@ -20,7 +54,8 @@ angular.module 'player', []
 
 				$scope.calculateResult()
 			catch e
-				alert 'Unable to read equation - perhaps you got a bad link?'
+				$scope.parseError = yes
+				console.log equationFn, e if console?.log?
 
 		decodeStr = (s) -> decodeURIComponent escape(window.atob(s))
 
@@ -38,7 +73,6 @@ angular.module 'player', []
 
 
 		$scope.isValidInput = (input) ->
-			console.log 'isValidInput', input, parseFloat(input)
 			not isNaN(parseFloat(input))
 
 

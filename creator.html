@@ -10,7 +10,7 @@
 		<link rel="stylesheet" href="vendor/mathquill-0.9.4/mathquill.css">
 		<link rel="stylesheet" href="stylesheets/creator.css">
 	</head>
-	<body ng-controller="CreatorController" ng-keyup="onKeyup()" ng-class="{'parse-error':parseError}">
+	<body ng-controller="CreatorController" ng-keyup="onKeyup()" ng-class="{'parse-error':parseError, 'waiting':waiting}">
 
 		<header>
 			<h1>Equation Sandbox</h1>
@@ -23,8 +23,6 @@
 
 				<div class="debug js-expr"><b>JS Expression:</b> {{expression}}</div>
 
-				<div class="error-msg">{{errorMsg}}</div>
-
 				<div class="input-help">
 					<ul>
 						<li>Must be in the form of <code>variable = expression</code></li>
@@ -34,6 +32,7 @@
 						<li>Type ^ to input exponents (Try <code>x^2</code>)</li>
 						<li>Type _ for subscripts (Try <code>x_i</code>)</li>
 						<li>Type <code>/</code> to create fractions (Try <code>1/2</code>)</li>
+						<li>The parser has some difficulty with expressions such as <span class="mathquill-embedded-latex">\frac{1}{2}x</span> but will understand <span class="mathquill-embedded-latex">\frac{1}{2}\cdot x</span>, so if you are having difficulty add <code>*</code> between terms.</li>
 					</ul>
 				</div>
 			</div>
@@ -51,6 +50,8 @@
 					<span>Latex Expression:</span>
 					<div class="container"><input type="text" ng-value="latex"></div>
 				</div>
+
+				<div class="error-msg">{{errorMsg}}</div>
 			</div>
 		</div>
 

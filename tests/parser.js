@@ -1,25 +1,6 @@
 var fs = require("fs");
 var PEG = require("pegjs");
 
-Math.factorial = function(n)
-{
-	if(n < 0) return 0;
-
-	switch(n)
-	{
-		case 0: return 0
-		case 1: return 1
-	}
-
-	return n * Math.factorial(n - 1);
-}
-
-Math.binom = function(top, bottom)
-{
-	return Math.factorial(top) / (Math.factorial(bottom) * Math.factorial(top - bottom));
-}
-
-
 fs.readFile('../src/peg/latex.peg', function(err, data) {
 	var grammar = data.toString();
 
@@ -241,10 +222,6 @@ fs.readFile('../src/peg/latex.peg', function(err, data) {
 		"(A)/(B)+Math.pow(A,2)"
 	);
 	tp(
-		"Y=\\sin3-9+x'_{i'_{2^3}}*9",
-		"Math.sin(3)-9+x_prime_i_prime_2_exponent_3*9"
-	);
-	tp(
 		"Y=4(3)",
 		"4*(3)"
 	);
@@ -269,8 +246,16 @@ fs.readFile('../src/peg/latex.peg', function(err, data) {
 		"((3)*(2))*(4)"
 	);
 	tp(
+		"Y=\\left(5\\right)",
+		"(5)"
+	);
+	tp(
 		"Y=x\\sin5",
 		"x*Math.sin(5)"
+	);
+	tp(
+		"Y=\\frac{a}{b}5",
+		"(a)/(b)*5"
 	);
 	tp(
 		"Y=\\frac{a}{b}\\sin5",
@@ -303,6 +288,10 @@ fs.readFile('../src/peg/latex.peg', function(err, data) {
 	tp(
 		"y=2x_{k-1}+3",
 		"2*x_k_minus_1+3"
+	);
+	tp(
+		"Y=\\sin3-9+x'_{i'_{2^3}}*9",
+		"Math.sin(3)-9+x_prime_i_prime_2_exponent_3*9"
 	);
 
 	// test parser
