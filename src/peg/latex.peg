@@ -144,9 +144,6 @@ rightBracket
 	/ "]"        { return ")"; }
 	/ "}"        { return ")"; }
 
-//symbolicExpr
-//	= expr:symbolicExpr "+" v:value
-
 symbolicExpr
 	= exp:exponentialExpr rest:restSymbolicExpr* { return exp + rest.join("");}
 	/ lhs:nonSymbolicExpr rhs:restSymbolicExpr* { return lhs + rhs.join(""); }
@@ -157,7 +154,6 @@ exponentialExpr
 
 restSymbolicExpr
 	= s* operator:operator s* rhs:expr { return operator + rhs; }
-	/// s* operator:operator s* finalExpr:nonSymbolicExpr { return operator + finalExpr; }
 
 unaryExpr
 	= v:value "!" { return "Math.factorial(" + v + ")"; }
@@ -187,13 +183,6 @@ subscript
 latexDefinedVariable
 	= v:latexVar { return v.replace("\\", "_"); }
 
-/*
-@TODO
-Unfortunately chrome crashes when attempting to input "\sin(x"
-when all of these rules are defined. Arbitrarily removing what
-I believe are the lesser-used variables. Totally horrible fix
-but I'm unable to find another solution at this time :(
-*/
 latexVar
 	= "\\alpha"
 	/ "\\beta"
@@ -202,34 +191,34 @@ latexVar
 	/ "\\Delta"
 	/ "\\delta"
 	/ "\\epsilon"
-//	/ "\\varepsilon"
-//	/ "\\zeta"
-//	/ "\\eta"
+	/ "\\varepsilon"
+	/ "\\zeta"
+	/ "\\eta"
 	/ "\\Theta"
 	/ "\\theta"
-//	/ "\\vartheta"
-//	/ "\\iota"
-//	/ "\\kappa"
-//	/ "\\varkappa"
+	/ "\\vartheta"
+	/ "\\iota"
+	/ "\\kappa"
+	/ "\\varkappa"
 	/ "\\Lambda"
 	/ "\\lambda"
 	/ "\\mu"
-//	/ "\\nu"
-//	/ "\\Xi"
-//	/ "\\xi"
+	/ "\\nu"
+	/ "\\Xi"
+	/ "\\xi"
 	/ "\\omicron"
 	/ "\\rho"
-//	/ "\\varrho"
+	/ "\\varrho"
 	/ "\\Sigma"
 	/ "\\sigma"
-//	/ "\\varsigma"
-//	/ "\\tau"
-//	/ "\\Upsilon"
-//	/ "\\upsilon"
+	/ "\\varsigma"
+	/ "\\tau"
+	/ "\\Upsilon"
+	/ "\\upsilon"
 	/ "\\Phi"
 	/ "\\phi"
-//	/ "\\varphi"
-//	/ "\\chi"
+	/ "\\varphi"
+	/ "\\chi"
 	/ "\\Psi"
 	/ "\\Omega"
 	/ "\\omega"

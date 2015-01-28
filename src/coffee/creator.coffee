@@ -3,10 +3,10 @@ angular.module 'creator', []
 		"use strict";
 
 		DEFAULT_EQUATION = 'y=2^x'
-		PLAYER_QUERY_URL = window.location.origin + '/player.html?eq='
+		PLAYER_QUERY_URL = window.location.href.substr(0, window.location.href.lastIndexOf('/')) + '/player.html?eq='
 		PLAYER_WIDTH = 700
 		PLAYER_HEIGHT = 500
-		UPDATE_DEBOUNCE_DELAY_MS = 350
+		UPDATE_DEBOUNCE_DELAY_MS = 1000
 
 		updateTimeoutId = -1
 
