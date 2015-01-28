@@ -1,46 +1,11 @@
-//@TODO - Preparse, turn stuff like "sin" to "\\sin"
-
 {
-	/*
-	function add(a, b)
-	{
-		return a.getValue() + b.getValue();
-	}
-
-	function Addition(a, b)
-	{
-		this.a = a;
-		this.b = b;
-	}
-	Addition.prototype.getValue = function() {
-		return this.a.getValue() + this.b.getValue();
-	}*/
-
 	var variables = {};
-	var helpers = {};
-	var usedHelpers = {};
 	var mainVar = "";
 	var mainExpr = "";
-
-	helpers["__factorial"] = function(n)
-	{
-		switch(n)
-		{
-			case 0: return 0
-			case 1: return 1
-		}
-
-		return n * helpers["__factorial"](n - 1);
-	}
 
 	function registerVar(variableName)
 	{
 		variables[variableName] = true;
-	}
-
-	function registerHelper(helperName)
-	{
-		usedHelpers[helperName] = helpers[helperName];
 	}
 
 	function getSymbolName(name)
@@ -59,15 +24,6 @@
 			case "^": return "exponent";
 		}
 	}
-
-	function expandFactorial(n)
-	{
-		return helpers["__factorial"](n);
-		// a = [];
-		// while(n > 0) a.push(n--);
-
-		// return a.join("*");
-	}
 }
 
 start
@@ -76,7 +32,6 @@ start
 		vars = Object.keys(variables);
 		return {
 			variables: vars,
-			helpers:   usedHelpers,
 			mainVar:   mainVar,
 			mainExpr:  mainExpr,
 			fn:        new Function(vars, 'return ' + mainExpr + ';')
@@ -112,13 +67,17 @@ fn
 	/ fnThatDoNotRequireBrackets
 
 fnThatDoNotRequireBrackets
-	= "\\sin" { return "Math.sin" }
-	/ "\\cos" { return "Math.cos" }
-	/ "\\tan" { return "Math.tan" }
-
-unknownFn
-	= fnChars:[a-zA-Z0-9_\\]+ { return fnChars.join(""); }
-
+	= "\\arcsin" { return "Math.asin"; }
+	/ "\\arccos" { return "Math.acos"; }
+	/ "\\arctan" { return "Math.atan"; }
+	/ "\\sinh"   { return "Math.sinh"; }
+	/ "\\cosh"   { return "Math.cosh"; }
+	/ "\\tanh"   { return "Math.tanh"; }
+	/ "\\sin"    { return "Math.sin"; }
+	/ "\\cos"    { return "Math.cos"; }
+	/ "\\tan"    { return "Math.tan"; }
+	/ "\\sec"    { return "Math.sec"; }
+	/ "\\csc"    { return "Math.csc"; }
 
 parentheticalMultiplicativeExpr
 	= lhs:bracketedExpr rhs:bracketedExpr+ { return lhs + "*" + rhs.join("*"); }
@@ -127,8 +86,6 @@ parentheticalMultiplicativeExpr
 
 assumedMultiplicativeExpr
 	= expr:nonSymbolicExpr_excludingAssumedMultiplicativeExpr exprs:nonSymbolicExpr+ { return expr + "*" + exprs.join("*"); }
-//	/ values:value+ { return values.join("*"); }
-//	/ v:value exprs:expr+ { return v + "*" + exprs.join("*"); }
 
 nonSymbolicExpr_excludingAssumedMultiplicativeExpr
 	= unaryExpr
@@ -179,18 +136,16 @@ leftBracket
 	/ "{"       { return "("; }
 
 rightBracket
-	= "\\right(" { return ")"; }
-	/ "\\right[" { return ")"; }
-	/ "\\right{" { return ")"; }
+	= "\\right)" { return ")"; }
+	/ "\\right]" { return ")"; }
+	/ "\\right}" { return ")"; }
 	/ "\\}"      { return ")"; }
 	/ ")"        { return ")"; }
 	/ "]"        { return ")"; }
 	/ "}"        { return ")"; }
 
-//singleSymbolicExpr
-//	= lhs:nonSymbolicExpr "^{" s* rhs:symbolicExpr s* "}" { return "Math.pow(" + lhs + "," + rhs + ")"; }
-//	/ lhs:nonSymbolicExpr "^" val:value { return "Math.pow(" + lhs + "," + val + ")"; }
-//	/ lhs:nonSymbolicExpr s* operator:operator s* rhs:nonSymbolicExpr { return lhs + operator + rhs; }
+//symbolicExpr
+//	= expr:symbolicExpr "+" v:value
 
 symbolicExpr
 	= exp:exponentialExpr rest:restSymbolicExpr* { return exp + rest.join("");}
@@ -202,7 +157,7 @@ exponentialExpr
 
 restSymbolicExpr
 	= s* operator:operator s* rhs:expr { return operator + rhs; }
-	/ s* operator:operator s* finalExpr:nonSymbolicExpr { return operator + finalExpr; }
+	/// s* operator:operator s* finalExpr:nonSymbolicExpr { return operator + finalExpr; }
 
 unaryExpr
 	= v:value "!" { return "Math.factorial(" + v + ")"; }
@@ -230,16 +185,54 @@ subscript
 	/ v:variable
 
 latexDefinedVariable
-	//= "A"       { return "Alpha"; }
-	= "\\alpha" { return "_alpha"; }
+	= v:latexVar { return v.replace("\\", "_"); }
 
-	/// "B"       { return "Beta"; }
-	/ "\\beta"  { return "_beta"; }
-
-	/// "Γ"       { return "Gamma"; }
-	/ "\\Gamma" { return "_Gamma"; }
-	/// "γ"       { return "gamma"; }
-	/ "\\gamma" { return "_gamma"; }
+/*
+@TODO
+Unfortunately chrome crashes when attempting to input "\sin(x"
+when all of these rules are defined. Arbitrarily removing what
+I believe are the lesser-used variables. Totally horrible fix
+but I'm unable to find another solution at this time :(
+*/
+latexVar
+	= "\\alpha"
+	/ "\\beta"
+	/ "\\Gamma"
+	/ "\\gamma"
+	/ "\\Delta"
+	/ "\\delta"
+	/ "\\epsilon"
+//	/ "\\varepsilon"
+//	/ "\\zeta"
+//	/ "\\eta"
+	/ "\\Theta"
+	/ "\\theta"
+//	/ "\\vartheta"
+//	/ "\\iota"
+//	/ "\\kappa"
+//	/ "\\varkappa"
+	/ "\\Lambda"
+	/ "\\lambda"
+	/ "\\mu"
+//	/ "\\nu"
+//	/ "\\Xi"
+//	/ "\\xi"
+	/ "\\omicron"
+	/ "\\rho"
+//	/ "\\varrho"
+	/ "\\Sigma"
+	/ "\\sigma"
+//	/ "\\varsigma"
+//	/ "\\tau"
+//	/ "\\Upsilon"
+//	/ "\\upsilon"
+	/ "\\Phi"
+	/ "\\phi"
+//	/ "\\varphi"
+//	/ "\\chi"
+	/ "\\Psi"
+	/ "\\Omega"
+	/ "\\omega"
 
 variable
 	= variable:latexDefinedVariable { registerVar(variable); return variable; }
@@ -258,6 +251,7 @@ latexDefinedValue
 	= "\\infty" { return "Infinity"; }
 	/ "\\Pi" { return "Math.PI"; }
 	/ "\\pi" { return "Math.PI"; }
+	/ "\\varpi" { return "Math.PI"; }
 	/ "e" { return "Math.E"; }
 
 float

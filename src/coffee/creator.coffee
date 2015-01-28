@@ -2,19 +2,22 @@ angular.module 'creator', []
 	.controller 'CreatorController', ['$scope', ($scope) ->
 		"use strict";
 
-		DEFAULT_EQUATION = 'y=2^x'
+		DEFAULT_EQUATION = 'y=2^x+'
 		PLAYER_QUERY_URL = window.location.origin + '/player.html?eq='
 		PLAYER_WIDTH = 700
 		PLAYER_HEIGHT = 500
+		UPDATE_DEBOUNCE_DELAY_MS = 350
+
+		updateTimeoutId = -1
 
 		$scope.latex = ''
 		$scope.expression = ''
 		$scope.playerUrl = ''
 
+		$scope.parseError = no
+		$scope.waiting = no
 
 		update = ->
-			$scope.latex = $('#eq-input').mathquill('latex')
-
 			try
 				parseLatex()
 				$scope.parseError = no
@@ -22,14 +25,16 @@ angular.module 'creator', []
 			catch e
 				$scope.parseError = yes
 				$scope.errorMsg = e.toString()
-				console.log('error', e)
-				console.log(e.toString())
+				console.log(e) if console?.log?
 
 			generatePlayerCode()
 
 		parseLatex = ->
 			o = module.exports.parse $scope.latex
-			console.log o
+
+			console.log $scope.latex, o
+			if o.variables.indexOf(o.mainVar) > -1
+				throw "No"
 
 			$scope.expression = o.mainExpr
 
@@ -48,9 +53,28 @@ angular.module 'creator', []
 			$('#eq-input').mathquill('latex', DEFAULT_EQUATION)
 			update()
 
-
+		# we instantly update if there's a parse error so the user could
+		# find a fix, but otherwise we wait a bit so we don't flash them
+		# with error messages while they are composing the equation
 		$scope.onKeyup = ->
-			update()
+			# grab the latex (and do nothing if it hasn't changed, i.e. user pressed <-)
+			lastLatex = $scope.latex
+			$scope.latex = $('#eq-input').mathquill('latex')
+			return if lastLatex is $scope.latex
+
+			if $scope.parseError
+				update()
+				$scope.waiting = no
+				return
+
+			$scope.waiting = yes
+
+			clearTimeout updateTimeoutId
+			updateTimeoutId = setTimeout ->
+				update()
+				$scope.waiting = no
+				$scope.$apply()
+			, UPDATE_DEBOUNCE_DELAY_MS
 
 
 		init()

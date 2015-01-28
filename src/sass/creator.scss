@@ -57,43 +57,6 @@ code
 			background: white;
 		}
 
-		.error-msg
-		{
-			position: absolute;
-			left: 20px;
-			top: 130px;
-
-			z-index: 2;
-
-			display: none;
-			box-sizing: border-box;
-			width: 400px;
-			border-radius: 4px;
-			padding: 16px;
-
-			font-family: $monospace-font;
-			font-size: 12pt;
-			color: $dark-gray;
-
-			background: $error-light;
-
-			&:before
-			{
-				content: " ";
-
-				position: absolute;
-				left: 15px;
-				top: -$error-msg-ptr-size * 2;
-
-				width: 0;
-				height: 0;
-
-				border: $error-msg-ptr-size solid transparent;
-				border-bottom: $error-msg-ptr-size solid $error-light;
-			}
-
-		}
-
 		.input-help
 		{
 			ul
@@ -107,6 +70,8 @@ code
 
 	.player-links-section
 	{
+		position: relative;
+
 		.player-link
 		{
 			position: relative;
@@ -145,6 +110,43 @@ code
 					height: 65px;
 				}
 			}
+		}
+
+		.error-msg
+		{
+			position: absolute;
+			left: 0;
+			top: 0;
+
+			z-index: 2;
+
+			display: none;
+			box-sizing: border-box;
+			// width: 400px;
+			border-radius: 4px;
+			padding: 16px;
+
+			font-family: $monospace-font;
+			font-size: 12pt;
+			color: $dark-gray;
+
+			background: $error-light;
+
+			&:before
+			{
+				content: " ";
+
+				position: absolute;
+				top: 55px;
+				left: -$error-msg-ptr-size * 2;
+
+				width: 0;
+				height: 0;
+
+				border: $error-msg-ptr-size solid transparent;
+				border-right: $error-msg-ptr-size solid $error-light;
+			}
+
 		}
 	}
 }
@@ -192,7 +194,16 @@ code
 		display: block !important;
 	}
 
-	.player-links-section,
+	.player-links-section .player-link,
+	.bottom
+	{
+		opacity: 0.25;
+	}
+}
+
+.waiting
+{
+	.player-links-section .player-link,
 	.bottom
 	{
 		opacity: 0.25;
