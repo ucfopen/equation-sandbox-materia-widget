@@ -8,7 +8,10 @@ var sass = require('gulp-sass');
 var del = require('del');
 
 gulp.task('peg', shell.task([
-	'./node_modules/pegjs/bin/pegjs ./src/peg/latex.peg ./js/latex.js'
+	// -e option sets the exported variable from modules.exports to window.latexParser
+	// --cache option turns on memoization, without it expressions like "\sin()" can
+	// hang the browser really bad (see https://github.com/pegjs/pegjs/issues/205)
+	'./node_modules/pegjs/bin/pegjs -e window.latexParser --cache ./src/peg/latex.peg ./js/latex.js'
 ]));
 
 gulp.task('coffee', function() {

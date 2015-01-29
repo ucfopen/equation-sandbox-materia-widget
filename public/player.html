@@ -20,7 +20,7 @@
 			Unable to parse equation - perhaps you got a bad link?
 		</div>
 
-		<main>
+		<main class="loading">
 
 			<div class="box eq">
 				<h2>Equation:</h2>
@@ -40,14 +40,14 @@
 					<h3>Variables</h3>
 					<ul>
 						<li ng-repeat="variable in variables">
-							<span class="variable-equals"><i>{{variable}}</i> = </span><input type="number" ng-model="userInputs[variable]" ng-change="calculateResult()" ng-class="{empty:userInputs[variable] == null}">
+							<span class="variable-equals"><span class="mathquill-variable">{{variable.latex}}</span> = </span><input type="number" ng-model="userInputs[variable.js]" ng-change="calculateResult()" ng-class="{empty:userInputs[variable.js] == null}">
 						</li>
 					</ul>
 				</div>
 
 				<div class="box output">
 					<h3>Result</h3>
-					<div class="result"><i>{{mainVar}}</i> = <b>{{equationResult}}</b></div>
+					<div class="result"><span class="mathquill-variable">{{mainVar.latex}}</span> = <b>{{equationResult}}</b></div>
 				</div>
 			</div>
 

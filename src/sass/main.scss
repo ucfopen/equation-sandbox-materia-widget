@@ -16,6 +16,12 @@ $math-font: "Times New Roman", serif;
 
 $header-height: 60px;
 
+// Used to prevent FOUC
+.loading {
+	// Display none causes the Symbola.tff font to glitch
+	visibility: hidden !important;
+}
+
 body
 {
 	padding: 0;

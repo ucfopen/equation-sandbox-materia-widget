@@ -11,6 +11,12 @@ angular.module 'player', []
 		$scope.equationResult = '?'
 		$scope.parseError = no
 
+		$scope.$watch 'variables', (val) ->
+			setTimeout ->
+				$('.mathquill-variable').mathquill();
+				$('main').removeClass('loading');
+			, 0
+
 
 		# Required extensions to Math
 		Math.factorial = (n) ->
@@ -62,7 +68,7 @@ angular.module 'player', []
 			latex = decodeURIComponent encodedLatex
 
 		parseLatex = ->
-			o = module.exports.parse latex
+			o = latexParser.parse latex
 
 			$scope.mainVar = o.mainVar
 			$scope.variables = o.variables
@@ -77,7 +83,7 @@ angular.module 'player', []
 		$scope.calculateResult = ->
 			fnArgs = []
 			for variable in $scope.variables
-				fnArgs.push parseFloat($scope.userInputs[variable])
+				fnArgs.push parseFloat($scope.userInputs[variable.js])
 
 			result = equationFn.apply this, fnArgs
 			$scope.equationResult = if !isNaN(result) then result else '?'
