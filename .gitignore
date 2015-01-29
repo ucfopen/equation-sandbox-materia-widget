@@ -3,7 +3,5 @@ node_modules
 bower_components
 css
 js
-public/stylesheets
-public/scripts
-public/vendor/angular.min.js
-public/vendor/angular.min.js.map
+stylesheets
+scripts
