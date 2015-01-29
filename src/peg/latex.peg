@@ -1,16 +1,43 @@
 {
 	var variables = {};
-	var mainVar = "";
+	var mainVar = null;
 	var mainExpr = "";
 
-	function registerVar(variableName)
+	function jsVariableToLatexString(jsVariableName)
 	{
-		variables[variableName] = true;
+		var ls = jsVariableName
+			.replace(/\$backslash_/g, '\\')
+			.replace(/\$prime_/g, "'")
+			.replace(/\$leftBracket_/g, '{')
+			.replace(/\$rightBracket_/g, '}')
+			.replace(/\$caret_/g, '^')
+			.replace(/\$plus_/g, '+')
+			.replace(/\$minus_/g, '-')
+			.replace(/\$times_/g, '\\cdot')
+			.replace(/\$divide_/g, '\\div')
+			.replace(/\$exponent_/g, '^');
+
+		return ls;
+
 	}
 
-	function getSymbolName(name)
+	function getVarObj(jsVariableName)
 	{
-		switch(name)
+		var latexVariableString = jsVariableToLatexString(jsVariableName);
+		return {
+			js: jsVariableName,
+			latex: latexVariableString
+		};
+	}
+
+	function registerVar(jsVariableName)
+	{
+		variables[jsVariableName] = getVarObj(jsVariableName);
+	}
+
+	function getSymbolName(symbol)
+	{
+		switch(symbol)
 		{
 			case "+": return "plus";
 			case "-": return "minus";
@@ -28,19 +55,28 @@
 
 start
 	= eq:equation {
-		delete variables[mainVar];
-		vars = Object.keys(variables);
+		var vars = [];
+		var jsVars = [];
+
+		for(var k in variables)
+		{
+			if(mainVar.js === k) throw("Left-hand side variable " + k + " cannot appear in right-hand side expression.");
+
+			vars.push(variables[k]);
+			jsVars.push(k);
+		}
+
 		return {
 			variables: vars,
 			mainVar:   mainVar,
 			mainExpr:  mainExpr,
-			fn:        new Function(vars, 'return ' + mainExpr + ';')
+			fn:        new Function(jsVars, 'return ' + mainExpr + ';')
 		};
 	}
 
 equation
 	= lhs:variable s* "=" s* rhs:expr {
-		mainVar = lhs;
+		mainVar = getVarObj(lhs);
 		mainExpr = rhs;
 		return lhs + "=" + rhs;
 	}
@@ -160,28 +196,30 @@ unaryExpr
 
 value
 	= numericValue
+	/ v:subscriptedVariable  { registerVar(v); return v; }
+	/ v:variable { registerVar(v); return v; }
+
+subscriptedVariable
+	= v:variable "_{" sub:subscript "}" { return v + "_$leftBracket_" + sub + "$rightBracket_"; }
+	/ v:variable "_" sub:subValue { return v + "_" + sub; }
+	/ v:variable
+
+subscript
+	= v:variable op:operator val:subValue { return v + "$" + getSymbolName(op) + "_" + val; }
+	/ v:variable "^{" sub:subscript "}" { return v + "$caret_$leftBracket_" + sub + "$rightBracket_"; }
+	/ v:variable "^" val:subValue { return v + "$caret_" + val; }
+	/ val:subValue
+
+subValue
+	= numericValue
 	/ subscriptedVariable
 	/ variable
 
-subscriptedVariable
-	= v:variable "_" subs:subscript+ {
-		variable = v + "_" + subs.join("");
-		registerVar(variable);
-		return variable;
-	}
 
-subscript
-	= "_{" { return "_"; }
-	/ "{" { return ""; }
-	/ "}" { return ""; }
-	/ "_" { return "_"; }
-	/ "^" { return "_exponent_"; }
-	/ op:operator { return "_" + getSymbolName(op) + "_"; }
-	/ n:numericValue
-	/ v:variable
+
 
 latexDefinedVariable
-	= v:latexVar { return v.replace("\\", "_"); }
+	= v:latexVar { return v.replace("\\", "$backslash_"); }
 
 latexVar
 	= "\\alpha"
@@ -224,11 +262,11 @@ latexVar
 	/ "\\omega"
 
 variable
-	= variable:latexDefinedVariable { registerVar(variable); return variable; }
-	/ variable:customVariable { registerVar(variable); return variable; }
+	= variable:latexDefinedVariable
+	/ variable:customVariable
 
 customVariable
-	= v:[a-zA-Z] primes:"'"+ { return v + primes.map(function(p) { return '_prime'; }).join(""); }
+	= v:[a-zA-Z] primes:"'"+ { return v + primes.map(function(p) { return '$prime_'; }).join(""); }
 	/ [a-zA-Z]
 
 numericValue

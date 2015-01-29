@@ -132,22 +132,6 @@ code
 			color: $dark-gray;
 
 			background: $error-light;
-
-			&:before
-			{
-				content: " ";
-
-				position: absolute;
-				top: 55px;
-				left: -$error-msg-ptr-size * 2;
-
-				width: 0;
-				height: 0;
-
-				border: $error-msg-ptr-size solid transparent;
-				border-right: $error-msg-ptr-size solid $error-light;
-			}
-
 		}
 	}
 }

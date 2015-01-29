@@ -6,7 +6,7 @@ angular.module 'creator', []
 		PLAYER_QUERY_URL = window.location.href.substr(0, window.location.href.lastIndexOf('/')) + '/player.html?eq='
 		PLAYER_WIDTH = 700
 		PLAYER_HEIGHT = 500
-		UPDATE_DEBOUNCE_DELAY_MS = 1000
+		UPDATE_DEBOUNCE_DELAY_MS = 500
 
 		updateTimeoutId = -1
 
@@ -24,13 +24,13 @@ angular.module 'creator', []
 				$scope.errorMsg = ''
 			catch e
 				$scope.parseError = yes
-				$scope.errorMsg = e.toString()
+				$scope.errorMsg = e.toString() + ' Latex: "' + $scope.latex + '"'
 				console.log(e) if console?.log?
 
 			generatePlayerCode()
 
 		parseLatex = ->
-			o = module.exports.parse $scope.latex
+			o = latexParser.parse $scope.latex
 
 			$scope.expression = o.mainExpr
 

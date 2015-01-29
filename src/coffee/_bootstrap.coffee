@@ -1,1 +1,1 @@
-module = {}
+"use strict";
