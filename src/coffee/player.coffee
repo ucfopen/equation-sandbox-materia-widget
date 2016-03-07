@@ -92,15 +92,7 @@ angular.module 'player', []
 		$scope.isValidInput = (input) ->
 			not isNaN(parseFloat(input))
 
-
 		$scope.calculateResult = ->
-			fnArgs = []
-			for variable in $scope.variables
-				fnArgs.push parseFloat($scope.userInputs[variable.js])
-
-			result = equationFn.apply this, fnArgs
-			$scope.equationResult = if !isNaN(result) then result else '?'
-
 			board.update()
 
 		init()
