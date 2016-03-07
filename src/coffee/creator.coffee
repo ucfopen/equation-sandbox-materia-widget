@@ -2,7 +2,7 @@ angular.module 'creator', []
 	.controller 'CreatorController', ['$scope', ($scope) ->
 		"use strict";
 
-		DEFAULT_EQUATION = 'y=2^x'
+		DEFAULT_EQUATION = 'y=2^x+a'
 		PLAYER_QUERY_URL = window.location.href.substr(0, window.location.href.lastIndexOf('/')) + '/player.html?eq='
 		PLAYER_WIDTH = 700
 		PLAYER_HEIGHT = 500
