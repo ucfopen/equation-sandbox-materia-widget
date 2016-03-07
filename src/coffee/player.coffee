@@ -4,6 +4,7 @@ angular.module 'player', []
 
 		equationFn = -> return NaN
 		latex = ''
+		board = null
 
 		$scope.mainVar = ''
 		$scope.variables = []
@@ -58,10 +59,22 @@ angular.module 'player', []
 
 				$('#eq-input').mathquill('latex', latex)
 
+				board = JXG.JSXGraph.initBoard('jxgbox', { boundingbox:[-10, 10, 10, -10], axis:true });
+				board.create 'functiongraph', [ graphFn ]
+
 				$scope.calculateResult()
 			catch e
 				$scope.parseError = yes
 				console.log equationFn, e if console?.log?
+
+		graphFn = (x) ->
+			# console.log 'fg'
+			fnArgs = [x]
+			for variable in $scope.variables
+				continue if variable.js is 'x'
+				fnArgs.push parseFloat($scope.userInputs[variable.js])
+
+			equationFn.apply this, fnArgs
 
 		decodeLatex = ->
 			encodedLatex = window.location.search.substr window.location.search.indexOf('=') + 1
@@ -88,6 +101,7 @@ angular.module 'player', []
 			result = equationFn.apply this, fnArgs
 			$scope.equationResult = if !isNaN(result) then result else '?'
 
+			board.update()
 
 		init()
 	]

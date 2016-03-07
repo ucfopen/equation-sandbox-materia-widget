@@ -39,7 +39,7 @@
 				<div class="box variables">
 					<h3>Variables</h3>
 					<ul>
-						<li ng-repeat="variable in variables">
+						<li ng-repeat="variable in variables" ng-if="variable.js !== 'x'" >
 							<span class="variable-equals"><span class="mathquill-variable">{{variable.latex}}</span> = </span><input type="number" ng-model="userInputs[variable.js]" ng-change="calculateResult()" ng-class="{empty:userInputs[variable.js] == null}">
 						</li>
 					</ul>
@@ -51,12 +51,16 @@
 				</div>
 			</div>
 
+			<div id="jxgbox"></div>
+
+
 		</main>
 
 
 
 
-
+		<script type="text/javascript"
+ src="//cdnjs.cloudflare.com/ajax/libs/jsxgraph/0.99.4/jsxgraphcore.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 		<script>window.jQuery || document.write('<script src="bower_components/jquery/dist/jquery.min.js"><\/script>')</script>
 
