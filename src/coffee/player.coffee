@@ -60,7 +60,7 @@ angular.module 'player', []
 				$('#eq-input').mathquill('latex', latex)
 
 				board = JXG.JSXGraph.initBoard('jxgbox', { boundingbox:[-10, 10, 10, -10], axis:true });
-				board.create 'functiongraph', [ graphFn ]
+				board.create 'functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3 }
 
 				$scope.calculateResult()
 			catch e
