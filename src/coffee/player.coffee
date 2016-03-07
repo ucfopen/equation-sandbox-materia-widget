@@ -68,7 +68,6 @@ angular.module 'player', []
 				console.log equationFn, e if console?.log?
 
 		graphFn = (x) ->
-			# console.log 'fg'
 			fnArgs = [x]
 			for variable in $scope.variables
 				continue if variable.js is 'x'
