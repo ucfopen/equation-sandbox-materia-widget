@@ -18,7 +18,6 @@ angular.module 'player', []
 				$('main').removeClass('loading');
 			, 0
 
-
 		# Required extensions to Math
 		Math.factorial = (n) ->
 			return NaN if isNaN(n) or n < 0
@@ -58,8 +57,11 @@ angular.module 'player', []
 				parseLatex()
 
 				$('#eq-input').mathquill('latex', latex)
-
-				board = JXG.JSXGraph.initBoard('jxgbox', { boundingbox:[-10, 10, 10, -10], axis:true });
+				opts = { 
+					boundingbox:[-10, 10, 10, -40],
+					axis:true 
+				}
+				board = JXG.JSXGraph.initBoard('jxgbox', opts);
 				board.create 'functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3 }
 
 				$scope.calculateResult()
@@ -71,7 +73,7 @@ angular.module 'player', []
 			fnArgs = [x]
 			for variable in $scope.variables
 				continue if variable.js is 'x'
-				fnArgs.push parseFloat($scope.userInputs[variable.js])
+				fnArgs.push parseFloat($scope.userInputs[variable.js].val)
 
 			equationFn.apply this, fnArgs
 
@@ -84,6 +86,22 @@ angular.module 'player', []
 
 			$scope.mainVar = o.mainVar
 			$scope.variables = o.variables
+
+			for variable in $scope.variables
+				continue if variable.js is 'x'
+				$scope.userInputs[variable.js] = {
+					val: null
+					bounds:
+						min: -10
+						max: 10
+				}
+
+				Object.defineProperty($scope.userInputs[variable.js], '_val', {
+					get: -> $scope.userInputs[variable.js].val
+					set: (val) -> $scope.userInputs[variable.js].val = parseFloat(val)
+					enumerable: true
+					configurable: true
+				})
 
 			equationFn = o.fn
 
