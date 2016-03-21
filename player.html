@@ -40,7 +40,37 @@
 					<h3>Variables</h3>
 					<ul>
 						<li ng-repeat="variable in variables" ng-if="variable.js !== 'x'" >
-							<span class="variable-equals"><span class="mathquill-variable">{{variable.latex}}</span> = </span><input type="number" ng-model="userInputs[variable.js]" ng-change="calculateResult()" ng-class="{empty:userInputs[variable.js] == null}">
+							<div class="variable-input-container">
+								<span class="variable-equals">
+									<span class="mathquill-variable">
+										{{variable.latex}}
+									</span>
+									= 
+								</span>
+							
+								<input 	class="variable-input"
+										type="number"
+										ng-model="userInputs[variable.js].val"
+										ng-change="calculateResult()"
+										ng-class="{empty:userInputs[variable.js].val == null}">
+							</div>
+							
+							<div class='variable-slider'>
+								<input 	class='variable-bound variable-bound-lower'
+										ng-model="userInputs[variable.js].bounds.min"
+										ng-change="calculateResult()">
+								<input 	class='variable-range'
+										type="range"
+										min="{{userInputs[variable.js].bounds.min}}"
+										max="{{userInputs[variable.js].bounds.max}}"
+										value=0
+										ng-model="userInputs[variable.js]._val"
+										ng-change="calculateResult()"
+										ng-class="{empty:userInputs[variable.js].val == null}">
+								<input 	class='variable-bound variable-bound-upper'
+										ng-model="userInputs[variable.js].bounds.max"
+										ng-change="calculateResult()">
+							</div>
 						</li>
 					</ul>
 				</div>
