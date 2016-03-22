@@ -15,7 +15,17 @@ angular.module 'creator', []
 		$scope.playerUrl = ''
 
 		$scope.parseError = no
+		$scope.boundsError = no
 		$scope.waiting = no
+
+		$scope.bounds =
+			x:
+				min: -10
+				max: 10
+			y:
+				min: -10
+				max: 10
+
 
 		update = ->
 			try
@@ -34,13 +44,45 @@ angular.module 'creator', []
 
 			$scope.expression = o.mainExpr
 
+		validateBounds = ->
+			bounds = [$scope.bounds.x.min,$scope.bounds.y.max,$scope.bounds.x.max,$scope.bounds.y.min]
+			
+			# non-numeric entry
+			if bounds.some( (el) -> return (isNaN(el) or !el?))
+				$scope.boundsError = yes
+				$scope.bnds_errorMsg = 'One of the bounds is not a number.'
+				return null
+
+			[xmin, ymax, xmax, ymin] = bounds
+	
+			if xmin > xmax or ymin > ymax
+				$scope.boundsError = yes
+				$scope.bnds_errorMsg = 'The bounds are out of order.'
+				return null
+
+			if xmin is xmax or ymin is ymax
+				$scope.boundsError = yes
+				$scope.bnds_errorMsg = 'One interval represents a point.'
+				return null
+
+			$scope.boundsError = no
+			$scope.bnds_errorMsg = ''
+			bounds
+
+
 		generatePlayerCode = ->
 			if $scope.parseError
 				$scope.playerUrl = $scope.playerEmbed = ''
 				return
 
+			bounds = validateBounds()
+			if not bounds
+				$scope.playerUrl = $scope.playerEmbed = ''
+				return
+
 			encodedLatex = encodeURIComponent $scope.latex
-			$scope.playerUrl = PLAYER_QUERY_URL + encodedLatex
+			encodedBounds = encodeURIComponent bounds
+			$scope.playerUrl = PLAYER_QUERY_URL + encodedLatex + '&bnds=' + encodedBounds
 			$scope.playerEmbed = '<iframe src="' + $scope.playerUrl + '" width="' + PLAYER_WIDTH + '" height="' + PLAYER_HEIGHT + '" style="margin:0;padding:0;border:0;"></iframe>'
 
 		init = ->
@@ -51,7 +93,11 @@ angular.module 'creator', []
 		# we instantly update if there's a parse error so the user could
 		# find a fix, but otherwise we wait a bit so we don't flash them
 		# with error messages while they are composing the equation
-		$scope.onKeyup = ->
+		$scope.onKeyup = (e) ->
+			if e.target.classList.contains 'graph-bounds-input'
+				generatePlayerCode()
+				return
+
 			# grab the latex (and do nothing if it hasn't changed, i.e. user pressed <-)
 			lastLatex = $scope.latex
 			$scope.latex = $('#eq-input').mathquill('latex')

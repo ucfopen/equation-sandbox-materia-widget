@@ -36,6 +36,36 @@ code
 		width: 49%;
 
 		vertical-align: top;
+
+		&.input-section{
+
+			.graph-bounds-container
+			{
+				display: flex;
+
+				.graph-bounds
+				{
+					width: 182px;
+					height: 40px;
+
+					.graph-bounds-input{
+						width: 50px;
+						text-align: center;
+					}
+				}
+
+				.bnds-error-msg
+				{
+					margin: 0 7px;
+					font-size: 14px;
+					line-height: 40px;
+					text-align: center;
+					height: 40px;
+					width: 220px;
+					padding: 0 12px;
+				}
+			}
+		}
 	}
 
 	.input-section
@@ -161,8 +191,22 @@ code
 	}
 }
 
+.parse-error, .bounds-error
+{
+	.player-links-section .player-link,
+	.bottom
+	{
+		opacity: 0.25;
+	}
+}
+
 .parse-error
 {
+	.error-msg
+	{
+		display: block !important;
+	}
+
 	.eq-input
 	{
 		color: $error;
@@ -173,16 +217,13 @@ code
 			box-shadow: $error 0 0 3px 2px !important;
 		}
 	}
+}
 
-	.error-msg
+.bounds-error
+{
+	.bnds-error-msg
 	{
-		display: block !important;
-	}
-
-	.player-links-section .player-link,
-	.bottom
-	{
-		opacity: 0.25;
+		background: $error-light;
 	}
 }
 

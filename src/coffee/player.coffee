@@ -4,6 +4,7 @@ angular.module 'player', []
 
 		equationFn = -> return NaN
 		latex = ''
+		bounds = [-10, 10, 10, -40]
 		board = null
 
 		$scope.mainVar = ''
@@ -53,12 +54,12 @@ angular.module 'player', []
 
 		init = ->
 			try
-				decodeLatex()
+				decodeParams()
 				parseLatex()
 
 				$('#eq-input').mathquill('latex', latex)
 				opts = { 
-					boundingbox:[-10, 10, 10, -40],
+					boundingbox: bounds,
 					axis:true 
 				}
 				board = JXG.JSXGraph.initBoard('jxgbox', opts);
@@ -77,8 +78,14 @@ angular.module 'player', []
 
 			equationFn.apply this, fnArgs
 
-		decodeLatex = ->
-			encodedLatex = window.location.search.substr window.location.search.indexOf('=') + 1
+		decodeParams = ->
+			URL_PARAMS  = window.location.search.split '&'
+			equationStr = URL_PARAMS[0]
+			boundsStr   = URL_PARAMS[1]
+			encodedLatex = equationStr.substr equationStr.indexOf('=') + 1
+			encodedBounds = boundsStr.substr boundsStr.indexOf('=') + 1
+			bounds = decodeURIComponent encodedBounds
+			bounds = (parseFloat b for b in bounds.split(','))
 			latex = decodeURIComponent encodedLatex
 
 		parseLatex = ->

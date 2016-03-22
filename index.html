@@ -10,7 +10,7 @@
 		<link rel="stylesheet" href="vendor/mathquill-0.9.4/mathquill.css">
 		<link rel="stylesheet" href="stylesheets/creator.css">
 	</head>
-	<body ng-controller="CreatorController" ng-keyup="onKeyup()" ng-class="{'parse-error':parseError, 'waiting':waiting}">
+	<body ng-controller="CreatorController" ng-keyup="onKeyup($event)" ng-class="{'parse-error':parseError, 'bounds-error':boundsError, 'waiting':waiting}">
 
 		<header>
 			<h1>Equation Sandbox</h1>
@@ -20,6 +20,33 @@
 			<div class="top-box input-section">
 				<h2>Enter equation here:</h2>
 				<div id="eq-input" class="eq-input mathquill-editable"></div>
+
+				<h2>Enter graph bounds here:</h2>
+				<div class="graph-bounds-container">
+					<div class="graph-bounds">
+						<div>
+							<input  class="graph-bounds-input"
+									type="number" 
+									ng-model="bounds.x.min">
+							<span class="mathquill-embedded-latex">\leq \quad x \quad \leq</span>
+							<input 	class="graph-bounds-input"
+									type="number"
+									ng-model="bounds.x.max">
+						</div>
+						<div>
+							<input 	class="graph-bounds-input"
+									type="number"
+									ng-model="bounds.y.min">
+							<span class="mathquill-embedded-latex">\leq \quad y \quad \leq</span>
+							<input 	class="graph-bounds-input"
+									type="number"
+									ng-model="bounds.y.max">
+						</div>
+					</div>
+					<div class="bnds-error-msg">
+						{{bnds_errorMsg}}
+					</div>
+				</div>
 
 				<div class="debug js-expr"><b>JS Expression:</b> {{expression}}</div>
 
