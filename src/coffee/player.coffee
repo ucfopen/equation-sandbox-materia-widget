@@ -1,5 +1,5 @@
 angular.module 'player', []
-	.controller 'PlayerController', ['$scope', ($scope) ->
+	.controller 'PlayerController', ['$scope', '$window', ($scope, $window) ->
 		"use strict";
 
 		equationFn = -> return NaN
@@ -18,6 +18,17 @@ angular.module 'player', []
 				$('.mathquill-variable').mathquill();
 				$('main').removeClass('loading');
 			, 0
+
+		Namespace('EquationSandbox').Engine = do ->
+			# Called by Materia.Engine when your widget Engine should start the user experience.
+			start = (instance, qset, version = '1') ->
+				# once everything is drawn, set the height of the player
+				Materia.Engine.setHeight()
+				console.log 'qset', qset
+
+			start: start
+
+		$window.EquationSandbox = EquationSandbox
 
 		# Required extensions to Math
 		Math.factorial = (n) ->

@@ -7,6 +7,10 @@
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
+		<!-- REQUIRED MATERIA JAVASCRIPT -->
+		<script src="materia.enginecore.js"></script>
+		<script src="materia.score.js"></script>
+
 		<link rel="stylesheet" href="vendor/mathquill-0.9.4/mathquill.css">
 		<link rel="stylesheet" href="stylesheets/player.css">
 	</head>
@@ -100,5 +104,13 @@
 		<script>window.angular || document.write('<script src="bower_components/angular/angular.min.js"><\/script>')</script>
 
 		<script src="scripts/player.js"></script>
+
+		<!-- MAIN PLAYER SCRIPT -->
+		<script src="./player.js"></script>
+
+		<!-- INITIALIZE -->
+		<script>
+			Materia.Engine.start(EquationSandbox.Engine);
+		</script>
 	</body>
 </html>
