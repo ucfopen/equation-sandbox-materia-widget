@@ -2,6 +2,10 @@ angular.module 'creator', []
 	.controller 'CreatorController', ['$scope', ($scope) ->
 		"use strict";
 
+		### Initialize class variables ###
+
+		_title = _qset = null
+
 		DEFAULT_EQUATION = 'y=2^x+a'
 		PLAYER_QUERY_URL = window.location.href.substr(0, window.location.href.lastIndexOf('/')) + '/player.html?eq='
 		PLAYER_WIDTH = 700
@@ -26,10 +30,53 @@ angular.module 'creator', []
 				min: -10
 				max: 10
 
+		### Materia Interface Methods ###
 
-		update = ->
+		materiaInterface =
+			initNewWidget: (widget, baseUrl) ->
+				$scope.$apply ->
+					console.log 'missing initNewWidget'
+
+			initExistingWidget: (title,widget,qset,version,baseUrl) ->
+				console.log 'qset', qset
+				_qset = qset
+				_latex = qset.data.latex
+				console.log 'latex', _latex
+
+				$scope.$apply ->
+					console.log 'missing initExistingWidget'
+
+			onSaveClicked: (mode = 'save') ->
+				# if not _buildSaveData()
+				# 	return Materia.CreatorCore.cancelSave 'Required fields not filled out'
+				# 	
+				_buildSaveData()
+				Materia.CreatorCore.save _title, _qset
+
+			onSaveComplete: (title, widget, qset, version) -> true
+
+			onQuestionImportComplete: (items) ->
+				$scope.$apply ->
+					console.log 'missing onQuestionImportComplete'
+
+			onMediaImportComplete : (media) -> null
+
+
+		### Private methods ###
+
+		_buildSaveData = ->
+			if !_qset? then _qset = {}
+
+			_title = 'TITLE PLACEHOLDER'
+
+			_qset.version = 1
+			console.log 'test', $scope.latex
+			_qset.data =
+				latex = $scope.latex
+
+		_update = ->
 			try
-				parseLatex()
+				_parseLatex()
 				$scope.parseError = no
 				$scope.errorMsg = ''
 			catch e
@@ -37,14 +84,14 @@ angular.module 'creator', []
 				$scope.errorMsg = e.toString() + ' Latex: "' + $scope.latex + '"'
 				console.log(e) if console?.log?
 
-			generatePlayerCode()
+			_generatePlayerCode()
 
-		parseLatex = ->
+		_parseLatex = ->
 			o = latexParser.parse $scope.latex
 
 			$scope.expression = o.mainExpr
 
-		validateBounds = ->
+		_validateBounds = ->
 			bounds = [$scope.bounds.x.min,$scope.bounds.y.max,$scope.bounds.x.max,$scope.bounds.y.min]
 			
 			# non-numeric entry
@@ -70,12 +117,12 @@ angular.module 'creator', []
 			bounds
 
 
-		generatePlayerCode = ->
+		_generatePlayerCode = ->
 			if $scope.parseError
 				$scope.playerUrl = $scope.playerEmbed = ''
 				return
 
-			bounds = validateBounds()
+			bounds = _validateBounds()
 			if not bounds
 				$scope.playerUrl = $scope.playerEmbed = ''
 				return
@@ -85,10 +132,12 @@ angular.module 'creator', []
 			$scope.playerUrl = PLAYER_QUERY_URL + encodedLatex + '&bnds=' + encodedBounds
 			$scope.playerEmbed = '<iframe src="' + $scope.playerUrl + '" width="' + PLAYER_WIDTH + '" height="' + PLAYER_HEIGHT + '" style="margin:0;padding:0;border:0;"></iframe>'
 
-		init = ->
+		_init = ->
 			$('#eq-input').mathquill('latex', DEFAULT_EQUATION)
 			$scope.latex = DEFAULT_EQUATION
-			update()
+			_update()
+
+		### Scope Methods ###
 
 		# we instantly update if there's a parse error so the user could
 		# find a fix, but otherwise we wait a bit so we don't flash them
@@ -104,7 +153,7 @@ angular.module 'creator', []
 			return if lastLatex is $scope.latex
 
 			if $scope.parseError
-				update()
+				_update()
 				$scope.waiting = no
 				return
 
@@ -112,11 +161,13 @@ angular.module 'creator', []
 
 			clearTimeout updateTimeoutId
 			updateTimeoutId = setTimeout ->
-				update()
+				_update()
 				$scope.waiting = no
 				$scope.$apply()
 			, UPDATE_DEBOUNCE_DELAY_MS
 
 
-		init()
+		_init()
+
+		Materia.CreatorCore.start materiaInterface
 	]
