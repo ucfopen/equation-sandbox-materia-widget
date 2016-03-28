@@ -143,6 +143,7 @@ angular.module 'creator', []
 		# find a fix, but otherwise we wait a bit so we don't flash them
 		# with error messages while they are composing the equation
 		$scope.onKeyup = (e) ->
+			console.log qset
 			if e.target.classList.contains 'graph-bounds-input'
 				generatePlayerCode()
 				return
@@ -170,4 +171,75 @@ angular.module 'creator', []
 		_init()
 
 		Materia.CreatorCore.start materiaInterface
+
+
+
+
+		# Everything below taken from hangman
+
+		$scope.onSaveClicked = (mode = 'save') ->
+			qset = Resource.buildQset $sanitize($scope.title), $scope.items, $scope.partial, $scope.attempts, $scope.random
+			if qset then Materia.CreatorCore.save $sanitize($scope.title), qset
 	]
+	.factory 'Resource', ['$sanitize', ($sanitize) ->
+	buildQset: (title, items, partial, attempts, random) ->
+		qsetItems = []
+		qset = {}
+
+		# Decide if it is ok to save.
+		if title is ''
+			Materia.CreatorCore.cancelSave 'Please enter a title.'
+			return false
+		# else
+		# 	for i in [0..items.length-1]
+		# 		if items[i].answer and items[i].answer.string.length > 3
+		# 			Materia.CreatorCore.cancelSave '#'+(i+1)+' will not fit on the gameboard.'
+		# 			return false
+				## letters, numbers, spaces, periods, commas, dashes and underscores only
+				## prevent characters from being used that cannot be input by the user
+				# if not /[a-zA-Z0-9]/.test(items[i].ans)
+				# 	Materia.CreatorCore.cancelSave 'Word #'+(i+1)+' needs to contain at least one letter or number.'
+				# 	return false
+
+		qset.options = {partial: partial, attempts: attempts, random: random}
+		qset.assets = []
+		qset.rand = false
+		qset.name = title
+		qset.items = [$scope.latex]
+
+		# for i in [0..items.length-1]
+		# 	item = @processQsetItem items[i]
+		# 	qsetItems.push item if item
+		# qset.items = [{items: qsetItems}]
+
+		qset
+
+	# processQsetItem: (item) ->
+	# 	return false if item.ans == ''
+
+	# 	item.ques = item.ques
+	# 	item.ans = item.ans
+
+	# 	assets: []
+	# 	materiaType: "question"
+	# 	id: item.id
+	# 	type: 'QA'
+	# 	questions: [{text : item.ques}]
+	# 	answers: [{value : '100', text : item.ans}]
+		
+	# IE8/IE9 are super special and need this
+	# placeholderPolyfill: () ->
+	# 	$('[placeholder]')
+	# 	.focus ->
+	# 		if this.value is this.placeholder
+	# 			this.value = ''
+	# 			this.className = ''
+	# 	.blur ->
+	# 		if this.value is '' or this.value is this.placeholder
+	# 			this.className = 'placeholder'
+	# 			this.value = this.placeholder
+
+	# 	$('form').submit ->
+	# 		$(this).find('[placeholder]').each ->
+	# 			if this.value is this.placeholder then this.value = ''
+]
