@@ -44,7 +44,7 @@ gulp.task('player-css', ['sass'], function() {
 
 gulp.task('creator-js', ['coffee', 'peg'], function() {
 	return gulp
-		.src(['./assets/js/_bootstrap.js', 'js/latex.js', 'js/creator.js'])
+		.src(['./assets/js/_bootstrap.js', './assets/js/latex.js', './assets/js/creator.js'])
 		.pipe(concat('creator.js'))
 		.pipe(gulp.dest('./assets/scripts/'))
 });
@@ -59,7 +59,7 @@ gulp.task('creator-min-js', ['creator-js'], function() {
 
 gulp.task('player-js', ['coffee', 'peg'], function() {
 	return gulp
-		.src(['./assets/js/_bootstrap.js', 'js/latex.js', 'js/player.js'])
+		.src(['./assets/js/_bootstrap.js', './assets/js/latex.js', './assets/js/player.js'])
 		.pipe(concat('player.js'))
 		.pipe(gulp.dest('./assets/scripts/'))
 });
