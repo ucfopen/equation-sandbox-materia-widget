@@ -1,4 +1,5 @@
 angular.module 'creator', []
+
 	.controller 'CreatorController', ['$scope', ($scope) ->
 		"use strict";
 
@@ -32,34 +33,35 @@ angular.module 'creator', []
 
 		### Materia Interface Methods ###
 
-		materiaInterface =
-			initNewWidget: (widget, baseUrl) ->
-				$scope.$apply ->
-					console.log 'missing initNewWidget'
+		$scope.initNewWidget = (widget, baseUrl) ->
+			# $scope.$apply ->
+			# 	console.log 'initNewWidget'
+			console.log 'initNewWidget'
 
-			initExistingWidget: (title,widget,qset,version,baseUrl) ->
-				console.log 'qset', qset
-				_qset = qset
-				_latex = qset.data.latex
-				console.log 'latex', _latex
+		$scope.initExistingWidget = (title,widget,qset,version,baseUrl) ->
+			console.log 'qset', qset
+			_qset = qset
+			_latex = qset.data.latex
+			console.log 'latex', _latex
 
-				$scope.$apply ->
-					console.log 'missing initExistingWidget'
+			# $scope.$apply ->
+			# 	console.log 'initExistingWidget'
+			console.log 'initExistingWidget'
 
-			onSaveClicked: (mode = 'save') ->
-				# if not _buildSaveData()
-				# 	return Materia.CreatorCore.cancelSave 'Required fields not filled out'
-				# 	
-				_buildSaveData()
-				Materia.CreatorCore.save _title, _qset
+		$scope.onSaveClicked = (mode = 'save') ->
+			# if not _buildSaveData()
+			# 	return Materia.CreatorCore.cancelSave 'Required fields not filled out'
+			# 	
+			_buildSaveData()
+			Materia.CreatorCore.save _title, _qset
 
-			onSaveComplete: (title, widget, qset, version) -> true
+		$scope.onSaveComplete = (title, widget, qset, version) -> true
 
-			onQuestionImportComplete: (items) ->
-				$scope.$apply ->
-					console.log 'missing onQuestionImportComplete'
+		$scope.onQuestionImportComplete = (items) ->
+			$scope.$apply ->
+				console.log 'missing onQuestionImportComplete'
 
-			onMediaImportComplete : (media) -> null
+		$scope.onMediaImportComplete  = (media) -> null
 
 
 		### Private methods ###
@@ -101,7 +103,7 @@ angular.module 'creator', []
 				return null
 
 			[xmin, ymax, xmax, ymin] = bounds
-	
+
 			if xmin > xmax or ymin > ymax
 				$scope.boundsError = yes
 				$scope.bnds_errorMsg = 'The bounds are out of order.'
@@ -170,76 +172,31 @@ angular.module 'creator', []
 
 		_init()
 
-		Materia.CreatorCore.start materiaInterface
-
-
-
-
-		# Everything below taken from hangman
-
-		$scope.onSaveClicked = (mode = 'save') ->
-			qset = Resource.buildQset $sanitize($scope.title), $scope.items, $scope.partial, $scope.attempts, $scope.random
-			if qset then Materia.CreatorCore.save $sanitize($scope.title), qset
+		Materia.CreatorCore.start $scope
 	]
+
 	.factory 'Resource', ['$sanitize', ($sanitize) ->
-	buildQset: (title, items, partial, attempts, random) ->
-		qsetItems = []
-		qset = {}
+		buildQset: (title, items, partial, attempts, random) ->
+			qsetItems = [{latex: $scope.latex}]
+			qset = {}
 
-		# Decide if it is ok to save.
-		if title is ''
-			Materia.CreatorCore.cancelSave 'Please enter a title.'
-			return false
-		# else
-		# 	for i in [0..items.length-1]
-		# 		if items[i].answer and items[i].answer.string.length > 3
-		# 			Materia.CreatorCore.cancelSave '#'+(i+1)+' will not fit on the gameboard.'
-		# 			return false
-				## letters, numbers, spaces, periods, commas, dashes and underscores only
-				## prevent characters from being used that cannot be input by the user
-				# if not /[a-zA-Z0-9]/.test(items[i].ans)
-				# 	Materia.CreatorCore.cancelSave 'Word #'+(i+1)+' needs to contain at least one letter or number.'
-				# 	return false
+			# Decide if it is ok to save.
+			if title is ''
+				Materia.CreatorCore.cancelSave 'Please enter a title.'
+				return false
+			# else
+			# 	for i in [0..items.length-1]
+			# 		if items[i].answer and items[i].answer.string.length > 3
+			# 			Materia.CreatorCore.cancelSave '#'+(i+1)+' will not fit on the gameboard.'
+			# 			return false
+					## letters, numbers, spaces, periods, commas, dashes and underscores only
+					## prevent characters from being used that cannot be input by the user
+					# if not /[a-zA-Z0-9]/.test(items[i].ans)
+					# 	Materia.CreatorCore.cancelSave 'Word #'+(i+1)+' needs to contain at least one letter or number.'
+					# 	return false
 
-		qset.options = {partial: partial, attempts: attempts, random: random}
-		qset.assets = []
-		qset.rand = false
-		qset.name = title
-		qset.items = [$scope.latex]
+			qset.name = title
+			qset.items = [{items: qsetItems}]
 
-		# for i in [0..items.length-1]
-		# 	item = @processQsetItem items[i]
-		# 	qsetItems.push item if item
-		# qset.items = [{items: qsetItems}]
-
-		qset
-
-	# processQsetItem: (item) ->
-	# 	return false if item.ans == ''
-
-	# 	item.ques = item.ques
-	# 	item.ans = item.ans
-
-	# 	assets: []
-	# 	materiaType: "question"
-	# 	id: item.id
-	# 	type: 'QA'
-	# 	questions: [{text : item.ques}]
-	# 	answers: [{value : '100', text : item.ans}]
-		
-	# IE8/IE9 are super special and need this
-	# placeholderPolyfill: () ->
-	# 	$('[placeholder]')
-	# 	.focus ->
-	# 		if this.value is this.placeholder
-	# 			this.value = ''
-	# 			this.className = ''
-	# 	.blur ->
-	# 		if this.value is '' or this.value is this.placeholder
-	# 			this.className = 'placeholder'
-	# 			this.value = this.placeholder
-
-	# 	$('form').submit ->
-	# 		$(this).find('[placeholder]').each ->
-	# 			if this.value is this.placeholder then this.value = ''
-]
+			qset
+	]
