@@ -23,7 +23,7 @@ gulp.task('coffee', function() {
 
 gulp.task('sass', function() {
 	return gulp
-		.src('./assets/src/sass/*.scss')
+		.src('./src/sass/*.scss')
 		.pipe(sass())
 		.pipe(gulp.dest('./assets/css/'));
 });
