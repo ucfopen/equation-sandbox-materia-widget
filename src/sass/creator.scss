@@ -1,0 +1,237 @@
+@import "main";
+
+$row-padding: 20px;
+$error-msg-ptr-size: 14px;
+
+.debug
+{
+	display: none;
+}
+
+code
+{
+	font-family: $monospace-font;
+
+	background: $light-gray;
+}
+
+.row
+{
+	box-sizing: border-box;
+
+	padding: $row-padding;
+}
+
+.top
+{
+	position: relative;
+
+	width: 100%;
+
+	background: white;
+
+	.top-box
+	{
+		display: inline-block;
+		width: 49%;
+
+		vertical-align: top;
+
+		&.input-section{
+
+			.graph-bounds-container
+			{
+				display: flex;
+
+				.graph-bounds
+				{
+					width: 182px;
+					height: 40px;
+
+					.graph-bounds-input{
+						width: 50px;
+						text-align: center;
+					}
+				}
+
+				.bnds-error-msg
+				{
+					margin: 0 7px;
+					font-size: 14px;
+					line-height: 40px;
+					text-align: center;
+					height: 40px;
+					width: 220px;
+					padding: 0 12px;
+				}
+			}
+		}
+	}
+
+	.input-section
+	{
+		h2
+		{
+			margin: 0 0 10px 0;
+
+			color: $purple;
+		}
+
+		.eq-input
+		{
+			padding: 10px;
+			margin: 0 0 20px 0;
+
+			font-size: 20pt;
+
+			background: white;
+		}
+
+		.input-help
+		{
+			ul
+			{
+				padding: 0 $row-padding;
+
+				font-size: 11pt;
+			}
+		}
+	}
+
+	.player-links-section
+	{
+		position: relative;
+
+		.player-link
+		{
+			position: relative;
+
+			margin: 0 0 1em 0;
+
+			span
+			{
+				vertical-align: top;
+				padding: 7px 0;
+
+				display: inline-block;
+
+				color: $purple;
+			}
+
+			.container
+			{
+				box-sizing: border-box;
+
+				input, textarea
+				{
+					box-sizing: border-box;
+
+					padding: 1em;
+					margin: 0;
+					width: 100%;
+
+					font-family: $monospace-font;
+					font-size: 9pt;
+
+					border: 1px solid $gray;
+				}
+
+				textarea
+				{
+					height: 65px;
+				}
+			}
+		}
+
+		.error-msg
+		{
+			position: absolute;
+			left: 0;
+			top: 0;
+
+			z-index: 2;
+
+			display: none;
+			box-sizing: border-box;
+			// width: 400px;
+			border-radius: 4px;
+			padding: 16px;
+
+			font-family: $monospace-font;
+			font-size: 12pt;
+			color: $dark-gray;
+
+			background: $error-light;
+		}
+	}
+}
+
+.bottom
+{
+	h3
+	{
+		margin: 0 0 $row-padding 0;
+
+		text-align: center;
+	}
+
+	.player-container
+	{
+		overflow: hidden;
+
+		iframe
+		{
+			width: 800px;
+			height: 670px;
+			margin: -$header-height auto 0 auto;
+			display: block;
+
+			border: 1px solid black;
+		}
+	}
+}
+
+.parse-error, .bounds-error
+{
+	.player-links-section .player-link,
+	.bottom
+	{
+		opacity: 0.25;
+	}
+}
+
+.parse-error
+{
+	.error-msg
+	{
+		display: block !important;
+	}
+
+	.eq-input
+	{
+		color: $error;
+		border: 1px solid $error;
+
+		&.hasCursor
+		{
+			box-shadow: $error 0 0 3px 2px !important;
+		}
+	}
+}
+
+.bounds-error
+{
+	.bnds-error-msg
+	{
+		background: $error-light;
+	}
+}
+
+.waiting
+{
+	.player-links-section .player-link,
+	.bottom
+	{
+		opacity: 0.25;
+	}
+}

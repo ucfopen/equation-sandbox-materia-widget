@@ -1,0 +1,68 @@
+$dark-gray: #333;
+$light-gray: #F1EFEF;
+$gray: gray;
+$purple: #8d5a9f;
+$blue: #74a2cc;
+$green: #8ebb58;
+$orange: #d9874d;
+$orange-light: #feede5;
+$error: #de2700;
+$error-light: #FFA6A6;
+$yellow: #f9f2da;
+
+$font: "Lato", Arial, sans;
+$monospace-font: "Droid Sans Mono", monospace;
+$math-font: "Times New Roman", serif;
+
+$header-height: 60px;
+
+// Used to prevent FOUC
+.loading {
+	// Display none causes the Symbola.tff font to glitch
+	visibility: hidden !important;
+}
+
+body
+{
+	padding: 0;
+	margin: 0;
+
+	font-family: $font;
+
+	background: $light-gray;
+}
+
+header
+{
+	width: 100%;
+	height: $header-height;
+	background: $dark-gray;
+
+	h1
+	{
+		margin: 0;
+		padding: $header-height/2 0 0 100px;
+
+		height: $header-height;
+
+		font-size: 18pt;
+		font-weight: 300;
+		color: white;
+		line-height: 0;
+	}
+
+	&:before
+	{
+		content: " ";
+
+		position: absolute;
+		left: 20px;
+		top: 12px;
+
+		width: 53px;
+		height: 29px;
+		display: block;
+
+		background-image: url('../img/materialogo.png');
+	}
+}
