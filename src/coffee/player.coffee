@@ -3,7 +3,6 @@ angular.module 'player', []
 		"use strict";
 
 		equationFn = -> return NaN
-		latex = ''
 		bounds = [-10, 10, 10, -40]
 		board = null
 
@@ -20,18 +19,8 @@ angular.module 'player', []
 				$('main').removeClass('loading');
 			, 0
 
-		# Namespace('EquationSandbox').Engine = do ->
-		# 	# Called by Materia.Engine when your widget Engine should start the user experience.
-		# 	start = (instance, qset, version = '1') ->
-		# 		# once everything is drawn, set the height of the player
-		# 		Materia.Engine.setHeight()
-		# 		console.log 'qset', qset
-
-		# 	start: start
-
 		$scope.start = (instance, qset, version = '1') ->
 			Materia.Engine.setHeight()
-			console.log 'qset', qset
 			$scope.qset = qset
 			init()
 
@@ -72,12 +61,9 @@ angular.module 'player', []
 		init = ->
 			console.log "starting init"
 			try
-				console.log "decodeParams"
-				decodeParams()
-				console.log "parseLatex"
 				parseLatex()
 
-				$('#eq-input').mathquill('latex', latex)
+				$('#eq-input').mathquill('latex', $scope.qset.latex)
 				opts = { 
 					boundingbox: bounds,
 					axis:true 
@@ -103,30 +89,15 @@ angular.module 'player', []
 
 			equationFn.apply this, fnArgs
 
-		decodeParams = ->
-			try
-				# URL_PARAMS  = window.location.search.split '&'
-				# equationStr = URL_PARAMS[0]
-				# boundsStr   = URL_PARAMS[1]
-				equationStr = $scope.qset.data
-				# boundsStr   = URL_PARAMS[1]
-				encodedLatex = equationStr.substr equationStr.indexOf('=') + 1
-				# encodedBounds = boundsStr.substr boundsStr.indexOf('=') + 1
-				# bounds = decodeURIComponent encodedBounds
-				# bounds = (parseFloat b for b in bounds.split(','))
-				latex = decodeURIComponent encodedLatex
-			catch e
-				console.log e
-
 		parseLatex = ->
 			try 
-				console.log "o = latexParser.parse latex"
-				o = latexParser.parse latex
+				console.log $scope.qset
+				o = latexParser.parse $scope.qset.latex
 
 				$scope.mainVar = o.mainVar
 				$scope.variables = o.variables
 
-				console.log "for statement"
+				console.log "for statement", $scope.variables
 				for variable in $scope.variables
 					continue if variable.js is 'x'
 					$scope.userInputs[variable.js] = {

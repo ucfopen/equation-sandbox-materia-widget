@@ -3,8 +3,17 @@ name: Equation Sandbox
 qset:
   version: 1
   data:
-    items:
+    latex: "y=2^x+a"
+    bounds:
       -
+        x:
+          -
+            min: -10
+            max: 10
+        y:
+          -
+            min: -10
+            max: 10
       # name: Parts of a Cell
       # options:
       #   partial: false

@@ -41,7 +41,7 @@ angular.module 'creator', []
 		$scope.initExistingWidget = (title,widget,qset,version,baseUrl) ->
 			console.log 'qset', qset
 			_qset = qset
-			_latex = qset.data.latex
+			_latex = qset.data
 			console.log 'latex', _latex
 
 			# $scope.$apply ->
@@ -72,9 +72,9 @@ angular.module 'creator', []
 			_title = 'TITLE PLACEHOLDER'
 
 			_qset.version = 1
-			console.log 'test', $scope.latex
 			_qset.data =
-				latex = $scope.latex
+				latex: $scope.latex
+				bounds: $scope.bounds
 
 		_update = ->
 			try
@@ -145,7 +145,6 @@ angular.module 'creator', []
 		# find a fix, but otherwise we wait a bit so we don't flash them
 		# with error messages while they are composing the equation
 		$scope.onKeyup = (e) ->
-			console.log qset
 			if e.target.classList.contains 'graph-bounds-input'
 				generatePlayerCode()
 				return
