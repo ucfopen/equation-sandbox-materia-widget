@@ -14,24 +14,3 @@ qset:
           -
             min: -10
             max: 10
-      # name: Parts of a Cell
-      # options:
-      #   partial: false
-      #   attempts: 5
-      # items:
-      #   -
-      #     name: Parts of a Cell
-      #     items:
-      #       -
-      #         materiaType: question
-      #         id: null
-      #         type: QA
-      #         questions:
-      #           -
-      #             text: >
-      #               The semipermeable, film-like structure
-      #               that encloses the contents of a cell.
-      #         answers:
-      #           -
-      #             value: 100
-      #             text: cell membrane
