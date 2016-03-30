@@ -36,30 +36,25 @@ angular.module 'creator', []
 		$scope.initNewWidget = (widget, baseUrl) ->
 			# $scope.$apply ->
 			# 	console.log 'initNewWidget'
-			console.log 'initNewWidget'
+			console.log 'initNewWidget empty'
 
 		$scope.initExistingWidget = (title,widget,qset,version,baseUrl) ->
-			console.log "initExistingWidget"
 			try 
-				console.log 'qset', qset
 				_qset = qset
 				_latex = qset.data
-				console.log 'latex', _latex
 
-				# $scope.$apply ->
-				# 	console.log 'initExistingWidget'
-				console.log 'initExistingWidget'
 			catch e
 				console.log "initExistingWidget error: ", e
 
 		$scope.onSaveClicked = (mode = 'save') ->
-			console.log "onSaveClicked"
 			# if not _buildSaveData()
 			# 	return Materia.CreatorCore.cancelSave 'Required fields not filled out'
 			# 	
-			_buildSaveData()
-			Materia.CreatorCore.save _title, _qset
-
+			try
+				_buildSaveData()
+				Materia.CreatorCore.save _title, _qset
+			catch e 
+				console.log "onSaveClicked error: ", e
 		$scope.onSaveComplete = (title, widget, qset, version) -> true
 
 		$scope.onQuestionImportComplete = (items) ->
@@ -73,7 +68,6 @@ angular.module 'creator', []
 		### Private methods ###
 
 		_buildSaveData = ->
-			console.log "_buildSaveData"
 			try
 				if !_qset? then _qset = {}
 
@@ -87,7 +81,6 @@ angular.module 'creator', []
 				console.log "_buildSaveData error: ", e
 
 		_update = ->
-			console.log "inside _update"
 			try
 				_parseLatex()
 				$scope.parseError = no
@@ -95,12 +88,11 @@ angular.module 'creator', []
 			catch e
 				$scope.parseError = yes
 				$scope.errorMsg = e.toString() + ' Latex: "' + $scope.latex + '"'
-				console.log(e) if console?.log?
+				console.log $scope.errorMsg, e if console?.log?
 
 			_generatePlayerCode()
 
 		_parseLatex = ->
-			console.log "_parseLatex"
 			try 
 				o = latexParser.parse $scope.latex
 
@@ -109,7 +101,6 @@ angular.module 'creator', []
 				console.log "_parseLatex error: ", e
 
 		_validateBounds = ->
-			console.log "_validateBounds"
 			try
 				bounds = [$scope.bounds.x.min,$scope.bounds.y.max,$scope.bounds.x.max,$scope.bounds.y.min]
 			
@@ -139,7 +130,7 @@ angular.module 'creator', []
 				console.log "_validateBounds error: ", e
 
 		_generatePlayerCode = ->
-			console.log "inside _generatePlayerCode"
+			console.log "_generatePlayerCode needs to be remade"
 			try
 				if $scope.parseError
 					$scope.playerUrl = $scope.playerEmbed = ''
@@ -151,18 +142,13 @@ angular.module 'creator', []
 					return
 
 				encodedLatex = encodeURIComponent $scope.latex
-				console.log "encodedLatex: ", encodedLatex
 				encodedBounds = encodeURIComponent bounds
-				console.log "encodedBounds: ", encodedBounds
 				$scope.playerUrl = PLAYER_QUERY_URL + encodedLatex + '&bnds=' + encodedBounds
 				$scope.playerEmbed = '<iframe src="' + $scope.playerUrl + '" width="' + PLAYER_WIDTH + '" height="' + PLAYER_HEIGHT + '" style="margin:0;padding:0;border:0;"></iframe>'
-				console.log "playerUrl: ", $scope.playerUrl
-				console.log "playerEmbed: ", $scope.playerEmbed
 			catch e
-				console.log e
+				console.log "generatePlayerCode error: ", e
 
 		_init = ->
-			console.log "_init"
 			try
 				$('#eq-input').mathquill('latex', DEFAULT_EQUATION)
 				$scope.latex = DEFAULT_EQUATION
@@ -176,30 +162,31 @@ angular.module 'creator', []
 		# find a fix, but otherwise we wait a bit so we don't flash them
 		# with error messages while they are composing the equation
 		$scope.onKeyup = (e) ->
-			console.log "onKeyup"
-			if e.target.classList.contains 'graph-bounds-input'
-				generatePlayerCode()
-				return
+			try 
+				if e.target.classList.contains 'graph-bounds-input'
+					generatePlayerCode()
+					return
 
-			# grab the latex (and do nothing if it hasn't changed, i.e. user pressed <-)
-			lastLatex = $scope.latex
-			$scope.latex = $('#eq-input').mathquill('latex')
-			return if lastLatex is $scope.latex
+				# grab the latex (and do nothing if it hasn't changed, i.e. user pressed <-)
+				lastLatex = $scope.latex
+				$scope.latex = $('#eq-input').mathquill('latex')
+				return if lastLatex is $scope.latex
 
-			if $scope.parseError
-				_update()
-				$scope.waiting = no
-				return
+				if $scope.parseError
+					_update()
+					$scope.waiting = no
+					return
 
-			$scope.waiting = yes
+				$scope.waiting = yes
 
-			clearTimeout updateTimeoutId
-			updateTimeoutId = setTimeout ->
-				_update()
-				$scope.waiting = no
-				$scope.$apply()
-			, UPDATE_DEBOUNCE_DELAY_MS
-
+				clearTimeout updateTimeoutId
+				updateTimeoutId = setTimeout ->
+					_update()
+					$scope.waiting = no
+					$scope.$apply()
+				, UPDATE_DEBOUNCE_DELAY_MS
+			catch e
+				console.log "onKeyup error: ", e
 
 		_init()
 
