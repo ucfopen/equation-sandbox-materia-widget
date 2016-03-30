@@ -20,40 +20,54 @@ angular.module 'player', []
 			, 0
 
 		$scope.start = (instance, qset, version = '1') ->
-			Materia.Engine.setHeight()
-			$scope.qset = qset
-			init()
-
+			console.log "starting start"
+			try
+				Materia.Engine.setHeight()
+				$scope.qset = qset
+				init()
+			catch e
+				console.log "start error: ", e
 		# $window.EquationSandbox = EquationSandbox
 
 		# Required extensions to Math
 		Math.factorial = (n) ->
-			return NaN if isNaN(n) or n < 0
-			return 1 if n <= 1
-			n * Math.factorial(n - 1)
+			console.log "starting Math.factorial"
+			try
+				return NaN if isNaN(n) or n < 0
+				return 1 if n <= 1
+				n * Math.factorial(n - 1)
+			catch e
+				console.log "Match.factorial error: ", e
 
 		Math.binom = (top, bottom) ->
+			console.log "starting Math.binom"
 			Math.factorial(top) / (Math.factorial(bottom) * Math.factorial(top - bottom))
 
 		Math.cot = (a) ->
+			console.log "starting Math.cot"
 			Math.cos(a) / Math.sin(a)
 
 		Math.sec = (a) ->
+			console.log "starting Math.sec"
 			1 / Math.cos(a)
 
 		Math.csc = (a) ->
+			console.log "starting Math.csc"
 			1 / Math.sin(a)
 
 		if not Math.sinh?
 			Math.sinh = (x) ->
+				console.log "starting Math.sinh"
 				(Math.exp(x) - Math.exp(-x)) / 2
 
 		if not Math.cosh?
 			Math.cosh = (x) ->
+				console.log "starting Math.cosh"
 				(Math.exp(x) + Math.exp(-x)) / 2
 
 		if not Math.tanh?
 			Math.tanh = (x) ->
+				console.log "starting Math.tanh"
 				return 1 if x is Infinity
 				return -1 if x is -Infinity
 				(Math.exp(x) - Math.exp(-x)) / (Math.exp(x) + Math.exp(-x))
@@ -79,23 +93,29 @@ angular.module 'player', []
 				$scope.calculateResult()
 			catch e
 				$scope.parseError = yes
-				console.log equationFn, e if console?.log?
+				console.log "init error: ", equationFn, e if console?.log?
 
 		graphFn = (x) ->
-			fnArgs = [x]
-			for variable in $scope.variables
-				continue if variable.js is 'x'
-				fnArgs.push parseFloat($scope.userInputs[variable.js].val)
+			# console.log "starting graphFn"
+			try
+				fnArgs = [x]
+				for variable in $scope.variables
+					continue if variable.js is 'x'
+					fnArgs.push parseFloat($scope.userInputs[variable.js].val)
 
-			equationFn.apply this, fnArgs
+				equationFn.apply this, fnArgs
+			catch e
+				console.log "graphFn error: ", e
 
 		parseLatex = ->
+			console.log "starting parseLatex"
 			try 
 				console.log $scope.qset
 				o = latexParser.parse $scope.qset.latex
 
 				$scope.mainVar = o.mainVar
 				$scope.variables = o.variables
+				console.log $scope.variables
 
 				console.log "for statement", $scope.variables
 				for variable in $scope.variables
@@ -117,16 +137,21 @@ angular.module 'player', []
 			catch e
 				console.log "parseLatex error", e
 
+			$scope.$apply()
 			equationFn = o.fn
 
 
 		$scope.isValidInput = (input) ->
-			not isNaN(parseFloat(input))
-			console.log "end of isValidInput"
+			try
+				not isNaN(parseFloat(input))
+			catch e
+				console.log "isValidInput error: ", e
 
 		$scope.calculateResult = ->
-			board.update()
-			console.log "end of calculateResult"
+			try
+				board.update()
+			catch e
+				console.log "calculateResult error: ", e
 
 		Materia.Engine.start($scope)
 	]

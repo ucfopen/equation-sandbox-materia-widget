@@ -39,16 +39,21 @@ angular.module 'creator', []
 			console.log 'initNewWidget'
 
 		$scope.initExistingWidget = (title,widget,qset,version,baseUrl) ->
-			console.log 'qset', qset
-			_qset = qset
-			_latex = qset.data
-			console.log 'latex', _latex
+			console.log "initExistingWidget"
+			try 
+				console.log 'qset', qset
+				_qset = qset
+				_latex = qset.data
+				console.log 'latex', _latex
 
-			# $scope.$apply ->
-			# 	console.log 'initExistingWidget'
-			console.log 'initExistingWidget'
+				# $scope.$apply ->
+				# 	console.log 'initExistingWidget'
+				console.log 'initExistingWidget'
+			catch e
+				console.log "initExistingWidget error: ", e
 
 		$scope.onSaveClicked = (mode = 'save') ->
+			console.log "onSaveClicked"
 			# if not _buildSaveData()
 			# 	return Materia.CreatorCore.cancelSave 'Required fields not filled out'
 			# 	
@@ -58,6 +63,7 @@ angular.module 'creator', []
 		$scope.onSaveComplete = (title, widget, qset, version) -> true
 
 		$scope.onQuestionImportComplete = (items) ->
+			console.log "onQuestionImportComplete"
 			$scope.$apply ->
 				console.log 'missing onQuestionImportComplete'
 
@@ -67,16 +73,21 @@ angular.module 'creator', []
 		### Private methods ###
 
 		_buildSaveData = ->
-			if !_qset? then _qset = {}
+			console.log "_buildSaveData"
+			try
+				if !_qset? then _qset = {}
 
-			_title = 'TITLE PLACEHOLDER'
+				_title = 'TITLE PLACEHOLDER'
 
-			_qset.version = 1
-			_qset.data =
-				latex: $scope.latex
-				bounds: $scope.bounds
+				_qset.version = 1
+				_qset =
+					latex: $scope.latex
+					bounds: $scope.bounds
+			catch e
+				console.log "_buildSaveData error: ", e
 
 		_update = ->
+			console.log "inside _update"
 			try
 				_parseLatex()
 				$scope.parseError = no
@@ -89,55 +100,75 @@ angular.module 'creator', []
 			_generatePlayerCode()
 
 		_parseLatex = ->
-			o = latexParser.parse $scope.latex
+			console.log "_parseLatex"
+			try 
+				o = latexParser.parse $scope.latex
 
-			$scope.expression = o.mainExpr
+				$scope.expression = o.mainExpr
+			catch e
+				console.log "_parseLatex error: ", e
 
 		_validateBounds = ->
-			bounds = [$scope.bounds.x.min,$scope.bounds.y.max,$scope.bounds.x.max,$scope.bounds.y.min]
+			console.log "_validateBounds"
+			try
+				bounds = [$scope.bounds.x.min,$scope.bounds.y.max,$scope.bounds.x.max,$scope.bounds.y.min]
 			
-			# non-numeric entry
-			if bounds.some( (el) -> return (isNaN(el) or !el?))
-				$scope.boundsError = yes
-				$scope.bnds_errorMsg = 'One of the bounds is not a number.'
-				return null
+				# non-numeric entry
+				if bounds.some( (el) -> return (isNaN(el) or !el?))
+					$scope.boundsError = yes
+					$scope.bnds_errorMsg = 'One of the bounds is not a number.'
+					return null
 
-			[xmin, ymax, xmax, ymin] = bounds
+				[xmin, ymax, xmax, ymin] = bounds
 
-			if xmin > xmax or ymin > ymax
-				$scope.boundsError = yes
-				$scope.bnds_errorMsg = 'The bounds are out of order.'
-				return null
+				if xmin > xmax or ymin > ymax
+					$scope.boundsError = yes
+					$scope.bnds_errorMsg = 'The bounds are out of order.'
+					return null
 
-			if xmin is xmax or ymin is ymax
-				$scope.boundsError = yes
-				$scope.bnds_errorMsg = 'One interval represents a point.'
-				return null
+				if xmin is xmax or ymin is ymax
+					$scope.boundsError = yes
+					$scope.bnds_errorMsg = 'One interval represents a point.'
+					return null
 
-			$scope.boundsError = no
-			$scope.bnds_errorMsg = ''
-			bounds
+				$scope.boundsError = no
+				$scope.bnds_errorMsg = ''
+				bounds
 
+			catch e
+				console.log "_validateBounds error: ", e
 
 		_generatePlayerCode = ->
-			if $scope.parseError
-				$scope.playerUrl = $scope.playerEmbed = ''
-				return
+			console.log "inside _generatePlayerCode"
+			try
+				if $scope.parseError
+					$scope.playerUrl = $scope.playerEmbed = ''
+					return
 
-			bounds = _validateBounds()
-			if not bounds
-				$scope.playerUrl = $scope.playerEmbed = ''
-				return
+				bounds = _validateBounds()
+				if not bounds
+					$scope.playerUrl = $scope.playerEmbed = ''
+					return
 
-			encodedLatex = encodeURIComponent $scope.latex
-			encodedBounds = encodeURIComponent bounds
-			$scope.playerUrl = PLAYER_QUERY_URL + encodedLatex + '&bnds=' + encodedBounds
-			$scope.playerEmbed = '<iframe src="' + $scope.playerUrl + '" width="' + PLAYER_WIDTH + '" height="' + PLAYER_HEIGHT + '" style="margin:0;padding:0;border:0;"></iframe>'
+				encodedLatex = encodeURIComponent $scope.latex
+				console.log "encodedLatex: ", encodedLatex
+				encodedBounds = encodeURIComponent bounds
+				console.log "encodedBounds: ", encodedBounds
+				$scope.playerUrl = PLAYER_QUERY_URL + encodedLatex + '&bnds=' + encodedBounds
+				$scope.playerEmbed = '<iframe src="' + $scope.playerUrl + '" width="' + PLAYER_WIDTH + '" height="' + PLAYER_HEIGHT + '" style="margin:0;padding:0;border:0;"></iframe>'
+				console.log "playerUrl: ", $scope.playerUrl
+				console.log "playerEmbed: ", $scope.playerEmbed
+			catch e
+				console.log e
 
 		_init = ->
-			$('#eq-input').mathquill('latex', DEFAULT_EQUATION)
-			$scope.latex = DEFAULT_EQUATION
-			_update()
+			console.log "_init"
+			try
+				$('#eq-input').mathquill('latex', DEFAULT_EQUATION)
+				$scope.latex = DEFAULT_EQUATION
+				_update()
+			catch e
+				console.log "_init error: ", e
 
 		### Scope Methods ###
 
@@ -145,6 +176,7 @@ angular.module 'creator', []
 		# find a fix, but otherwise we wait a bit so we don't flash them
 		# with error messages while they are composing the equation
 		$scope.onKeyup = (e) ->
+			console.log "onKeyup"
 			if e.target.classList.contains 'graph-bounds-input'
 				generatePlayerCode()
 				return
