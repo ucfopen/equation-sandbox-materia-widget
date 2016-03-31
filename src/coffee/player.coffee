@@ -67,6 +67,13 @@ angular.module 'player', []
 			try
 				parseLatex()
 
+				bounds = []
+
+				bounds.push $scope.qset.bounds.x.min
+				bounds.push $scope.qset.bounds.y.max
+				bounds.push $scope.qset.bounds.x.max
+				bounds.push $scope.qset.bounds.y.min
+
 				$('#eq-input').mathquill('latex', $scope.qset.latex)
 				opts = { 
 					boundingbox: bounds,
