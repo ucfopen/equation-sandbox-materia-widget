@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="creator">
+<html ng-app="equationSandbox">
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -12,6 +12,7 @@
 
 		<link rel="stylesheet" href="assets/vendor/mathquill-0.9.4/mathquill.css">
 		<link rel="stylesheet" href="assets/stylesheets/creator.css">
+		<link rel="stylesheet" href="assets/stylesheets/player.css">
 	</head>
 	<body ng-controller="CreatorController" ng-keyup="onKeyup($event)" ng-class="{'parse-error':parseError, 'bounds-error':boundsError, 'waiting':waiting}">
 
@@ -68,14 +69,8 @@
 				</div>
 			</div>
 
-			<div class="top-box player-links-section">
-				<div class="player-link">
-					<span>Latex Expression:</span>
-					<div class="container"><input type="text" ng-value="latex"></div>
-				</div>
+			<div w3-include-HTML="window.html" class="top-box player-links-section" ng-controller="WindowController"></div>
 
-				<div class="error-msg">{{errorMsg}}</div>
-			</div>
 		</div>
 
 		<div class="bottom row student-view">
@@ -99,10 +94,12 @@
 		<script>window.JXG || document.write('<script src="assets/vendor/jsxgraphcore.js"><\/script>')</script>
 
 		<!-- MAIN PLAYER SCRIPT -->
+		<script src="./w3-include-HTML.js"></script>
+		<script src="./app.js"></script>
 		<script src="./assets/js/latex.js"></script>
-		<script src="assets/js/creator.js"></script>
+		<script src="./assets/js/creator.js"></script>
 		<script src="./assets/scripts/player.js"></script>
-		<script src="./assets/js/player-app.js"></script>
 		<script src="./assets/js/player.js"></script>
+		<script src="./assets/js/windowController.js"></script>
 	</body>
 </html>

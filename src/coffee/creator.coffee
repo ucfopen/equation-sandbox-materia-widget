@@ -1,6 +1,6 @@
-angular.module 'creator', []
+angular.module 'equationSandbox'
 
-	.controller 'CreatorController', ['$scope', ($scope) ->
+	.controller 'CreatorController', ['$scope', '$http', ($scope, $http) ->
 		"use strict";
 
 		### Initialize class variables ###
