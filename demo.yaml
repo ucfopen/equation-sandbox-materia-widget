@@ -5,12 +5,9 @@ qset:
   data:
     latex: "y=2^x+a"
     bounds:
-      -
         x:
-          -
             min: -10
             max: 10
         y:
-          -
             min: -10
             max: 10
