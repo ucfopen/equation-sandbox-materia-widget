@@ -2,6 +2,14 @@ angular.module 'player', []
 	.controller 'PlayerController', ['$scope', '$window', ($scope, $window) ->
 		"use strict";
 
+		$scope.start = (instance, qset, version = '1') ->
+			try
+				Materia.Engine.setHeight()
+				$scope.qset = qset
+				init()
+			catch e
+				console.log "start error: ", e
+
 		equationFn = -> return NaN
 		bounds = [-10, 10, 10, -40]
 		board = null
@@ -26,7 +34,6 @@ angular.module 'player', []
 				init()
 			catch e
 				console.log "start error: ", e
-		# $window.EquationSandbox = EquationSandbox
 
 		# Required extensions to Math
 		Math.factorial = (n) ->
@@ -89,7 +96,6 @@ angular.module 'player', []
 				console.log "init error: ", equationFn, e if console?.log?
 
 		graphFn = (x) ->
-			# console.log "starting graphFn"
 			try
 				fnArgs = [x]
 				for variable in $scope.variables
