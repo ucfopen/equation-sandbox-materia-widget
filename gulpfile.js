@@ -72,9 +72,16 @@ gulp.task('player-min-js', ['player-js'], function() {
 		.pipe(gulp.dest('./assets/scripts/'))
 });
 
+gulp.task('window-controller-js', ['coffee', 'peg'], function() {
+	return gulp
+		.src(['./assets/js/windowController.js'])
+		.pipe(concat('player.js'))
+		.pipe(gulp.dest('./assets/scripts/'))
+});
+
 gulp.task('default', ['build']);
 
-gulp.task('build', ['peg', 'coffee', 'sass', 'creator-js', 'creator-min-js', 'player-js', 'player-min-js', 'creator-css', 'player-css']);
+gulp.task('build', ['peg', 'coffee', 'sass', 'creator-js', 'creator-min-js', 'player-js', 'player-min-js', 'creator-css', 'player-css', 'window-controller-js']);
 
 gulp.task('watch', ['build'], function() {
 	gulp.watch(['./src/**/*'], ['build']);
