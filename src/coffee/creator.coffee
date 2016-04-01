@@ -192,29 +192,3 @@ angular.module 'creator', []
 
 		Materia.CreatorCore.start $scope
 	]
-
-	.factory 'Resource', ['$sanitize', ($sanitize) ->
-		buildQset: (title, items, partial, attempts, random) ->
-			qsetItems = [{latex: $scope.latex}]
-			qset = {}
-
-			# Decide if it is ok to save.
-			if title is ''
-				Materia.CreatorCore.cancelSave 'Please enter a title.'
-				return false
-			# else
-			# 	for i in [0..items.length-1]
-			# 		if items[i].answer and items[i].answer.string.length > 3
-			# 			Materia.CreatorCore.cancelSave '#'+(i+1)+' will not fit on the gameboard.'
-			# 			return false
-					## letters, numbers, spaces, periods, commas, dashes and underscores only
-					## prevent characters from being used that cannot be input by the user
-					# if not /[a-zA-Z0-9]/.test(items[i].ans)
-					# 	Materia.CreatorCore.cancelSave 'Word #'+(i+1)+' needs to contain at least one letter or number.'
-					# 	return false
-
-			qset.name = title
-			qset.items = [{items: qsetItems}]
-
-			qset
-	]
