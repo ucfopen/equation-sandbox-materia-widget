@@ -31,20 +31,24 @@
 						<div>
 							<input  class="graph-bounds-input"
 									type="number" 
-									ng-model="bounds.x.min">
+									ng-model="bounds.x.min"
+									ng-change="updateModel()">
 							<span class="mathquill-embedded-latex">\leq \quad x \quad \leq</span>
 							<input 	class="graph-bounds-input"
 									type="number"
-									ng-model="bounds.x.max">
+									ng-model="bounds.x.max"
+									ng-change="updateModel()">
 						</div>
 						<div>
 							<input 	class="graph-bounds-input"
 									type="number"
-									ng-model="bounds.y.min">
+									ng-model="bounds.y.min"
+									ng-change="updateModel()">
 							<span class="mathquill-embedded-latex">\leq \quad y \quad \leq</span>
 							<input 	class="graph-bounds-input"
 									type="number"
-									ng-model="bounds.y.max">
+									ng-model="bounds.y.max"
+									ng-change="updateModel()">
 						</div>
 					</div>
 					<div class="bnds-error-msg">

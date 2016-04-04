@@ -73,30 +73,24 @@ angular.module 'equationSandbox'
 				return -1 if x is -Infinity
 				(Math.exp(x) - Math.exp(-x)) / (Math.exp(x) + Math.exp(-x))
 
-		init = ->
-			try
-				parseLatex()
+		updateVars = ->
+			bounds = []
+			bounds.push $scope.qset.bounds.x.min
+			bounds.push $scope.qset.bounds.y.max
+			bounds.push $scope.qset.bounds.x.max
+			bounds.push $scope.qset.bounds.y.min
 
-				bounds = []
+			$('#eq-input').mathquill('latex', $scope.qset.latex)
+			opts = { 
+				boundingbox: bounds,
+				axis:true 
+			}
 
-				bounds.push $scope.qset.bounds.x.min
-				bounds.push $scope.qset.bounds.y.max
-				bounds.push $scope.qset.bounds.x.max
-				bounds.push $scope.qset.bounds.y.min
+			board = JXG.JSXGraph.initBoard('jxgbox', opts);
+			board.create 'functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3 }
 
-				$('#eq-input').mathquill('latex', $scope.qset.latex)
-				opts = { 
-					boundingbox: bounds,
-					axis:true 
-				}
+			$scope.calculateResult()
 
-				board = JXG.JSXGraph.initBoard('jxgbox', opts);
-				board.create 'functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3 }
-
-				$scope.calculateResult()
-			catch e
-				$scope.parseError = yes
-				console.log "init error: ", equationFn, e if console?.log?
 
 		graphFn = (x) ->
 			try
@@ -134,9 +128,18 @@ angular.module 'equationSandbox'
 			catch e
 				console.log "parseLatex error", e
 
-			$scope.$apply()
 			equationFn = o.fn
 
+
+		init = ->
+			try
+				$scope.safeApply(parseLatex())
+
+				updateVars()
+
+			catch e
+				$scope.parseError = yes
+				console.log "init error: ", equationFn, e if console?.log?
 
 		$scope.isValidInput = (input) ->
 			try
@@ -149,6 +152,25 @@ angular.module 'equationSandbox'
 				board.update()
 			catch e
 				console.log "calculateResult error: ", e
+
+		$scope.safeApply = (fn) ->
+			phase = @$root.$$phase
+			if phase is "$apply" or phase is "$digest"
+				@$eval fn
+			else
+				@$apply fn
+			return
+
+		# $scope.$watch 'variablesSet', function() {
+	 #        console.log "hey, variablesSet has changed!"
+	 #    });
+
+		$scope.$watch "variablesSet", (() ->
+			$scope.qset = $scope.variablesSet
+			parseLatex()
+			updateVars()
+		), true
+
 
 		$scope.start()
 		# Materia.Engine.start($scope)

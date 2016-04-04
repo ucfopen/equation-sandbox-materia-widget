@@ -111,6 +111,11 @@ angular.module 'equationSandbox'
 
 		### Scope Methods ###
 
+		$scope.updateModel = ->
+			$scope.variablesSet = {latex: $scope.latex, bounds: $scope.bounds}
+			$scope.qset = $scope.variablesSet
+
+
 		# we instantly update if there's a parse error so the user could
 		# find a fix, but otherwise we wait a bit so we don't flash them
 		# with error messages while they are composing the equation
