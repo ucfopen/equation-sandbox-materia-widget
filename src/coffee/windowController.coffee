@@ -23,6 +23,7 @@ angular.module 'equationSandbox'
 		equationFn = -> return NaN
 		bounds = [-10, 10, 10, -40]
 		board = null
+		lastLatex = null
 
 		$scope.mainVar = ''
 		$scope.variables = []
@@ -37,6 +38,12 @@ angular.module 'equationSandbox'
 				$('main').removeClass('loading');
 			, 0
 
+		$scope.$watch "variablesSet", ( ->
+			console.log $scope.userInputs, 'test'
+			$scope.qset = $scope.variablesSet
+			parseLatex() if lastLatex isnt $scope.qset.latex
+			updateVars()
+		), true
 
 		# Required extensions to Math
 		Math.factorial = (n) ->
@@ -74,11 +81,10 @@ angular.module 'equationSandbox'
 				(Math.exp(x) - Math.exp(-x)) / (Math.exp(x) + Math.exp(-x))
 
 		updateVars = ->
-			bounds = []
-			bounds.push $scope.qset.bounds.x.min
-			bounds.push $scope.qset.bounds.y.max
-			bounds.push $scope.qset.bounds.x.max
-			bounds.push $scope.qset.bounds.y.min
+			return if !$scope.qset.bounds?
+
+			_ = $scope.qset.bounds
+			bounds = [_.x.min, _.y.max, _.x.max, _.y.min]
 
 			$('#eq-input').mathquill('latex', $scope.qset.latex)
 			opts = { 
@@ -99,7 +105,7 @@ angular.module 'equationSandbox'
 					continue if variable.js is 'x'
 					fnArgs.push parseFloat($scope.userInputs[variable.js].val)
 
-				equationFn.apply this, fnArgs
+				equationFn.apply this, fnArgs if equationFn?
 			catch e
 				console.log "graphFn error: ", e
 
@@ -112,19 +118,25 @@ angular.module 'equationSandbox'
 
 				for variable in $scope.variables
 					continue if variable.js is 'x'
-					$scope.userInputs[variable.js] = {
-						val: null
-						bounds:
-							min: -10
-							max: 10
-					}
+					if !$scope.userInputs[variable.js]?
+						$scope.userInputs[variable.js] = {
+							val: null
+							bounds:
+								min: -10
+								max: 10
+						}
 
-					Object.defineProperty($scope.userInputs[variable.js], '_val', {
-						get: -> $scope.userInputs[variable.js].val
-						set: (val) -> $scope.userInputs[variable.js].val = parseFloat(val)
-						enumerable: true
-						configurable: true
-					})
+						o = $scope.userInputs[variable.js]
+						Object.defineProperty(o, '_val', {
+							get: -> o.val
+							set: (val) -> 
+								o.val = parseFloat(val)
+							enumerable: true
+							configurable: true
+						})
+
+				lastLatex = $scope.qset.latex
+
 			catch e
 				console.log "parseLatex error", e
 
@@ -135,7 +147,18 @@ angular.module 'equationSandbox'
 			try
 				$scope.safeApply(parseLatex())
 
-				updateVars()
+				bounds = [$scope.qset.bounds.x.min, $scope.qset.bounds.y.max, $scope.qset.bounds.x.max, $scope.qset.bounds.y.min]
+
+				$('#eq-input').mathquill('latex', $scope.qset.latex)
+				opts = { 
+					boundingbox: bounds,
+					axis:true 
+				}
+
+				board = JXG.JSXGraph.initBoard('jxgbox', opts);
+				board.create 'functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3 }
+
+				$scope.calculateResult()
 
 			catch e
 				$scope.parseError = yes
@@ -160,17 +183,6 @@ angular.module 'equationSandbox'
 			else
 				@$apply fn
 			return
-
-		# $scope.$watch 'variablesSet', function() {
-	 #        console.log "hey, variablesSet has changed!"
-	 #    });
-
-		$scope.$watch "variablesSet", (() ->
-			$scope.qset = $scope.variablesSet
-			parseLatex()
-			updateVars()
-		), true
-
 
 		$scope.start()
 		# Materia.Engine.start($scope)
