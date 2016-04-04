@@ -97,7 +97,7 @@ angular.module 'equationSandbox'
 
 				$scope.boundsError = no
 				$scope.bnds_errorMsg = ''
-				bounds
+				$scope.bounds
 
 			catch e
 				console.log "_validateBounds error: ", e
@@ -112,7 +112,8 @@ angular.module 'equationSandbox'
 		### Scope Methods ###
 
 		$scope.updateModel = ->
-			$scope.variablesSet = {latex: $scope.latex, bounds: $scope.bounds}
+			bounds = _validateBounds() # bounds are null if invalid
+			$scope.variablesSet = {latex: $scope.latex, bounds: bounds}
 			$scope.qset = $scope.variablesSet
 
 
@@ -122,7 +123,6 @@ angular.module 'equationSandbox'
 		$scope.onKeyup = (e) ->
 			try 
 				if e.target.classList.contains 'graph-bounds-input'
-					generatePlayerCode()
 					return
 
 				# grab the latex (and do nothing if it hasn't changed, i.e. user pressed <-)
