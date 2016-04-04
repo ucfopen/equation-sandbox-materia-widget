@@ -4,11 +4,21 @@ angular.module 'equationSandbox'
 
 		$scope.start = (instance, qset, version = '1') ->
 			try
-				Materia.Engine.setHeight()
-				$scope.qset = qset
+				# Materia.Engine.setHeight()
+				$scope.qset = $scope.variablesSet
+				console.log $scope.qset
+				# $scope.qset = qset
 				init()
 			catch e
 				console.log "start error: ", e
+
+		# $scope.start = (instance, qset, version = '1') ->
+		# 	try
+		# 		Materia.Engine.setHeight()
+		# 		$scope.qset = qset
+		# 		init()
+		# 	catch e
+		# 		console.log "start error: ", e
 
 		equationFn = -> return NaN
 		bounds = [-10, 10, 10, -40]
@@ -27,13 +37,6 @@ angular.module 'equationSandbox'
 				$('main').removeClass('loading');
 			, 0
 
-		$scope.start = (instance, qset, version = '1') ->
-			try
-				Materia.Engine.setHeight()
-				$scope.qset = qset
-				init()
-			catch e
-				console.log "start error: ", e
 
 		# Required extensions to Math
 		Math.factorial = (n) ->
@@ -147,6 +150,7 @@ angular.module 'equationSandbox'
 			catch e
 				console.log "calculateResult error: ", e
 
+		$scope.start()
 		# Materia.Engine.start($scope)
 
 	]

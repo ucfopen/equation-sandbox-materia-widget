@@ -29,6 +29,8 @@ angular.module 'equationSandbox'
 				min: -10
 				max: 10
 
+		$scope.variablesSet = {latex: DEFAULT_EQUATION, bounds: $scope.bounds}
+
 		### Materia Interface Methods ###
 
 		$scope.initNewWidget = (widget, baseUrl) -> true
@@ -135,6 +137,7 @@ angular.module 'equationSandbox'
 					$scope.$apply()
 				, UPDATE_DEBOUNCE_DELAY_MS
 
+				$scope.variablesSet = {latex: $scope.latex, bounds: $scope.bounds}
 			catch e
 				console.log "onKeyup error: ", e
 
