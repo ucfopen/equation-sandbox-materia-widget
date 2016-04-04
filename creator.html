@@ -69,16 +69,87 @@
 				</div>
 			</div>
 
-			<div w3-include-HTML="window.html" class="top-box player-links-section" ng-controller="WindowController"></div>
-
+			<div class="top-box player-links-section">
+				<div class="player-link">
+					<span>Latex Expression:</span>
+					<div class="container"><input type="text" ng-value="latex"></div>
+				</div>
+				<div class="error-msg">{{errorMsg}}</div>
+			</div>
 		</div>
 
 		<div class="bottom row student-view">
 			<h3>Interactive Preview:</h3>
-			<div class="container player-container">
+
+			<!-- <div w3-include-HTML="window.html" ng-controller="WindowController"></div> -->
+			<!-- <div class="container player-container">
 				<embed style="width: 100%; height: 650px;" ng-src=""></embed>
-				<!-- <iframe ng-src="{{playerUrl}}"></iframe> -->
+				<iframe ng-src="{{playerUrl}}"></iframe>
+			</div> -->
+
+			<div class="error-msg">
+				Unable to parse equation - perhaps you got a bad link?
 			</div>
+
+			<main class="loading" ng-controller="WindowController">
+
+				<div class="box eq">
+					<h2>Equation:</h2>
+					<div class="eq-container">
+						<div id="eq-input" class="eq-input mathquill-embedded-latex"></div>
+					</div>
+				</div>
+
+				<div class="interactive-section">
+					<div class="help">
+						<h2>Instructions:</h2>
+						<p>
+							Input different values for the variables of the equation to see how it impacts the result.
+						</p>
+					</div>
+					<div class="box variables">
+						<h3>Variables</h3>
+						<ul>
+							<li ng-repeat="variable in variables" ng-if="variable.js !== 'x'" >
+								<div class="variable-input-container">
+									<span class="variable-equals">
+										<span class="mathquill-variable">
+											{{variable.latex}}
+										</span>
+										= 
+									</span>
+								
+									<input 	class="variable-input"
+											type="number"
+											ng-model="userInputs[variable.js].val"
+											ng-change="calculateResult()"
+											ng-class="{empty:userInputs[variable.js].val == null}">
+								</div>
+								
+								<div class='variable-slider'>
+									<input 	class='variable-bound variable-bound-lower'
+											ng-model="userInputs[variable.js].bounds.min"
+											ng-change="calculateResult()">
+									<input 	class='variable-range'
+											type="range"
+											min="{{userInputs[variable.js].bounds.min}}"
+											max="{{userInputs[variable.js].bounds.max}}"
+											value=0
+											ng-model="userInputs[variable.js]._val"
+											ng-change="calculateResult()"
+											ng-class="{empty:userInputs[variable.js].val == null}">
+									<input 	class='variable-bound variable-bound-upper'
+											ng-model="userInputs[variable.js].bounds.max"
+											ng-change="calculateResult()">
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="box output">
+						<div id="jxgbox"></div>
+					</div>
+				</div>
+			</main>
 		</div>
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -94,12 +165,12 @@
 		<script>window.JXG || document.write('<script src="assets/vendor/jsxgraphcore.js"><\/script>')</script>
 
 		<!-- MAIN PLAYER SCRIPT -->
-		<script src="./w3-include-HTML.js"></script>
+		<!-- <script src="./w3-include-HTML.js"></script> -->
 		<script src="./app.js"></script>
 		<script src="./assets/js/latex.js"></script>
 		<script src="./assets/js/creator.js"></script>
-		<script src="./assets/scripts/player.js"></script>
-		<script src="./assets/js/player.js"></script>
+		<!-- <script src="./assets/scripts/player.js"></script> -->
+		<!-- <script src="./assets/js/player.js"></script> -->
 		<script src="./assets/js/windowController.js"></script>
 	</body>
 </html>

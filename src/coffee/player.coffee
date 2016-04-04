@@ -147,5 +147,5 @@ angular.module 'equationSandbox'
 			catch e
 				console.log "calculateResult error: ", e
 
-		# Materia.Engine.start($scope)
+		Materia.Engine.start($scope)
 	]
