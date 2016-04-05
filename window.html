@@ -1,63 +1,66 @@
-<!-- <div class="error-msg">
-	Unable to parse equation - perhaps you got a bad link?
-</div> -->
+<div ng-controller="WindowController" ng-init="init()">
 
-<main class="loading">
-
-	<div class="box eq">
-		<h2>Equation:</h2>
-		<div class="eq-container">
-			<div id="eq-input" class="eq-input mathquill-embedded-latex"></div>
-		</div>
+	<div class="error-msg">
+		Unable to parse equation - perhaps you got a bad link?
 	</div>
 
-	<div class="interactive-section">
-		<div class="help">
-			<h2>Instructions:</h2>
-			<p>
-				Input different values for the variables of the equation to see how it impacts the result.
-			</p>
+	<main class="loading">
+
+		<div class="box eq">
+			<h2>Equation:</h2>
+			<div class="eq-container">
+				<div id="eq-demo-input" class="eq-input mathquill-embedded-latex"></div>
+			</div>
 		</div>
-		<div class="box variables">
-			<h3>Variables</h3>
-			<ul>
-				<li ng-repeat="variable in variables" ng-if="variable.js !== 'x'" >
-					<div class="variable-input-container">
-						<span class="variable-equals">
-							<span class="mathquill-variable">
-								{{variable.latex}}
+
+		<div class="interactive-section">
+			<div class="help">
+				<h2>Instructions:</h2>
+				<p>
+					Input different values for the variables of the equation to see how it impacts the result.
+				</p>
+			</div>
+			<div class="box variables">
+				<h3>Variables</h3>
+				<ul>
+					<li ng-repeat="variable in variables" ng-if="variable.js !== 'x'" >
+						<div class="variable-input-container">
+							<span class="variable-equals">
+								<span class="mathquill-variable">
+									{{variable.latex}}
+								</span>
+								= 
 							</span>
-							= 
-						</span>
-					
-						<input 	class="variable-input"
-								type="number"
-								ng-model="userInputs[variable.js].val"
-								ng-change="calculateResult()"
-								ng-class="{empty:userInputs[variable.js].val == null}">
-					</div>
-					
-					<div class='variable-slider'>
-						<input 	class='variable-bound variable-bound-lower'
-								ng-model="userInputs[variable.js].bounds.min"
-								ng-change="calculateResult()">
-						<input 	class='variable-range'
-								type="range"
-								min="{{userInputs[variable.js].bounds.min}}"
-								max="{{userInputs[variable.js].bounds.max}}"
-								value=0
-								ng-model="userInputs[variable.js]._val"
-								ng-change="calculateResult()"
-								ng-class="{empty:userInputs[variable.js].val == null}">
-						<input 	class='variable-bound variable-bound-upper'
-								ng-model="userInputs[variable.js].bounds.max"
-								ng-change="calculateResult()">
-					</div>
-				</li>
-			</ul>
+						
+							<input 	class="variable-input"
+									type="number"
+									ng-model="userInputs[variable.js].val"
+									ng-change="updateVars()"
+									ng-class="{empty:userInputs[variable.js].val == null}">
+						</div>
+						
+						<div class='variable-slider'>
+							<input 	class='variable-bound variable-bound-lower'
+									ng-model="userInputs[variable.js].bounds.min"
+									ng-change="updateVars()">
+							<input 	class='variable-range'
+									type="range"
+									min="{{userInputs[variable.js].bounds.min}}"
+									max="{{userInputs[variable.js].bounds.max}}"
+									value=0
+									ng-model="userInputs[variable.js]._val"
+									ng-change="updateVars()"
+									ng-class="{empty:userInputs[variable.js].val == null}">
+							<input 	class='variable-bound variable-bound-upper'
+									ng-model="userInputs[variable.js].bounds.max"
+									ng-change="updateVars()">
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="box output">
+				<div id="jxgbox"></div>
+			</div>
 		</div>
-		<div class="box output">
-			<div id="jxgbox"></div>
-		</div>
-	</div>
-</main>
+	</main>
+</div>
