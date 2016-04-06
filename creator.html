@@ -56,7 +56,14 @@
 					</div>
 				</div>
 
-				<div class="debug js-expr"><b>JS Expression:</b> {{expression}}</div>
+			</div>
+
+			<div class="top-box player-links-section">
+				<div class="player-link">
+					<span>Latex Expression:</span>
+					<div class="container"><input type="text" ng-value="latex"></div>
+				</div>
+				<div class="error-msg">{{errorMsg}}</div>
 
 				<div class="input-help">
 					<ul>
@@ -72,19 +79,11 @@
 					</ul>
 				</div>
 			</div>
-
-			<div class="top-box player-links-section">
-				<div class="player-link">
-					<span>Latex Expression:</span>
-					<div class="container"><input type="text" ng-value="latex"></div>
-				</div>
-				<div class="error-msg">{{errorMsg}}</div>
-			</div>
 		</div>
 
 		<div class="bottom row student-view">
 			<h3>Interactive Preview:</h3>
-			<ng-include src="'window.html'"]></ng-include>
+			<ng-include src="'window.html'"></ng-include>
 		</div>
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>

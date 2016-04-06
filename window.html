@@ -1,7 +1,7 @@
-<div ng-controller="WindowController" ng-init="init()">
+<div ng-controller="WindowController">
 
 	<div class="error-msg">
-		Unable to parse equation - perhaps you got a bad link?
+		Unable to parse equation - perhaps you got a bad link? {{variablesSet.latex}}
 	</div>
 
 	<main class="loading">
@@ -9,7 +9,7 @@
 		<div class="box eq">
 			<h2>Equation:</h2>
 			<div class="eq-container">
-				<div id="eq-demo-input" class="eq-input mathquill-embedded-latex"></div>
+				<div id="eq-demo-input" class="eq-input mathquill-embedded-latex" onload="init()"></div>
 			</div>
 		</div>
 
