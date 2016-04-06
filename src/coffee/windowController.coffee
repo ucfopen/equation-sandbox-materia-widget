@@ -29,11 +29,14 @@ angular.module 'equationSandbox'
 				$('main').removeClass('loading');
 			, 0
 
-		$scope.$watch "variablesSet", ( ->
+		$scope.$parent.$watch "variablesSet", ( ->
 			$scope.qset = $scope.variablesSet
 			
 			parseLatex()
-			$('#eq-input').mathquill('latex', $scope.qset.latex)
+			
+			console.log 'ugh', this
+			$('#eq-demo-input').mathquill('latex', 'x^3')
+			# $('#eq-demo-input').mathquill('latex', $scope.qset.latex)
 
 			$scope.updateBoard()
 		), true
@@ -124,7 +127,8 @@ angular.module 'equationSandbox'
 
 				bounds = [$scope.qset.bounds.x.min, $scope.qset.bounds.y.max, $scope.qset.bounds.x.max, $scope.qset.bounds.y.min]
 
-				$('#eq-input').mathquill('latex', $scope.qset.latex)
+				$('#eq-demo-input').mathquill('latex', $scope.qset.latex)
+
 				opts = { 
 					boundingbox: bounds,
 					axis:true 
