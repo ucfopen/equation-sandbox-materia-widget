@@ -148,8 +148,6 @@ angular.module 'equationSandbox'
 					$scope.$apply()
 				, UPDATE_DEBOUNCE_DELAY_MS
 
-
-				
 			catch e
 				console.log "onKeyup error: ", e
 
