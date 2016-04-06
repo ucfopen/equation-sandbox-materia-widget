@@ -12,14 +12,6 @@ angular.module 'equationSandbox'
 			catch e
 				console.log "start error: ", e
 
-		# $scope.start = (instance, qset, version = '1') ->
-		# 	try
-		# 		Materia.Engine.setHeight()
-		# 		$scope.qset = qset
-		# 		init()
-		# 	catch e
-		# 		console.log "start error: ", e
-
 		equationFn = -> return NaN
 		bounds = [-10, 10, 10, -40]
 		board = null
@@ -29,7 +21,6 @@ angular.module 'equationSandbox'
 		$scope.variables = []
 		$scope.userInputs = {}
 		$scope.equationResult = '?'
-		$scope.parseError = no
 		$scope.qset
 
 		$scope.$watch 'variables', (val) ->
@@ -39,10 +30,12 @@ angular.module 'equationSandbox'
 			, 0
 
 		$scope.$watch "variablesSet", ( ->
-			console.log $scope.userInputs, 'test'
 			$scope.qset = $scope.variablesSet
-			parseLatex() if lastLatex isnt $scope.qset.latex
-			updateVars()
+			
+			parseLatex()
+			$('#eq-input').mathquill('latex', $scope.qset.latex)
+
+			$scope.updateBoard()
 		), true
 
 		# Required extensions to Math
@@ -80,24 +73,6 @@ angular.module 'equationSandbox'
 				return -1 if x is -Infinity
 				(Math.exp(x) - Math.exp(-x)) / (Math.exp(x) + Math.exp(-x))
 
-		updateVars = ->
-			return if !$scope.qset.bounds?
-
-			_ = $scope.qset.bounds
-			bounds = [_.x.min, _.y.max, _.x.max, _.y.min]
-
-			$('#eq-input').mathquill('latex', $scope.qset.latex)
-			opts = { 
-				boundingbox: bounds,
-				axis:true 
-			}
-
-			board = JXG.JSXGraph.initBoard('jxgbox', opts);
-			board.create 'functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3 }
-
-			$scope.calculateResult()
-
-
 		graphFn = (x) ->
 			try
 				fnArgs = [x]
@@ -105,7 +80,7 @@ angular.module 'equationSandbox'
 					continue if variable.js is 'x'
 					fnArgs.push parseFloat($scope.userInputs[variable.js].val)
 
-				equationFn.apply this, fnArgs if equationFn?
+				equationFn.apply this, fnArgs if equationFn? 
 			catch e
 				console.log "graphFn error: ", e
 
@@ -135,13 +110,13 @@ angular.module 'equationSandbox'
 							configurable: true
 						})
 
+				$scope.$parent.parseError = no
 				lastLatex = $scope.qset.latex
+				equationFn = o.fn
 
 			catch e
+				$scope.$parent.parseError = yes
 				console.log "parseLatex error", e
-
-			equationFn = o.fn
-
 
 		init = ->
 			try
@@ -158,10 +133,7 @@ angular.module 'equationSandbox'
 				board = JXG.JSXGraph.initBoard('jxgbox', opts);
 				board.create 'functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3 }
 
-				$scope.calculateResult()
-
 			catch e
-				$scope.parseError = yes
 				console.log "init error: ", equationFn, e if console?.log?
 
 		$scope.isValidInput = (input) ->
@@ -170,11 +142,15 @@ angular.module 'equationSandbox'
 			catch e
 				console.log "isValidInput error: ", e
 
-		$scope.calculateResult = ->
+		$scope.updateBoard = ->
 			try
+				_ = $scope.qset.bounds
+				bounds = [_.x.min, _.y.max, _.x.max, _.y.min]
+				board.setBoundingBox bounds
+
 				board.update()
 			catch e
-				console.log "calculateResult error: ", e
+				console.log "updateBoard error: ", e
 
 		$scope.safeApply = (fn) ->
 			phase = @$root.$$phase

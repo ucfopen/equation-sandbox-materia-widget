@@ -32,23 +32,23 @@
 							<input  class="graph-bounds-input"
 									type="number" 
 									ng-model="bounds.x.min"
-									ng-change="updateModel()">
+									ng-change="onBoundsChange()">
 							<span class="mathquill-embedded-latex">\leq \quad x \quad \leq</span>
 							<input 	class="graph-bounds-input"
 									type="number"
 									ng-model="bounds.x.max"
-									ng-change="updateModel()">
+									ng-change="onBoundsChange()">
 						</div>
 						<div>
 							<input 	class="graph-bounds-input"
 									type="number"
 									ng-model="bounds.y.min"
-									ng-change="updateModel()">
+									ng-change="onBoundsChange()">
 							<span class="mathquill-embedded-latex">\leq \quad y \quad \leq</span>
 							<input 	class="graph-bounds-input"
 									type="number"
 									ng-model="bounds.y.max"
-									ng-change="updateModel()">
+									ng-change="onBoundsChange()">
 						</div>
 					</div>
 					<div class="bnds-error-msg">
@@ -126,25 +126,25 @@
 									<input 	class="variable-input"
 											type="number"
 											ng-model="userInputs[variable.js].val"
-											ng-change="calculateResult()"
+											ng-change="updateBoard()"
 											ng-class="{empty:userInputs[variable.js].val == null}">
 								</div>
 								
 								<div class='variable-slider'>
 									<input 	class='variable-bound variable-bound-lower'
 											ng-model="userInputs[variable.js].bounds.min"
-											ng-change="calculateResult()">
+											ng-change="updateBoard()">
 									<input 	class='variable-range'
 											type="range"
 											min="{{userInputs[variable.js].bounds.min}}"
 											max="{{userInputs[variable.js].bounds.max}}"
 											value=0
 											ng-model="userInputs[variable.js]._val"
-											ng-change="calculateResult()"
+											ng-change="updateBoard()"
 											ng-class="{empty:userInputs[variable.js].val == null}">
 									<input 	class='variable-bound variable-bound-upper'
 											ng-model="userInputs[variable.js].bounds.max"
-											ng-change="calculateResult()">
+											ng-change="updateBoard()">
 								</div>
 							</li>
 						</ul>

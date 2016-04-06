@@ -21,6 +21,8 @@ angular.module 'equationSandbox'
 		$scope.boundsError = no
 		$scope.waiting = no
 
+		$scope.wtf = no
+
 		$scope.bounds =
 			x:
 				min: -10
@@ -51,7 +53,7 @@ angular.module 'equationSandbox'
 
 		$scope.onSaveClicked = (mode = 'save') ->
 			try
-				_buildSaveData()
+				return if !_buildSaveData()
 				Materia.CreatorCore.save _title, _qset
 			catch e 
 				console.log "onSaveClicked error: ", e
@@ -64,18 +66,21 @@ angular.module 'equationSandbox'
 
 				_title = 'TITLE PLACEHOLDER'
 
-				bounds = _validateBounds()
+				# _parseLatex()
+				console.log $scope.parseError, 'error'
+				_validateBounds()
 
 				_qset.version = 1
 				_qset =
 					latex: $scope.latex
-					bounds: bounds
+					bounds: $scope.bounds
 			catch e
 				console.log "_buildSaveData error: ", e
+				return null
 
 		_validateBounds = ->
 			try
-				bounds = [$scope.bounds.x.min,$scope.bounds.y.max,$scope.bounds.x.max,$scope.bounds.y.min]
+				bounds = [xmin, ymax, xmax, ymin] = [$scope.bounds.x.min,$scope.bounds.y.max,$scope.bounds.x.max,$scope.bounds.y.min]
 			
 				# non-numeric entry
 				if bounds.some( (el) -> return (isNaN(el) or !el?))
@@ -83,13 +88,13 @@ angular.module 'equationSandbox'
 					$scope.bnds_errorMsg = 'One of the bounds is not a number.'
 					return null
 
-				[xmin, ymax, xmax, ymin] = bounds
-
+				# out of order
 				if xmin > xmax or ymin > ymax
 					$scope.boundsError = yes
 					$scope.bnds_errorMsg = 'The bounds are out of order.'
 					return null
 
+				# equality
 				if xmin is xmax or ymin is ymax
 					$scope.boundsError = yes
 					$scope.bnds_errorMsg = 'One interval represents a point.'
@@ -111,11 +116,10 @@ angular.module 'equationSandbox'
 
 		### Scope Methods ###
 
-		$scope.updateModel = ->
+		$scope.onBoundsChange = ->
 			bounds = _validateBounds() # bounds are null if invalid
 			$scope.variablesSet = {latex: $scope.latex, bounds: bounds}
-			$scope.qset = $scope.variablesSet
-
+			$scope.qset = $scope.variablesSet # co-opt qset to store variables from creator when it's all on same page
 
 		# we instantly update if there's a parse error so the user could
 		# find a fix, but otherwise we wait a bit so we don't flash them
@@ -130,6 +134,8 @@ angular.module 'equationSandbox'
 				$scope.latex = $('#eq-input').mathquill('latex')
 				return if lastLatex is $scope.latex
 
+				$scope.variablesSet = {latex: $scope.latex, bounds: $scope.bounds}
+
 				if $scope.parseError
 					$scope.waiting = no
 					return
@@ -142,7 +148,8 @@ angular.module 'equationSandbox'
 					$scope.$apply()
 				, UPDATE_DEBOUNCE_DELAY_MS
 
-				$scope.variablesSet = {latex: $scope.latex, bounds: $scope.bounds}
+
+				
 			catch e
 				console.log "onKeyup error: ", e
 
