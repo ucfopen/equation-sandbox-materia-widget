@@ -9,7 +9,8 @@
 		<div class="box eq">
 			<h2>Equation:</h2>
 			<div class="eq-container">
-				<div id="eq-demo-input" class="eq-input mathquill-embedded-latex" onload="init()">
+				<div id="eq-demo-input" class="eq-input mathquill-embedded-latex">
+					{{$parent.latex}}
 				</div>
 			</div>
 		</div>
@@ -48,6 +49,7 @@
 									type="range"
 									min="{{userInputs[variable.js].bounds.min}}"
 									max="{{userInputs[variable.js].bounds.max}}"
+									step=0.01
 									value=0
 									ng-model="userInputs[variable.js]._val"
 									ng-change="updateBoard()"
