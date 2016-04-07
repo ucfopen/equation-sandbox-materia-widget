@@ -5,12 +5,11 @@ angular.module 'equationSandbox'
 		$scope.start = (instance, qset, version = '1') ->
 			try
 				# Materia.Engine.setHeight()
-				$scope.qset = $scope.variablesSet
-				console.log $scope.qset
-				# $scope.qset = qset
+				$scope.qset = {latex: $scope.latex, bounds: $scope.bounds}
 				init()
 			catch e
 				console.log "start error: ", e
+
 
 		equationFn = -> return NaN
 		bounds = [-10, 10, 10, -40]
@@ -21,7 +20,6 @@ angular.module 'equationSandbox'
 		$scope.variables = []
 		$scope.userInputs = {}
 		$scope.equationResult = '?'
-		$scope.qset
 
 		$scope.$watch 'variables', (val) ->
 			setTimeout ->
@@ -29,14 +27,24 @@ angular.module 'equationSandbox'
 				$('main').removeClass('loading');
 			, 0
 
-		$scope.$parent.$watch "variablesSet", ( ->
-			$scope.qset = $scope.variablesSet
+		# as a standalone player, these varaibles won't change so they won't overwrite qset.
+		# we can co-opt the qset var to store these variable changes when we include the player
+		# in the creator as an interactive preview
+		#  =======================================
+		$scope.$watch "latex", ( ->
+			$scope.qset.latex = $scope.latex
 			
 			parseLatex()
-			jQuery('#eq-demo-input').mathquill('latex', $scope.$parent.latex)
+			jQuery('#eq-demo-input').mathquill('latex', $scope.latex)
 
 			$scope.updateBoard()
 		), true
+
+		$scope.$watch "bounds", ( ->
+			$scope.qset.bounds = $scope.bounds
+			$scope.updateBoard()
+		), true
+		#  =======================================
 
 		# Required extensions to Math
 		Math.factorial = (n) ->
@@ -110,21 +118,21 @@ angular.module 'equationSandbox'
 							configurable: true
 						})
 
-				$scope.$parent.parseError = no
+				# grandparent because ng-include adds new scope
+				$scope.$parent.$parent.parseError = no
 				lastLatex = $scope.qset.latex
 				equationFn = o.fn
 
 			catch e
-				$scope.$parent.parseError = yes
+				$scope.$parent.$parent.parseError = yes
 				console.log "parseLatex error", e
 
 		init = ->
 			try
 				$scope.safeApply(parseLatex())
 
-				bounds = [$scope.qset.bounds.x.min, $scope.qset.bounds.y.max, $scope.qset.bounds.x.max, $scope.qset.bounds.y.min]
-
-				# jQuery('#eq-demo-input').mathquill('latex', $scope.$parent.latex)
+				_ = $scope.qset.bounds
+				bounds = [_.x.min, _.y.max, _.x.max, _.y.min]
 
 				opts = { 
 					boundingbox: bounds,

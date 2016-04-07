@@ -29,8 +29,6 @@ angular.module 'equationSandbox'
 				min: -10
 				max: 10
 
-		$scope.variablesSet = {latex: DEFAULT_EQUATION, bounds: $scope.bounds}
-
 		### Materia Interface Methods ###
 
 		$scope.initNewWidget = (widget, baseUrl) -> true
@@ -51,7 +49,10 @@ angular.module 'equationSandbox'
 
 		$scope.onSaveClicked = (mode = 'save') ->
 			try
-				return if !_buildSaveData()
+				if !_buildSaveData()
+					console.log 'Fix errors before saving'
+					return
+
 				Materia.CreatorCore.save _title, _qset
 			catch e 
 				console.log "onSaveClicked error: ", e
@@ -68,9 +69,8 @@ angular.module 'equationSandbox'
 
 				_title = 'TITLE PLACEHOLDER'
 
-				# _parseLatex()
-				console.log $scope.parseError, 'error'
 				_validateBounds()
+				return null if $scope.parseError
 
 				_qset.version = 1
 				_qset =
@@ -120,8 +120,8 @@ angular.module 'equationSandbox'
 
 		$scope.onBoundsChange = ->
 			bounds = _validateBounds() # bounds are null if invalid
-			$scope.variablesSet = {latex: $scope.latex, bounds: bounds}
-			$scope.qset = $scope.variablesSet # co-opt qset to store variables from creator when it's all on same page
+			return if !bounds?
+			$scope.bounds = bounds
 
 		# we instantly update if there's a parse error so the user could
 		# find a fix, but otherwise we wait a bit so we don't flash them
@@ -135,8 +135,6 @@ angular.module 'equationSandbox'
 				lastLatex = $scope.latex
 				$scope.latex = $('#eq-input').mathquill('latex')
 				return if lastLatex is $scope.latex
-
-				$scope.variablesSet = {latex: $scope.latex, bounds: $scope.bounds}
 
 				if $scope.parseError
 					$scope.waiting = no
