@@ -21,8 +21,6 @@ angular.module 'equationSandbox'
 		$scope.boundsError = no
 		$scope.waiting = no
 
-		$scope.wtf = no
-
 		$scope.bounds =
 			x:
 				min: -10
@@ -57,6 +55,10 @@ angular.module 'equationSandbox'
 				Materia.CreatorCore.save _title, _qset
 			catch e 
 				console.log "onSaveClicked error: ", e
+
+		$scope.renderLatex = () ->
+			jQuery('#eq-demo-input').mathquill()
+			return null
 
 		### Private methods ###
 
