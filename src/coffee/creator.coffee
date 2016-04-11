@@ -57,10 +57,6 @@ angular.module 'equationSandbox'
 			catch e 
 				console.log "onSaveClicked error: ", e
 
-		$scope.renderLatex = () ->
-			jQuery('#eq-demo-input').mathquill()
-			return null
-
 		### Private methods ###
 
 		_buildSaveData = ->
@@ -109,12 +105,14 @@ angular.module 'equationSandbox'
 			catch e
 				console.log "_validateBounds error: ", e
 
-		_init = ->
+		$scope.init = ->
 			try
+				jQuery('#eq-demo-input').mathquill()
 				$('#eq-input').mathquill('latex', DEFAULT_EQUATION)
 				$scope.latex = DEFAULT_EQUATION
+				$scope.$broadcast("SendDown")
 			catch e
-				console.log "_init error: ", e
+				console.log "init error: ", e
 
 		### Scope Methods ###
 
@@ -150,8 +148,6 @@ angular.module 'equationSandbox'
 
 			catch e
 				console.log "onKeyup error: ", e
-
-		_init()
 
 		Materia.CreatorCore.start $scope
 	]

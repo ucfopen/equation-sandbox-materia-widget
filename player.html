@@ -20,75 +20,7 @@
 			<h1>Equation Sandbox</h1>
 		</header>
 
-		<!-- <div w3-include-HTML="window.html" ng-controller="WindowController"></div> -->
-
-		<!-- <div ng-include="'window.html'" ng-controller="WindowController" ng-init="Materia.Engine.start($scope)"></div> -->
-
-		<div class="error-msg">
-			Unable to parse equation - perhaps you got a bad link?
-		</div>
-
-		<main class="loading">
-
-			<div class="box eq">
-				<h2>Equation:</h2>
-				<div class="eq-container">
-					<div id="eq-input" class="eq-input mathquill-embedded-latex"></div>
-				</div>
-			</div>
-
-			<div class="interactive-section">
-				<div class="help">
-					<h2>Instructions:</h2>
-					<p>
-						Input different values for the variables of the equation to see how it impacts the result.
-					</p>
-				</div>
-				<div class="box variables">
-					<h3>Variables</h3>
-					<ul>
-						<li ng-repeat="variable in variables" ng-if="variable.js !== 'x'" >
-							<div class="variable-input-container">
-								<span class="variable-equals">
-									<span class="mathquill-variable">
-										{{variable.latex}}
-									</span>
-									= 
-								</span>
-							
-								<input 	class="variable-input"
-										type="number"
-										ng-model="userInputs[variable.js].val"
-										ng-change="updateBoard()"
-										ng-class="{empty:userInputs[variable.js].val == null}">
-							</div>
-							
-							<div class='variable-slider'>
-								<input 	class='variable-bound variable-bound-lower'
-										ng-model="userInputs[variable.js].bounds.min"
-										ng-change="updateBoard()">
-								<input 	class='variable-range'
-										type="range"
-										min="{{userInputs[variable.js].bounds.min}}"
-										max="{{userInputs[variable.js].bounds.max}}"
-										step=0.01
-										value=0
-										ng-model="userInputs[variable.js]._val"
-										ng-change="updateBoard()"
-										ng-class="{empty:userInputs[variable.js].val == null}">
-								<input 	class='variable-bound variable-bound-upper'
-										ng-model="userInputs[variable.js].bounds.max"
-										ng-change="updateBoard()">
-							</div>
-						</li>
-					</ul>
-				</div>
-				<div class="box output">
-					<div id="jxgbox"></div>
-				</div>
-			</div>
-		</main>
-
+		<ng-include src="'window.html'"></ng-include>
 
 
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jsxgraph/0.99.4/jsxgraphcore.js"></script>
@@ -104,11 +36,9 @@
 
 
 		<!-- MAIN PLAYER SCRIPT -->
-		<!-- <script src="./w3-include-HTML.js"></script> -->
 		<script src="./app.js"></script>
 		<script src="./assets/js/latex.js"></script>
 		<script src="./assets/scripts/player.js"></script>
-		<script src="./assets/js/player.js"></script>
-		<!-- <script src="./assets/js/windowController.js"></script> -->
+		<script src="./assets/js/windowController.js"></script>
 	</body>
 </html>
