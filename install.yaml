@@ -17,7 +17,7 @@ files:
   flash_version: 10
 score:
   is_scorable: No
-  score_module: FlashCards
+  score_module: EquationSandbox
 meta_data:
   features:
     - Customizable
@@ -26,7 +26,7 @@ meta_data:
   supported_data:
     - Question/Answer
   about: >
-    Blah
+    Equation Sandbox
   excerpt: >
-    blahdy blah
+    Interactive graphs from parameterized equations
 

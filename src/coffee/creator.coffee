@@ -105,15 +105,6 @@ angular.module 'equationSandbox'
 			catch e
 				console.log "_validateBounds error: ", e
 
-		$scope.init = ->
-			try
-				jQuery('#eq-demo-input').mathquill()
-				$('#eq-input').mathquill('latex', DEFAULT_EQUATION)
-				$scope.latex = DEFAULT_EQUATION
-				$scope.$broadcast("SendDown")
-			catch e
-				console.log "init error: ", e
-
 		### Scope Methods ###
 
 		$scope.onBoundsChange = ->
@@ -148,6 +139,15 @@ angular.module 'equationSandbox'
 
 			catch e
 				console.log "onKeyup error: ", e
+
+		$scope.$on "$includeContentLoaded", (evt, url) ->
+			try
+				jQuery('#eq-demo-input').mathquill()
+				$scope.latex = DEFAULT_EQUATION
+				$('#eq-input').mathquill('latex', $scope.latex)
+				$scope.$broadcast("SendDown")
+			catch e
+				console.log "init error: ", e
 
 		Materia.CreatorCore.start $scope
 	]
