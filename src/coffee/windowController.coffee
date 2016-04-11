@@ -1,5 +1,5 @@
 angular.module 'equationSandbox'
-	.controller 'WindowController', ['$scope', '$window', '$http', ($scope, $window, $http) ->
+	.controller 'WindowController', ['$scope', '$window', '$http', '$timeout', ($scope, $window, $http, $timeout) ->
 		"use strict";
 
 		equationFn = -> return NaN
@@ -16,15 +16,9 @@ angular.module 'equationSandbox'
 
 		$scope.$watch 'variables', (val) ->
 			if loaded
-				setTimeout ->
-					$('.mathquill-variable').mathquill()
+				$timeout ->
+					$('.variable-display').mathquill()
 					$('main').removeClass('loading')
-				, 0
-			console.log loaded
-
-		$scope.setTrue = ->
-			loaded = true
-			return
 
 		# as a standalone player, these varaibles won't change so they won't overwrite qset
 		# we can co-opt the qset var to store these variable changes when we include the player
@@ -126,6 +120,11 @@ angular.module 'equationSandbox'
 		init = ->
 			try
 				$scope.safeApply(parseLatex())
+
+				$timeout -> # render latex after template is done rendering
+					$('.variable-display').mathquill()
+					$('main').removeClass('loading')
+					loaded = true
 
 				_ = $scope.bounds
 				bounds = [_.x.min, _.y.max, _.x.max, _.y.min]
