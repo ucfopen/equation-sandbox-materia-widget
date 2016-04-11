@@ -164,8 +164,7 @@ angular.module 'equationSandbox'
 				@$apply fn
 			return
 
-		$scope.$on("SendDown", -> 
+		$scope.$on "SendDown", -> 
 			init()
-			)
 
 	]
