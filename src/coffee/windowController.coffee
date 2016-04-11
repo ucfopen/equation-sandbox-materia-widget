@@ -27,11 +27,11 @@ angular.module 'equationSandbox'
 		$scope.$watch "latex", ( ->			
 			$scope.safeApply(parseLatex())
 			jQuery('#eq-demo-input').mathquill('latex', $scope.latex)
-			$scope.updateBoard()
+			$scope.updateBoard() if loaded
 		), true
 
 		$scope.$watch "bounds", ( ->
-			$scope.updateBoard()
+			$scope.updateBoard() if loaded
 		), true
 		#  =======================================
 
@@ -115,7 +115,7 @@ angular.module 'equationSandbox'
 
 			catch e
 				$scope.$parent.$parent.parseError = yes
-				console.log "parseLatex error", e
+				# console.log "parseLatex error", e
 
 		init = ->
 			try
