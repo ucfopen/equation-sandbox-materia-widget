@@ -2,19 +2,12 @@ angular.module 'equationSandbox'
 	.controller 'WindowController', ['$scope', '$window', '$http', ($scope, $window, $http) ->
 		"use strict";
 
-		$scope.start = (instance, qset, version = '1') ->
-			try
-				# Materia.Engine.setHeight()
-				$scope.qset = {latex: $scope.latex, bounds: $scope.bounds}
-				init()
-			catch e
-				console.log "start error: ", e
-
-
 		equationFn = -> return NaN
 		bounds = [-10, 10, 10, -40]
 		board = null
 		lastLatex = null
+
+		loaded = false
 
 		$scope.mainVar = ''
 		$scope.variables = []
@@ -22,29 +15,32 @@ angular.module 'equationSandbox'
 		$scope.equationResult = '?'
 
 		$scope.$watch 'variables', (val) ->
-			setTimeout ->
-				$('.mathquill-variable').mathquill();
-				$('main').removeClass('loading');
-			, 0
+			if loaded
+				setTimeout ->
+					$('.mathquill-variable').mathquill()
+					$('main').removeClass('loading')
+				, 0
+			console.log loaded
 
-		# as a standalone player, these varaibles won't change so they won't overwrite qset.
+		$scope.setTrue = ->
+			loaded = true
+			return
+
+		# as a standalone player, these varaibles won't change so they won't overwrite qset
 		# we can co-opt the qset var to store these variable changes when we include the player
 		# in the creator as an interactive preview
 		#  =======================================
-		$scope.$watch "latex", ( ->
-			$scope.qset.latex = $scope.latex
-			
-			parseLatex()
+		$scope.$watch "latex", ( ->			
+			$scope.safeApply(parseLatex())
 			jQuery('#eq-demo-input').mathquill('latex', $scope.latex)
-
 			$scope.updateBoard()
 		), true
 
 		$scope.$watch "bounds", ( ->
-			$scope.qset.bounds = $scope.bounds
 			$scope.updateBoard()
 		), true
 		#  =======================================
+
 
 		# Required extensions to Math
 		Math.factorial = (n) ->
@@ -94,7 +90,7 @@ angular.module 'equationSandbox'
 
 		parseLatex = ->
 			try 
-				o = latexParser.parse $scope.qset.latex
+				o = latexParser.parse $scope.latex
 
 				$scope.mainVar = o.mainVar
 				$scope.variables = o.variables
@@ -120,7 +116,7 @@ angular.module 'equationSandbox'
 
 				# grandparent because ng-include adds new scope
 				$scope.$parent.$parent.parseError = no
-				lastLatex = $scope.qset.latex
+				lastLatex = $scope.latex
 				equationFn = o.fn
 
 			catch e
@@ -131,7 +127,7 @@ angular.module 'equationSandbox'
 			try
 				$scope.safeApply(parseLatex())
 
-				_ = $scope.qset.bounds
+				_ = $scope.bounds
 				bounds = [_.x.min, _.y.max, _.x.max, _.y.min]
 
 				opts = { 
@@ -153,7 +149,7 @@ angular.module 'equationSandbox'
 
 		$scope.updateBoard = ->
 			try
-				_ = $scope.qset.bounds
+				_ = $scope.bounds
 				bounds = [_.x.min, _.y.max, _.x.max, _.y.min]
 				board.setBoundingBox bounds
 
@@ -169,7 +165,8 @@ angular.module 'equationSandbox'
 				@$apply fn
 			return
 
-		$scope.start()
-		# Materia.Engine.start($scope)
+		$scope.$on("SendDown", -> 
+			init()
+			)
 
 	]

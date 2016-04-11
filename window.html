@@ -10,7 +10,7 @@
 			<h2>Equation:</h2>
 			<div class="eq-container">
 				<div id="eq-demo-input" class="eq-input mathquill-embedded-latex">
-					{{$parent.$parent.latex}}
+					{{latex}}
 				</div>
 			</div>
 		</div>
@@ -28,7 +28,7 @@
 					<li ng-repeat="variable in variables" ng-if="variable.js !== 'x'" >
 						<div class="variable-input-container">
 							<span class="variable-equals">
-								<span class="mathquill-variable">
+								<span class="mathquill-variable" onload="setTrue()">
 									{{variable.latex}}
 								</span>
 								= 
