@@ -1,9 +1,9 @@
 angular.module 'equationSandbox'
-	.controller 'WindowController', ['$scope', '$window', '$http', '$timeout', ($scope, $window, $http, $timeout) ->
+	.controller 'PlayerTemplateController', ['$scope', '$window', '$http', '$timeout', ($scope, $window, $http, $timeout) ->
 		"use strict";
 
 		equationFn = -> return NaN
-		bounds = [-10, 10, 10, -40]
+		bounds = [-10, 10, 10, -10]
 		board = null
 		lastLatex = null
 
@@ -92,18 +92,20 @@ angular.module 'equationSandbox'
 				for variable in $scope.variables
 					continue if variable.js is 'x'
 					if !$scope.userInputs[variable.js]?
+						min = -10
+						max = 10
 						$scope.userInputs[variable.js] = {
-							val: null
+							val: Math.round(Math.random() * (max - min) + min)
 							bounds:
-								min: -10
-								max: 10
+								min: min
+								max: max
 						}
 
-						o = $scope.userInputs[variable.js]
-						Object.defineProperty(o, '_val', {
-							get: -> o.val
+						obj = $scope.userInputs[variable.js]
+						Object.defineProperty(obj, '_val', {
+							get: -> obj.val
 							set: (val) -> 
-								o.val = parseFloat(val)
+								obj.val = parseFloat(val)
 							enumerable: true
 							configurable: true
 						})
@@ -136,7 +138,6 @@ angular.module 'equationSandbox'
 
 				board = JXG.JSXGraph.initBoard('jxgbox', opts);
 				board.create 'functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3 }
-
 			catch e
 				console.log "init error: ", equationFn, e if console?.log?
 

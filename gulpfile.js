@@ -74,7 +74,7 @@ gulp.task('player-min-js', ['player-js'], function() {
 
 gulp.task('window-controller-js', ['coffee', 'peg'], function() {
 	return gulp
-		.src(['./assets/js/windowController.js'])
+		.src(['./assets/js/playerTemplateController.js'])
 		.pipe(concat('player.js'))
 		.pipe(gulp.dest('./assets/scripts/'))
 });
