@@ -178,11 +178,18 @@ main
 			}
 
 			.variable-bound{
-				border: none;
+				border: 1px solid white;
 				width: 30px;
 				text-align: center;
 				font-size: 16px;
 				margin: 0px 5px;
+			}
+
+			.variable-bound:hover{
+				border-bottom: 1px solid blue;
+			}
+			.variable-bound:focus{
+				border: 1px solid white;
 			}
 
 			input
@@ -194,12 +201,12 @@ main
 
 				border: 1px solid $gray;
 
-				&.variable-input.empty
-				{
-					border: 1px solid $orange;
-					outline: 1px solid $orange;
-					background: $orange-light;
-				}
+				// &.variable-input.empty
+				// {
+				// 	border: 1px solid $orange;
+				// 	outline: 1px solid $orange;
+				// 	background: $orange-light;
+				// }
 
 				&.variable-input.invalid
 				{

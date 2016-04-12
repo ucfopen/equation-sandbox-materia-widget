@@ -1,4 +1,4 @@
-<div ng-controller="WindowController">
+<div ng-controller="PlayerTemplateController">
 
 	<div class="error-msg">
 		Unable to parse equation
@@ -38,7 +38,7 @@
 									type="number"
 									ng-model="userInputs[variable.js].val"
 									ng-change="updateBoard()"
-									ng-class="{empty:userInputs[variable.js].val == null}">
+									val="userInputs[variable.js].val">
 						</div>
 						
 						<div class='variable-slider'>
@@ -52,8 +52,7 @@
 									step=0.01
 									value=0
 									ng-model="userInputs[variable.js]._val"
-									ng-change="updateBoard()"
-									ng-class="{empty:userInputs[variable.js].val == null}">
+									ng-change="updateBoard()">
 							<input 	class='variable-bound variable-bound-upper'
 									ng-model="userInputs[variable.js].bounds.max"
 									ng-change="updateBoard()">
