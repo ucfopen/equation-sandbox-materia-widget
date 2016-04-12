@@ -63,7 +63,7 @@ angular.module 'equationSandbox'
 			try
 				if !_qset? then _qset = {}
 
-				_title = 'TITLE PLACEHOLDER'
+				_title = 'Equation Sandbox'
 
 				_validateBounds()
 				return null if $scope.parseError
