@@ -113,8 +113,18 @@ angular.module 'equationSandbox'
 				# grandparent because ng-include adds new scope
 				$scope.$parent.$parent.parseError = no
 				lastLatex = $scope.latex
-				equationFn = o.fn
 
+				for index, variable of $scope.variables
+					if variable.js is 'x'
+						x_index = index
+						break
+
+				equationFn = () ->
+					args = Array.prototype.slice.call(arguments)
+					x = args.splice(x_index, 1)[0]
+					args.unshift x
+					return o.fn args...
+				
 			catch e
 				$scope.$parent.$parent.parseError = yes
 				# console.log "parseLatex error", e

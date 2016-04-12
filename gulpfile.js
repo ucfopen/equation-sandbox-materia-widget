@@ -72,16 +72,41 @@ gulp.task('player-min-js', ['player-js'], function() {
 		.pipe(gulp.dest('./assets/scripts/'))
 });
 
-gulp.task('window-controller-js', ['coffee', 'peg'], function() {
+gulp.task('player-controller-js', ['coffee', 'peg'], function() {
 	return gulp
 		.src(['./assets/js/playerTemplateController.js'])
 		.pipe(concat('player.js'))
 		.pipe(gulp.dest('./assets/scripts/'))
 });
 
+gulp.task('build-player', function() {
+	return gulp
+		.src(['./templates/player.html','./templates/player.template.html'])
+		.pipe(concat('./player.html'))
+		.pipe(gulp.dest('./'))
+});
+
+gulp.task('build-creator', function() {
+	return gulp
+		.src(['./templates/creator.html','./templates/player.template.html'])
+		.pipe(concat('./creator.html'))
+		.pipe(gulp.dest('./'))
+});
+
 gulp.task('default', ['build']);
 
-gulp.task('build', ['peg', 'coffee', 'sass', 'creator-js', 'creator-min-js', 'player-js', 'player-min-js', 'creator-css', 'player-css', 'window-controller-js']);
+gulp.task('build', ['peg',
+					'coffee',
+					'sass',
+					'creator-js',
+					'creator-min-js',
+					'player-js',
+					'player-min-js',
+					'creator-css',
+					'player-css',
+					'player-controller-js',
+					'build-player',
+					'build-creator']);
 
 gulp.task('watch', ['build'], function() {
 	gulp.watch(['./src/**/*'], ['build']);
