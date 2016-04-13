@@ -73,10 +73,12 @@ angular.module 'equationSandbox'
 
 		graphFn = (x) ->
 			try
-				fnArgs = [x]
+				fnArgs = []
 				for variable in $scope.variables
-					continue if variable.js is 'x'
-					fnArgs.push parseFloat($scope.userInputs[variable.js].val)
+					if variable.js is 'x'
+						fnArgs.push x
+					else
+						fnArgs.push parseFloat($scope.userInputs[variable.js].val)
 
 				equationFn.apply this, fnArgs if equationFn? 
 			catch e
@@ -114,16 +116,7 @@ angular.module 'equationSandbox'
 				$scope.$parent.$parent.parseError = no
 				lastLatex = $scope.latex
 
-				for index, variable of $scope.variables
-					if variable.js is 'x'
-						x_index = index
-						break
-
-				equationFn = () ->
-					args = Array.prototype.slice.call(arguments)
-					x = args.splice(x_index, 1)[0]
-					args.unshift x
-					return o.fn args...
+				equationFn = o.fn
 				
 			catch e
 				$scope.$parent.$parent.parseError = yes
