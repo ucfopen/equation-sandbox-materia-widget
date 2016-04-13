@@ -1,9 +1,13 @@
-angular.module 'creator', []
-	.controller 'CreatorController', ['$scope', ($scope) ->
+angular.module 'equationSandbox'
+
+	.controller 'CreatorController', ['$scope', '$http', ($scope, $http) ->
 		"use strict";
 
-		DEFAULT_EQUATION = 'y=2^x'
-		PLAYER_QUERY_URL = window.location.href.substr(0, window.location.href.lastIndexOf('/')) + '/player.html?eq='
+		### Initialize class variables ###
+
+		_title = _qset = null
+
+		DEFAULT_EQUATION = 'y=2^x+a'
 		PLAYER_WIDTH = 700
 		PLAYER_HEIGHT = 500
 		UPDATE_DEBOUNCE_DELAY_MS = 500
@@ -12,65 +16,138 @@ angular.module 'creator', []
 
 		$scope.latex = ''
 		$scope.expression = ''
-		$scope.playerUrl = ''
 
 		$scope.parseError = no
+		$scope.boundsError = no
 		$scope.waiting = no
 
-		update = ->
-			try
-				parseLatex()
-				$scope.parseError = no
-				$scope.errorMsg = ''
+		$scope.bounds =
+			x:
+				min: -10
+				max: 10
+			y:
+				min: -10
+				max: 10
+
+		### Materia Interface Methods ###
+
+		$scope.initNewWidget = (widget, baseUrl) -> true
+
+		$scope.onSaveComplete = (title, widget, qset, version) -> true
+
+		$scope.onQuestionImportComplete = (items) -> true
+
+		$scope.onMediaImportComplete  = (media) -> null
+
+		$scope.initExistingWidget = (title,widget,qset,version,baseUrl) ->
+			try 
+				_qset = qset
+				_latex = qset.data
+
 			catch e
-				$scope.parseError = yes
-				$scope.errorMsg = e.toString() + ' Latex: "' + $scope.latex + '"'
-				console.log(e) if console?.log?
+				console.log "initExistingWidget error: ", e
 
-			generatePlayerCode()
+		$scope.onSaveClicked = (mode = 'save') ->
+			try
+				if !_buildSaveData()
+					console.log 'Fix errors before saving'
+					return
 
-		parseLatex = ->
-			o = latexParser.parse $scope.latex
+				Materia.CreatorCore.save _title, _qset
+			catch e 
+				console.log "onSaveClicked error: ", e
 
-			$scope.expression = o.mainExpr
+		### Private methods ###
 
-		generatePlayerCode = ->
-			if $scope.parseError
-				$scope.playerUrl = $scope.playerEmbed = ''
-				return
+		_buildSaveData = ->
+			try
+				if !_qset? then _qset = {}
 
-			encodedLatex = encodeURIComponent $scope.latex
-			$scope.playerUrl = PLAYER_QUERY_URL + encodedLatex
-			$scope.playerEmbed = '<iframe src="' + $scope.playerUrl + '" width="' + PLAYER_WIDTH + '" height="' + PLAYER_HEIGHT + '" style="margin:0;padding:0;border:0;"></iframe>'
+				_title = 'Equation Sandbox'
 
-		init = ->
-			$('#eq-input').mathquill('latex', DEFAULT_EQUATION)
-			$scope.latex = DEFAULT_EQUATION
-			update()
+				_validateBounds()
+				return null if $scope.parseError
+
+				_qset.version = 1
+				_qset =
+					latex: $scope.latex
+					bounds: $scope.bounds
+			catch e
+				console.log "_buildSaveData error: ", e
+				return null
+
+		_validateBounds = ->
+			try
+				bounds = [xmin, ymax, xmax, ymin] = [$scope.bounds.x.min,$scope.bounds.y.max,$scope.bounds.x.max,$scope.bounds.y.min]
+			
+				# non-numeric entry
+				if bounds.some( (el) -> return (isNaN(el) or !el?))
+					$scope.boundsError = yes
+					$scope.bnds_errorMsg = 'One of the bounds is not a number.'
+					return null
+
+				# out of order
+				if xmin > xmax or ymin > ymax
+					$scope.boundsError = yes
+					$scope.bnds_errorMsg = 'The bounds are out of order.'
+					return null
+
+				# equality
+				if xmin is xmax or ymin is ymax
+					$scope.boundsError = yes
+					$scope.bnds_errorMsg = 'One interval represents a point.'
+					return null
+
+				$scope.boundsError = no
+				$scope.bnds_errorMsg = ''
+				$scope.bounds
+
+			catch e
+				console.log "_validateBounds error: ", e
+
+		### Scope Methods ###
+
+		$scope.onBoundsChange = ->
+			bounds = _validateBounds() # bounds are null if invalid
+			return if !bounds?
+			$scope.bounds = bounds
 
 		# we instantly update if there's a parse error so the user could
 		# find a fix, but otherwise we wait a bit so we don't flash them
 		# with error messages while they are composing the equation
-		$scope.onKeyup = ->
-			# grab the latex (and do nothing if it hasn't changed, i.e. user pressed <-)
-			lastLatex = $scope.latex
-			$scope.latex = $('#eq-input').mathquill('latex')
-			return if lastLatex is $scope.latex
+		$scope.onKeyup = (e) ->
+			try 
+				if e.target.classList.contains 'graph-bounds-input'
+					return
 
-			if $scope.parseError
-				update()
-				$scope.waiting = no
-				return
+				# grab the latex (and do nothing if it hasn't changed, i.e. user pressed <-)
+				lastLatex = $scope.latex
+				$scope.latex = $('#eq-input').mathquill('latex')
+				return if lastLatex is $scope.latex
 
-			$scope.waiting = yes
+				if $scope.parseError
+					$scope.waiting = no
+					return
 
-			clearTimeout updateTimeoutId
-			updateTimeoutId = setTimeout ->
-				update()
-				$scope.waiting = no
-				$scope.$apply()
-			, UPDATE_DEBOUNCE_DELAY_MS
+				$scope.waiting = yes
 
+				clearTimeout updateTimeoutId
+				updateTimeoutId = setTimeout ->
+					$scope.waiting = no
+					$scope.$apply()
+				, UPDATE_DEBOUNCE_DELAY_MS
 
-		init()
+			catch e
+				console.log "onKeyup error: ", e
+
+		$scope.$on "$includeContentLoaded", (evt, url) ->
+			try
+				jQuery('#eq-demo-input').mathquill()
+				$scope.latex = DEFAULT_EQUATION
+				$('#eq-input').mathquill('latex', $scope.latex)
+				$scope.$broadcast("SendDown")
+			catch e
+				console.log "init error: ", e
+
+		Materia.CreatorCore.start $scope
 	]
