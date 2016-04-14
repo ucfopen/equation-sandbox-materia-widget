@@ -21,12 +21,10 @@ score:
 meta_data:
   features:
     - Customizable
-    - Media
-    - Mobile Friendly
   supported_data:
-    - Question/Answer
+    - Custom
   about: >
-    Equation Sandbox
+    With Equation Sandbox, students will be able to experiment with the graph of an equation you create. Manipuating the variables of the equation alter the graph, allowing students to learn first-hand how a function graph is created.
   excerpt: >
     Interactive graphs from parameterized equations
 
