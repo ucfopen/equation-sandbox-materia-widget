@@ -33,16 +33,22 @@
 		<script src="./assets/js/creator.js"></script>
 		<script src="./assets/js/playerTemplateController.js"></script>
 
-		
+
 	</head>
 	<body ng-controller="CreatorController" ng-keyup="onKeyup($event)" ng-class="{'parse-error':parseError, 'bounds-error':boundsError, 'waiting':waiting}">
 
 		<header>
-			<h1>Equation Sandbox</h1> 
+			<h1>Equation Sandbox</h1>
 		</header>
 
 		<div class="top row input-sidebar">
 			<div class="top-box input-section">
+				<h2 class="mode-heading">Mode:</h2>
+				<select ng-model="mode">
+					<option value="resultingY">y =</option>
+					<option value="graphX">Graph x</option>
+				</select>
+
 				<h2>Enter equation here:</h2>
 				<div id="eq-input" class="eq-input mathquill-editable"></div>
 
@@ -51,7 +57,7 @@
 					<div class="graph-bounds">
 						<div>
 							<input  class="graph-bounds-input"
-									type="number" 
+									type="number"
 									ng-model="bounds.x.min"
 									ng-change="onBoundsChange()">
 							<span class="mathquill-embedded-latex">\leq \quad x \quad \leq</span>

@@ -3,6 +3,15 @@
 $row-padding: 20px;
 $error-msg-ptr-size: 14px;
 
+select
+{
+	display: inline-block;
+
+	font-size: 16pt;
+
+	vertical-align: text-bottom;
+}
+
 .debug
 {
 	display: none;
@@ -75,6 +84,12 @@ code
 			margin: 0 0 10px 0;
 
 			color: $purple;
+		}
+
+		.mode-heading
+		{
+			display: inline-block;
+			margin: 0 10px 10px 0;
 		}
 
 		.eq-input

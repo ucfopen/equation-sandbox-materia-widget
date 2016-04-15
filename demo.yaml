@@ -4,6 +4,7 @@ qset:
   version: 1
   data:
     latex: "y=2^x+a"
+    mode: 'graphX'
     bounds:
         x:
             min: -10

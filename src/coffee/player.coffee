@@ -7,6 +7,7 @@ angular.module 'equationSandbox'
 				try
 					$scope.latex = qset.latex
 					$scope.bounds = qset.bounds
+					$scope.mode = qset.mode
 					jQuery('#eq-demo-input').mathquill()
 					$scope.$broadcast("SendDown")
 				catch e

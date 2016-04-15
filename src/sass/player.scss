@@ -309,6 +309,11 @@ main
 		font-size: 20pt;
 		font-family: $math-font;
 	}
+
+	h3
+	{
+		margin-top: 15px;
+	}
 }
 
 .parse-error
