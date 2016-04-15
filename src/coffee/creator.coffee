@@ -21,6 +21,8 @@ angular.module 'equationSandbox'
 		$scope.boundsError = no
 		$scope.waiting = no
 
+		$scope.mode = 'resultingY' # resultingY | graphX
+
 		$scope.bounds =
 			x:
 				min: -10
@@ -40,7 +42,7 @@ angular.module 'equationSandbox'
 		$scope.onMediaImportComplete  = (media) -> null
 
 		$scope.initExistingWidget = (title,widget,qset,version,baseUrl) ->
-			try 
+			try
 				_qset = qset
 				_latex = qset.data
 
@@ -54,7 +56,7 @@ angular.module 'equationSandbox'
 					return
 
 				Materia.CreatorCore.save _title, _qset
-			catch e 
+			catch e
 				console.log "onSaveClicked error: ", e
 
 		### Private methods ###
@@ -72,6 +74,7 @@ angular.module 'equationSandbox'
 				_qset =
 					latex: $scope.latex
 					bounds: $scope.bounds
+					mode: $scope.mode
 			catch e
 				console.log "_buildSaveData error: ", e
 				return null
@@ -79,7 +82,7 @@ angular.module 'equationSandbox'
 		_validateBounds = ->
 			try
 				bounds = [xmin, ymax, xmax, ymin] = [$scope.bounds.x.min,$scope.bounds.y.max,$scope.bounds.x.max,$scope.bounds.y.min]
-			
+
 				# non-numeric entry
 				if bounds.some( (el) -> return (isNaN(el) or !el?))
 					$scope.boundsError = yes
@@ -116,7 +119,7 @@ angular.module 'equationSandbox'
 		# find a fix, but otherwise we wait a bit so we don't flash them
 		# with error messages while they are composing the equation
 		$scope.onKeyup = (e) ->
-			try 
+			try
 				if e.target.classList.contains 'graph-bounds-input'
 					return
 

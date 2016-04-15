@@ -27,26 +27,26 @@
 				<div class="box variables">
 					<h3>Variables</h3>
 					<ul>
-						<li ng-repeat="variable in variables" ng-if="variable.js !== 'x'" >
+						<li ng-repeat="variable in variables" ng-if="mode === 'resultingY' || variable.js !== 'x'" >
 							<div class="variable-input-container">
 								<span class="variable-equals">
 									<span class="variable-display">
 										{{variable.latex}}
 									</span>
-									= 
+									=
 								</span>
-							
+
 								<input 	class="variable-input"
 										type="number"
 										ng-model="userInputs[variable.js].val"
-										ng-change="updateBoard()"
+										ng-change="update()"
 										val="userInputs[variable.js].val">
 							</div>
-							
+
 							<div class='variable-slider'>
 								<input 	class='variable-bound variable-bound-lower'
 										ng-model="userInputs[variable.js].bounds.min"
-										ng-change="updateBoard()">
+										ng-change="update()">
 								<input 	class='variable-range'
 										type="range"
 										min="{{userInputs[variable.js].bounds.min}}"
@@ -54,16 +54,20 @@
 										step=0.01
 										value=0
 										ng-model="userInputs[variable.js]._val"
-										ng-change="updateBoard()">
+										ng-change="update()">
 								<input 	class='variable-bound variable-bound-upper'
 										ng-model="userInputs[variable.js].bounds.max"
-										ng-change="updateBoard()">
+										ng-change="update()">
 							</div>
 						</li>
 					</ul>
 				</div>
-				<div class="box output">
+				<div class="box output" ng-show="mode === 'graphX'">
 					<div id="jxgbox"></div>
+				</div>
+				<div class="box output" ng-show="mode === 'resultingY'">
+					<h3>Result</h3>
+					<div class="result"><span class="mathquill-variable">{{mainVar.latex}}</span> = <b>{{equationResult}}</b></div>
 				</div>
 			</div>
 		</main>

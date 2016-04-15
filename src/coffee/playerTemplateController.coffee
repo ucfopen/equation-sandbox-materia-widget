@@ -2,6 +2,23 @@ angular.module 'equationSandbox'
 	.controller 'PlayerTemplateController', ['$scope', '$window', '$http', '$timeout', ($scope, $window, $http, $timeout) ->
 		"use strict";
 
+		class Variable
+			constructor: ->
+				@bounds =
+					min: -10
+					max: 10
+
+				@val = 0
+
+		Object.defineProperties Variable.prototype, {
+			"_val":
+				get: -> @val
+				set: (newVal) ->
+					@val = parseFloat newVal
+				enumerable: true
+				configurable: true
+		}
+
 		equationFn = -> return NaN
 		bounds = [-10, 10, 10, -10]
 		board = null
@@ -24,14 +41,14 @@ angular.module 'equationSandbox'
 		# we can co-opt the qset var to store these variable changes when we include the player
 		# in the creator as an interactive preview
 		#  =======================================
-		$scope.$watch "latex", ( ->			
+		$scope.$watch "latex", ( ->
 			$scope.safeApply(parseLatex())
 			jQuery('#eq-demo-input').mathquill('latex', $scope.latex)
-			$scope.updateBoard() if loaded
+			$scope.update() if loaded
 		), true
 
 		$scope.$watch "bounds", ( ->
-			$scope.updateBoard() if loaded
+			$scope.update() if loaded
 		), true
 		#  =======================================
 
@@ -75,49 +92,33 @@ angular.module 'equationSandbox'
 			try
 				fnArgs = []
 				for variable in $scope.variables
-					if variable.js is 'x'
+					if $scope.mode is 'graphX' and variable.js is 'x'
 						fnArgs.push x
 					else
 						fnArgs.push parseFloat($scope.userInputs[variable.js].val)
 
-				equationFn.apply this, fnArgs if equationFn? 
+				equationFn.apply this, fnArgs if equationFn?
 			catch e
 				console.log "graphFn error: ", e
 
 		parseLatex = ->
-			try 
+			try
 				o = latexParser.parse $scope.latex
 
 				$scope.mainVar = o.mainVar
 				$scope.variables = o.variables
 
 				for variable in $scope.variables
-					continue if variable.js is 'x'
+					continue if $scope.mode is 'graphX' and variable.js is 'x'
 					if !$scope.userInputs[variable.js]?
-						min = -10
-						max = 10
-						$scope.userInputs[variable.js] = {
-							val: Math.round(Math.random() * (max - min) + min)
-							bounds:
-								min: min
-								max: max
-						}
-
-						obj = $scope.userInputs[variable.js]
-						Object.defineProperty(obj, '_val', {
-							get: -> obj.val
-							set: (val) -> 
-								obj.val = parseFloat(val)
-							enumerable: true
-							configurable: true
-						})
+						$scope.userInputs[variable.js] = new Variable()
 
 				# grandparent because ng-include adds new scope
 				$scope.$parent.$parent.parseError = no
 				lastLatex = $scope.latex
 
 				equationFn = o.fn
-				
+
 			catch e
 				$scope.$parent.$parent.parseError = yes
 				# console.log "parseLatex error", e
@@ -134,13 +135,16 @@ angular.module 'equationSandbox'
 				_ = $scope.bounds
 				bounds = [_.x.min, _.y.max, _.x.max, _.y.min]
 
-				opts = { 
+				opts = {
 					boundingbox: bounds,
-					axis:true 
+					axis:true
 				}
 
 				board = JXG.JSXGraph.initBoard('jxgbox', opts);
 				board.create 'functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3 }
+
+				$scope.calculateResult()
+
 			catch e
 				console.log "init error: ", equationFn, e if console?.log?
 
@@ -150,7 +154,13 @@ angular.module 'equationSandbox'
 			catch e
 				console.log "isValidInput error: ", e
 
+		$scope.update = ->
+			$scope.updateBoard()
+			$scope.calculateResult()
+
 		$scope.updateBoard = ->
+			return if $scope.mode isnt 'graphX'
+
 			try
 				_ = $scope.bounds
 				bounds = [_.x.min, _.y.max, _.x.max, _.y.min]
@@ -168,7 +178,17 @@ angular.module 'equationSandbox'
 				@$apply fn
 			return
 
-		$scope.$on "SendDown", -> 
+		$scope.calculateResult = ->
+			return if $scope.mode isnt 'resultingY'
+
+			fnArgs = []
+			for variable in $scope.variables
+				fnArgs.push parseFloat($scope.userInputs[variable.js]._val)
+
+			result = equationFn.apply this, fnArgs
+			$scope.equationResult = if !isNaN(result) then result else '?'
+
+		$scope.$on "SendDown", ->
 			init()
 
 	]
