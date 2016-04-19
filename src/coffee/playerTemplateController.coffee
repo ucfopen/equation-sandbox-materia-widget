@@ -44,6 +44,10 @@ angular.module 'equationSandbox'
 		$scope.$watch "latex", ( ->
 			$scope.safeApply(parseLatex())
 			jQuery('#eq-demo-input').mathquill('latex', $scope.latex)
+			jQuery('.main-var').mathquill('revert')
+			jQuery('.main-var').text($scope.mainVar)
+			jQuery('.main-var').mathquill()
+			# jQuery('.main-var').mathquill('latex', $scope.mainVar)
 			$scope.update() if loaded
 		), true
 
