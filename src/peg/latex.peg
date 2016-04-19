@@ -75,11 +75,14 @@ start
 	}
 
 equation
-	= lhs:variable s* "=" s* rhs:expr {
-		mainVar = getVarObj(lhs);
+	= lhs:lhsString s* "=" s* rhs:expr {
+		mainVar = lhs; //getVarObj(lhs);
 		mainExpr = rhs;
 		return lhs + "=" + rhs;
 	}
+
+lhsString
+	= s:[^=]+ { return s.join(""); }
 
 expr
 	= "-" expr:symbolicExpr { return "-" + expr }
