@@ -46,30 +46,6 @@ var materiaJsReplacements = [
 	{match: /src="materia.storage.manager.js"/g, replacement: 'src="../../../js/materia.storage.manager.js"'},
 	{match: /src="materia.storage.table.js"/g, replacement: 'src="../../../js/materia.storage.table.js"'}
 ]
-// Transpiles JSX into plain Javascript with an eye for ReactJS syntax.
-gulp.task('babel', function()
-{
-	gutil.log("Babel Running");
-	// Engine
-	return gulp.src([sourceString + '.build/*.jsx'])
-				.pipe( print() )
-				.pipe( babel() )
-				.on('error', function(msg) {console.log("babel Fail Error: ", msg.toString());})
-				.pipe( print() )
-				.pipe(gulp.dest(sourceString + '.build/'));
-});
-// Transpiles JSX into plain Javascript with an eye for ReactJS syntax.
-gulp.task('babel-assets', function()
-{
-	gutil.log("Babel Assets Running");
-	// Assets
-	return gulp.src([sourceString + '.build/assets/*.jsx'])
-				.pipe( print() )
-				.pipe( babel() )
-				.on('error', function(msg) {console.log("babel Fail Error: ", msg.toString());})
-				.pipe( print() )
-				.pipe(gulp.dest(sourceString + '.build/assets/'));
-});
 // Cleans folder of any old files before populating with the newest run.
 gulp.task('clean:pre', function()
 {
@@ -93,22 +69,11 @@ gulp.task('coffee', function()
 {
 	gutil.log("Coffee Running");
 	// Engine
-	return gulp.src([sourceString + 'src/*.coffee'])
-				.pipe( coffee() )
+	return gulp.src([sourceString + 'src/coffee/*.coffee'])
+				.pipe( coffee({bare: true}) )
 				.on('error', function(msg) {console.log("coffee Fail Error: ", msg.toString());})
 				.pipe( print() )
-				.pipe(gulp.dest(sourceString + '.build/'));
-});
-// Transpiles Coffeescript files into Javascript files.
-gulp.task('coffee-assets', function()
-{
-	gutil.log("Coffee Assets Running");
-	// Assets
-	return gulp.src([sourceString + 'src/assets/*.coffee', sourceString + 'src/assets/**/*.coffee'])
-				.pipe( coffee() )
-				.on('error', function(msg) {console.log("coffee Fail Error: ", msg.toString());})
-				.pipe( print() )
-				.pipe(gulp.dest(sourceString + '.build/assets/'));
+				.pipe(gulp.dest(sourceString + '.build/assets/js/'));
 });
 // Squish those files and assets into that zip file
 gulp.task('compress', function()
@@ -151,11 +116,13 @@ gulp.task('copy:init-baseWidgetFiles', function()
 	// Copy non-prepocessed files
 	return gulp.src([sourceString + 'src/install.yaml',
 					sourceString + 'src/demo.json',
-					sourceString + 'src/questions.json',
 					sourceString + 'src/*.html',
 					sourceString + 'src/*.js',
 					sourceString + 'src/*.jsx',
-					sourceString + 'src/*.css'])
+					sourceString + 'src/*.css',
+					sourceString + 'src/tests/',
+					sourceString + 'src/templates/',
+					sourceString + 'src/peg/'])
 				.pipe( rename(function(path)
 				{
 					path.basename = changeToLower(path.basename);
@@ -163,6 +130,48 @@ gulp.task('copy:init-baseWidgetFiles', function()
 				.on('error', function(msg) {console.log("copy:init Fail Error: ", msg.toString());})
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/'));
+});
+// Copy files and assets in the beginning
+gulp.task('copy:init-tests', function()
+{
+	gutil.log("Copy:init-tests Running");
+	// Copy non-prepocessed files
+	return gulp.src([sourceString + 'src/tests/', sourceString + 'src/tests/*.*'])
+				.pipe( rename(function(path)
+				{
+					path.basename = changeToLower(path.basename);
+				}))
+				.on('error', function(msg) {console.log("copy:init Fail Error: ", msg.toString());})
+				.pipe( print() )
+				.pipe(gulp.dest(sourceString + '.build/tests/'));
+});
+// Copy files and assets in the beginning
+gulp.task('copy:init-templates', function()
+{
+	gutil.log("Copy:init-templates Running");
+	// Copy non-prepocessed files
+	return gulp.src([sourceString + 'src/templates/', sourceString + 'src/templates/*.*'])
+				.pipe( rename(function(path)
+				{
+					path.basename = changeToLower(path.basename);
+				}))
+				.on('error', function(msg) {console.log("copy:init Fail Error: ", msg.toString());})
+				.pipe( print() )
+				.pipe(gulp.dest(sourceString + '.build/templates/'));
+});
+// Copy files and assets in the beginning
+gulp.task('copy:init-peg', function()
+{
+	gutil.log("Copy:init-peg Running");
+	// Copy non-prepocessed files
+	return gulp.src([sourceString + 'src/peg/', sourceString + 'src/peg/*.*'])
+				.pipe( rename(function(path)
+				{
+					path.basename = changeToLower(path.basename);
+				}))
+				.on('error', function(msg) {console.log("copy:init Fail Error: ", msg.toString());})
+				.pipe( print() )
+				.pipe(gulp.dest(sourceString + '.build/peg/'));
 });
 // Copy files and assets in the beginning
 gulp.task('copy:init-export', function()
@@ -248,6 +257,59 @@ gulp.task('copy:init-spec', function()
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/spec/'));
 });
+gulp.task('creator-css', ['sass'], function() {
+	return gulp
+		.src([sourceString + '.build/assets/css/creator.css'])
+		.pipe(concat('./creator.css'))
+		.pipe(gulp.dest(sourceString + '.build/assets/stylesheets/'));
+});
+
+gulp.task('player-css', ['sass'], function() {
+	return gulp
+		.src([sourceString + '.build/assets/css/player.css'])
+		.pipe(concat('./player.css'))
+		.pipe(gulp.dest(sourceString + '.build/assets/stylesheets/'));
+});
+gulp.task('creator-js', ['coffee', 'peg'], function() {
+	return gulp
+		.src([	sourceString + '.build/assets/js/_bootstrap.js',
+				sourceString + '.build/assets/js/latex.js',
+				sourceString + '.build/assets/js/creator.js'])
+		.pipe(concat('creator.js'))
+		.pipe(gulp.dest(sourceString + '.build/assets/scripts/'))
+});
+
+gulp.task('creator-min-js', ['creator-js'], function() {
+	return gulp
+		.src(sourceString + '.build/assets/scripts/creator.js')
+		.pipe(uglify())
+		.pipe(concat('creator.min.js'))
+		.pipe(gulp.dest(sourceString + '.build/assets/scripts/'))
+});
+
+gulp.task('player-js', ['coffee', 'peg'], function() {
+	return gulp
+		.src([	sourceString + '.build/assets/js/_bootstrap.js',
+				sourceString + '.build/assets/js/latex.js',
+				sourceString + '.build/assets/js/player.js'])
+		.pipe(concat('player.js'))
+		.pipe(gulp.dest(sourceString + '.build/assets/scripts/'))
+});
+
+gulp.task('player-min-js', ['player-js'], function() {
+	return gulp
+		.src(sourceString + '.build/assets/scripts/player.js')
+		.pipe(uglify())
+		.pipe(concat('player.min.js'))
+		.pipe(gulp.dest(sourceString + '.build/assets/scripts/'))
+});
+
+gulp.task('player-controller-js', ['coffee', 'peg'], function() {
+	return gulp
+		.src([sourceString + '.build/assets/js/playerTemplateController.js'])
+		.pipe(concat('player.js'))
+		.pipe(gulp.dest(sourceString + '.build/assets/scripts/'))
+});
 // Minifies the project css files
 gulp.task('cssmin', function()
 {
@@ -261,6 +323,21 @@ gulp.task('cssmin', function()
 					.pipe(gulp.dest(sourceString + '.build/'));
 	}
 	return "";
+});
+gulp.task('build-player', function() {
+	return gulp
+		.src([	sourceString + '.build/templates/player.html',
+				sourceString + '.build/templates/player.template.html'])
+		.pipe(concat(sourceString + '.build/player.html'))
+		.pipe(gulp.dest(sourceString + '.build/'))
+});
+
+gulp.task('build-creator', function() {
+	return gulp
+		.src([	sourceString + '.build/templates/creator.html',
+				sourceString + '.build/templates/player.template.html'])
+		.pipe(concat(sourceString + '.build/creator.html'))
+		.pipe(gulp.dest(sourceString + '.build/'))
 });
 // Injects css and js files into the html
 gulp.task('embed', function()
@@ -295,52 +372,6 @@ gulp.task('embed', function()
 gulp.task('help', function()
 {
 	showDocs();
-});
-// Transpiles Jade into plain html.
-gulp.task('jade', function()
-{
-	gutil.log("Jade Running");
-	// Engine
-	return gulp.src([sourceString + 'src/*.jade'])
-				.pipe( jade() )
-				.on('error', function(msg) {console.log("jade Fail Error: ", msg.toString());})
-				.pipe( print() )
-				.pipe(gulp.dest(sourceString + '.build/'));
-});
-// Transpiles Jade into plain html.
-gulp.task('jade-assets', function()
-{
-	gutil.log("Jade Assets Running");
-	// Assets
-	return gulp.src([sourceString + 'src/assets/*.jade', sourceString + 'src/assets/**/*.jade'])
-				.pipe( jade() )
-				.on('error', function(msg) {console.log("jade Fail Error: ", msg.toString());})
-				.pipe( print() )
-				.pipe(gulp.dest(sourceString + '.build/assets/'));
-});
-// Transpiles Less into plain CSS.
-gulp.task('less', function()
-{
-	gutil.log("Less Running");
-	// Engine
-	return gulp.src([sourceString + 'src/*.less'])
-				.pipe( less() )
-				.pipe( autoprefix() )
-				.on('error', function(msg) {console.log("less Fail Error: ", msg.toString());})
-				.pipe( print() )
-				.pipe(gulp.dest(sourceString + '.build/'));
-});
-// Transpiles Less into plain CSS.
-gulp.task('less-assets', function()
-{
-	gutil.log("Less Assets Running");
-	// Assets
-	return gulp.src([sourceString + 'src/assets/*.less', sourceString + 'src/assets/**/*.less'])
-				.pipe( less() )
-				.pipe( autoprefix() )
-				.on('error', function(msg) {console.log("less Fail Error: ", msg.toString());})
-				.pipe( print() )
-				.pipe(gulp.dest(sourceString + '.build/assets/'));
 });
 // Replaces all of the (internally sourced) script tags in the player/creator files with
 // a combined script tag referenceing a single player.js/creator.js source
@@ -430,8 +461,7 @@ gulp.task('ngAnnotate', function()
 // -e option sets the exported variable from modules.exports to window.latexParser
 // --cache option turns on memoization, without it expressions like "\sin()" can
 // hang the browser really bad (see https://github.com/pegjs/pegjs/issues/205)
-gulp.task('peg', shell.task([
-	'./node_modules/pegjs/bin/pegjs -e window.latexParser --cache ./src/peg/latex.peg ./assets/js/latex.js'
+gulp.task('peg', shell.task(['./sandbox/equation-sandbox/node_modules/pegjs/bin/pegjs -e window.latexParser --cache ./sandbox/equation-sandbox/.build/peg/latex.peg ./sandbox/equation-sandbox/.build/assets/js/latex.js'
 ]));
 // Copy zipped package into the "output" folder
 gulp.task('rename:ext', function()
@@ -548,24 +578,12 @@ gulp.task('sass', function()
 {
 	gutil.log("Sass Running");
 	// Engine
-	return gulp.src(sourceString + 'src/*.scss')
+	return gulp.src(sourceString + 'src/sass/*.scss')
 				.pipe( sass().on('error', function(msg) {console.log("sass Fail Error: ", msg.toString());}) )
 				.pipe( print() )
 				.pipe( autoprefix().on('error', function(msg) {console.log("sass Fail Error: ", msg.toString());}) )
 				.pipe( print() )
-				.pipe(gulp.dest(sourceString + '.build/'));
-});
-// Transpiles Sass into plain CSS.
-gulp.task('sass-assets', function()
-{
-	gutil.log("Sass Assets Running");
-	// Assets
-	return gulp.src([sourceString + 'src/assets/*.scss', sourceString + 'src/assets/**/*.scss'])
-				.pipe( sass().on('error', function(msg) {console.log("sass Fail Error: ", msg.toString());}) )
-				.pipe( print() )
-				.pipe( autoprefix().on('error', function(msg) {console.log("sass Fail Error: ", msg.toString());}) )
-				.pipe( print() )
-				.pipe(gulp.dest(sourceString + '.build/assets/'));
+				.pipe(gulp.dest(sourceString + '.build/assets/css/'));
 });
 // Mangles code before end-user receives, to protect proprietary content.
 gulp.task('uglify', function()
@@ -591,6 +609,9 @@ gulp.task('default', function ()
 		'clean:pre',
 		'copy:init-assets',
 		'copy:init-baseWidgetFiles',
+		'copy:init-tests',
+		'copy:init-templates',
+		'copy:init-peg',
 		'copy:init-export',
 		'copy:init-icons',
 		'copy:init-playdata',
@@ -598,12 +619,17 @@ gulp.task('default', function ()
 		'copy:init-score',
 		'copy:init-spec',
 		'peg',
-		'babel',
-		'babel-assets',
-		['coffee','coffee-assets'],
-		['less','less-assets'],
-		['sass','sass-assets'],
-		['jade','jade-assets'],
+		'coffee',
+		'sass',
+		'creator-js',
+		'creator-min-js',
+		'player-js',
+		'player-min-js',
+		'creator-css',
+		'player-css',
+		'player-controller-js',
+		'build-player',
+		'build-creator',
 		'replace:materiaJS',
 		'ngAnnotate',
 		'cssmin',
@@ -644,6 +670,9 @@ exports["gulp"] = function(widget, minify, mangle, embed, callback)
 		'clean:pre',
 		'copy:init-assets',
 		'copy:init-baseWidgetFiles',
+		'copy:init-tests',
+		'copy:init-templates',
+		'copy:init-peg',
 		'copy:init-export',
 		'copy:init-icons',
 		'copy:init-playdata',
@@ -651,12 +680,17 @@ exports["gulp"] = function(widget, minify, mangle, embed, callback)
 		'copy:init-score',
 		'copy:init-spec',
 		'peg',
-		'babel',
-		'babel-assets',
-		['coffee','coffee-assets'],
-		['less','less-assets'],
-		['sass','sass-assets'],
-		['jade','jade-assets'],
+		'coffee',
+		'sass',
+		'creator-js',
+		'creator-min-js',
+		'player-js',
+		'player-min-js',
+		'creator-css',
+		'player-css',
+		'player-controller-js',
+		'build-player',
+		'build-creator',
 		'replace:materiaJS',
 		'ngAnnotate',
 		'cssmin',
