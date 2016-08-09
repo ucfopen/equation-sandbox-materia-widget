@@ -1,6 +1,5 @@
 var argv = require('yargs').argv;
 var autoprefix = require('gulp-autoprefixer');
-var babel = require('gulp-babel');
 var clean = require('gulp-clean');
 var clone = require('gulp-clone');
 var coffee = require('gulp-coffee');
@@ -11,8 +10,6 @@ var exec = require('child_process').exec;
 var fs = require('fs');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
-var jade = require('gulp-jade');
-var less = require('gulp-less');
 var ngAnnotate = require('gulp-ng-annotate');
 var print = require('gulp-print');
 var rename = require('gulp-rename');
@@ -24,7 +21,7 @@ var shell = require('gulp-shell');
 var uglify = require('gulp-uglify');
 var zip = require('gulp-zip');
 
-var configs = require('../../backend/config.json')
+var configs = require('../../backend/config.json');
 
 var widget = sanitize("equation-sandbox");
 // When compiling this may be entered as an argument.
@@ -45,7 +42,8 @@ var materiaJsReplacements = [
 	{match: /src="materia.creatorcore.js"/g, replacement: 'src="../../../js/materia.creatorcore.js"'},
 	{match: /src="materia.storage.manager.js"/g, replacement: 'src="../../../js/materia.storage.manager.js"'},
 	{match: /src="materia.storage.table.js"/g, replacement: 'src="../../../js/materia.storage.table.js"'}
-]
+];
+
 // Cleans folder of any old files before populating with the newest run.
 gulp.task('clean:pre', function()
 {
@@ -101,10 +99,6 @@ gulp.task('copy:init-assets', function()
 	gutil.log("Copy:init-assets Running");
 	// Copy assets
 	return gulp.src([sourceString + 'src/assets/*', sourceString + 'src/assets/**/*'])
-				.pipe( rename(function(path)
-				{
-					path.basename = changeToLower(path.basename);
-				}))
 				.on('error', function(msg) {console.log("copy:init Fail Error: ", msg.toString());})
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/assets/'));
@@ -118,15 +112,10 @@ gulp.task('copy:init-baseWidgetFiles', function()
 					sourceString + 'src/demo.json',
 					sourceString + 'src/*.html',
 					sourceString + 'src/*.js',
-					sourceString + 'src/*.jsx',
 					sourceString + 'src/*.css',
 					sourceString + 'src/tests/',
 					sourceString + 'src/templates/',
 					sourceString + 'src/peg/'])
-				.pipe( rename(function(path)
-				{
-					path.basename = changeToLower(path.basename);
-				}))
 				.on('error', function(msg) {console.log("copy:init Fail Error: ", msg.toString());})
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/'));
@@ -137,10 +126,6 @@ gulp.task('copy:init-tests', function()
 	gutil.log("Copy:init-tests Running");
 	// Copy non-prepocessed files
 	return gulp.src([sourceString + 'src/tests/', sourceString + 'src/tests/*.*'])
-				.pipe( rename(function(path)
-				{
-					path.basename = changeToLower(path.basename);
-				}))
 				.on('error', function(msg) {console.log("copy:init Fail Error: ", msg.toString());})
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/tests/'));
@@ -151,10 +136,6 @@ gulp.task('copy:init-templates', function()
 	gutil.log("Copy:init-templates Running");
 	// Copy non-prepocessed files
 	return gulp.src([sourceString + 'src/templates/', sourceString + 'src/templates/*.*'])
-				.pipe( rename(function(path)
-				{
-					path.basename = changeToLower(path.basename);
-				}))
 				.on('error', function(msg) {console.log("copy:init Fail Error: ", msg.toString());})
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/templates/'));
@@ -165,10 +146,6 @@ gulp.task('copy:init-peg', function()
 	gutil.log("Copy:init-peg Running");
 	// Copy non-prepocessed files
 	return gulp.src([sourceString + 'src/peg/', sourceString + 'src/peg/*.*'])
-				.pipe( rename(function(path)
-				{
-					path.basename = changeToLower(path.basename);
-				}))
 				.on('error', function(msg) {console.log("copy:init Fail Error: ", msg.toString());})
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/peg/'));
@@ -179,10 +156,6 @@ gulp.task('copy:init-export', function()
 	gutil.log("Copy:init-export Running");
 	// Copy Files
 	return gulp.src([sourceString + 'src/_export/export_module.php'])
-				.pipe( rename(function(path)
-				{
-					path.basename = changeToLower(path.basename);
-				}))
 				.on('error', function(msg) {console.log("copy:init Fail Error: ", msg.toString());})
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/_export/'));
@@ -193,10 +166,6 @@ gulp.task('copy:init-icons', function()
 	gutil.log("Copy:init-icons Running");
 	// Copy assets
 	return gulp.src([sourceString + 'src/_icons/*'])
-				.pipe( rename(function(path)
-				{
-					path.basename = changeToLower(path.basename);
-				}))
 				.on('error', function(msg) {console.log("copy:init Fail Error: ", msg.toString());})
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/img/'));
@@ -207,10 +176,6 @@ gulp.task('copy:init-playdata', function()
 	gutil.log("Copy:init-playdata Running");
 	// Copy Files
 	return gulp.src([sourceString + 'src/_exports/playdata_exporters.php'])
-				.pipe( rename(function(path)
-				{
-					path.basename = changeToLower(path.basename);
-				}))
 				.on('error', function(msg) {console.log("copy:init Fail Error: ", msg.toString());})
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/_exports/'));
@@ -221,10 +186,6 @@ gulp.task('copy:init-screenshots', function()
 	gutil.log("Copy:init-screenshots Running");
 	// Copy assets
 	return gulp.src([sourceString + 'src/_screen-shots/*'])
-				.pipe( rename(function(path)
-				{
-					path.basename = changeToLower(path.basename);
-				}))
 				.on('error', function(msg) {console.log("copy:init Fail Error: ", msg.toString());})
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/img/screen-shots/'));
@@ -235,10 +196,6 @@ gulp.task('copy:init-score', function()
 	gutil.log("Copy:init-score Running");
 	// Copy Files
 	return gulp.src([sourceString + 'src/_score/*.*'])
-				.pipe( rename(function(path)
-				{
-					path.basename = changeToLower(path.basename);
-				}))
 				.on('error', function(msg) {console.log("copy:init Fail Error: ", msg.toString());})
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/_score-modules/'));
@@ -249,10 +206,6 @@ gulp.task('copy:init-spec', function()
 	gutil.log("Copy:init-spec Running");
 	// Copy Files
 	return gulp.src([sourceString + 'src/spec/*.*'])
-				.pipe( rename(function(path)
-				{
-					path.basename = changeToLower(path.basename);
-				}))
 				.on('error', function(msg) {console.log("copy:init Fail Error: ", msg.toString());})
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/spec/'));
@@ -263,7 +216,6 @@ gulp.task('creator-css', ['sass'], function() {
 		.pipe(concat('./creator.css'))
 		.pipe(gulp.dest(sourceString + '.build/assets/stylesheets/'));
 });
-
 gulp.task('player-css', ['sass'], function() {
 	return gulp
 		.src([sourceString + '.build/assets/css/player.css'])
@@ -278,7 +230,6 @@ gulp.task('creator-js', ['coffee', 'peg'], function() {
 		.pipe(concat('creator.js'))
 		.pipe(gulp.dest(sourceString + '.build/assets/scripts/'))
 });
-
 gulp.task('creator-min-js', ['creator-js'], function() {
 	return gulp
 		.src(sourceString + '.build/assets/scripts/creator.js')
@@ -286,7 +237,6 @@ gulp.task('creator-min-js', ['creator-js'], function() {
 		.pipe(concat('creator.min.js'))
 		.pipe(gulp.dest(sourceString + '.build/assets/scripts/'))
 });
-
 gulp.task('player-js', ['coffee', 'peg'], function() {
 	return gulp
 		.src([	sourceString + '.build/assets/js/_bootstrap.js',
@@ -295,7 +245,6 @@ gulp.task('player-js', ['coffee', 'peg'], function() {
 		.pipe(concat('player.js'))
 		.pipe(gulp.dest(sourceString + '.build/assets/scripts/'))
 });
-
 gulp.task('player-min-js', ['player-js'], function() {
 	return gulp
 		.src(sourceString + '.build/assets/scripts/player.js')
@@ -303,7 +252,6 @@ gulp.task('player-min-js', ['player-js'], function() {
 		.pipe(concat('player.min.js'))
 		.pipe(gulp.dest(sourceString + '.build/assets/scripts/'))
 });
-
 gulp.task('player-controller-js', ['coffee', 'peg'], function() {
 	return gulp
 		.src([sourceString + '.build/assets/js/playerTemplateController.js'])
@@ -331,7 +279,6 @@ gulp.task('build-player', function() {
 		.pipe(concat(sourceString + '.build/player.html'))
 		.pipe(gulp.dest(sourceString + '.build/'))
 });
-
 gulp.task('build-creator', function() {
 	return gulp
 		.src([	sourceString + '.build/templates/creator.html',
@@ -401,6 +348,8 @@ function minifyJs(htmlName)
 	{
 		if(toreplace.indexOf("//") != -1) return toreplace;
 		if(toreplace.indexOf("materia.") != -1) return toreplace;
+		if(toreplace.indexOf("data-embed='false'") != -1) return toreplace;
+		if(toreplace.indexOf("data-embed=\"false\"") != -1) return toreplace;
 		assets.push(sourceString + '.build/' + arguments['1']);
 		return "";
 	});
@@ -439,6 +388,8 @@ function minifyCss(htmlName)
 	{
 		if(toreplace.indexOf("//") != -1) return toreplace;
 		if(toreplace.indexOf("materia.") != -1) return toreplace;
+		if(toreplace.indexOf("data-embed='false'") != -1) return toreplace;
+		if(toreplace.indexOf("data-embed=\"false\"") != -1) return toreplace;
 		assets.push(sourceString + '.build/' + arguments['1']);
 		return "";
 	});
@@ -514,6 +465,8 @@ function replaceScriptAssets(htmlName)
 				{
 					if(toreplace.indexOf("//") != -1) return toreplace;
 					if(toreplace.indexOf("materia.") != -1) return toreplace;
+					if(toreplace.indexOf("data-embed='false'") != -1) return toreplace;
+					if(toreplace.indexOf("data-embed=\"false\"") != -1) return toreplace;
 					else return "";
 				}))
 				.pipe( print() )
@@ -522,7 +475,7 @@ function replaceScriptAssets(htmlName)
 					return "<script src=\"" + htmlName + ".js\"></script></head>";
 				}))
 				.pipe( print() )
-				.pipe(gulp.dest(sourceString + '.build/'))
+				.pipe(gulp.dest(sourceString + '.build/'));
 }
 // Replaces all of the (internally sourced) link tags in the player/creator files with
 // a combined link tag referenceing a single player.css/creator.css source
@@ -552,6 +505,8 @@ function replaceLinkAssets(htmlName)
 				{
 					if(toreplace.indexOf("//") != -1) return toreplace;
 					if(toreplace.indexOf("materia.") != -1) return toreplace;
+					if(toreplace.indexOf("data-embed='false'") != -1) return toreplace;
+					if(toreplace.indexOf("data-embed=\"false\"") != -1) return toreplace;
 					else return "";
 				}))
 				.pipe( print() )
@@ -560,7 +515,7 @@ function replaceLinkAssets(htmlName)
 					return "<link rel='stylesheet' type='text/css' href=\"" + htmlName + ".css\"></head>";
 				}))
 				.pipe( print() )
-				.pipe(gulp.dest(sourceString + '.build/'))
+				.pipe(gulp.dest(sourceString + '.build/'));
 }
 // Replaces file path data based off of preset patterns.
 gulp.task('replace:materiaJS', function()
@@ -715,7 +670,7 @@ exports["gulp"] = function(widget, minify, mangle, embed, callback)
 exports["install"] = function(callback)
 {
 	return fullExport(callback);
-}
+};
 
 var fullExport = function(callback)
 {
@@ -769,10 +724,6 @@ function sanitize(str)
 {
 	if (str) { return str.replace(/[^a-zA-Z0-9-_]/g, ''); }
 	else { return ''; }
-};
-function changeToLower(file)
-{
-	return file.toLowerCase();
 }
 function showDocs()
 {
