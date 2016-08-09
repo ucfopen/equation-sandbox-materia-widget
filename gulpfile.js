@@ -140,6 +140,16 @@ gulp.task('copy:init-templates', function()
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/templates/'));
 });
+// Copy fonts in the beginning
+gulp.task('copy:init-fonts', function()
+{
+	gutil.log("Copy:init-fonts Running");
+	// Copy non-prepocessed files
+	return gulp.src([sourceString + 'src/assets/vendor/mathquill-0.9.4/font/*.*'])
+				.on('error', function(msg) {console.log("copy:init Fail Error: ", msg.toString());})
+				.pipe( print() )
+				.pipe(gulp.dest(sourceString + '.build/font/'));
+});
 // Copy files and assets in the beginning
 gulp.task('copy:init-peg', function()
 {
@@ -344,7 +354,7 @@ function minifyJs(htmlName)
 {
 	var assets = [];
 	var data = fs.readFileSync(sourceString + '.build/' + htmlName + '.html');
-	data.toString().replace(/<script.*src=\"(.*)"(.*)>/g, function(toreplace)
+	data.toString().replace(/<script.*src=\"(?!assets\/vendor\/jsxgraphcore|assets\/vendor\/jquery.min.js|assets\/vendor\/mathquill-0.9.4\/mathquill.min.js|assets\/vendor\/angular.min.js)(.*)"(.*)>/g, function(toreplace)
 	{
 		if(toreplace.indexOf("//") != -1) return toreplace;
 		if(toreplace.indexOf("materia.") != -1) return toreplace;
@@ -461,7 +471,7 @@ function replaceScriptAssets(htmlName)
 {
 	return gulp.src(sourceString + '.build/' + htmlName + '.html')
 				.pipe( print() )
-				.pipe(replace(/<script.*src=\"(.*)"(.*)>/g, function(toreplace)
+				.pipe(replace(/<script.*src=\"(?!assets\/vendor\/jsxgraphcore|assets\/vendor\/jquery.min.js|assets\/vendor\/mathquill-0.9.4\/mathquill.min.js|assets\/vendor\/angular.min.js)(.*)"(.*)>/g, function(toreplace)
 				{
 					if(toreplace.indexOf("//") != -1) return toreplace;
 					if(toreplace.indexOf("materia.") != -1) return toreplace;
@@ -470,9 +480,9 @@ function replaceScriptAssets(htmlName)
 					else return "";
 				}))
 				.pipe( print() )
-				.pipe(replace(/<\/head>/g, function(toreplace)
+				.pipe(replace(/<\/body>/g, function(toreplace)
 				{
-					return "<script src=\"" + htmlName + ".js\"></script></head>";
+					return "<script src=\"" + htmlName + ".js\"></script></body>";
 				}))
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/'));
@@ -566,6 +576,7 @@ gulp.task('default', function ()
 		'copy:init-baseWidgetFiles',
 		'copy:init-tests',
 		'copy:init-templates',
+		'copy:init-fonts',
 		'copy:init-peg',
 		'copy:init-export',
 		'copy:init-icons',
@@ -627,6 +638,7 @@ exports["gulp"] = function(widget, minify, mangle, embed, callback)
 		'copy:init-baseWidgetFiles',
 		'copy:init-tests',
 		'copy:init-templates',
+		'copy:init-fonts',
 		'copy:init-peg',
 		'copy:init-export',
 		'copy:init-icons',
