@@ -39,7 +39,6 @@ var materiaJsReplacements = [
 	{match: /src="materia.enginecore.js"/g, replacement: function() {return 'src="../../../js/materia.enginecore.js"';} },
 	{match: /src="materia.score.js"/g, replacement: 'src="../../../js/materia.score.js"'},
 	{match: /src="materia.creatorcore.js"/g, replacement: 'src="../../../js/materia.creatorcore.js"'},
-	{match: /src="materia.creatorcore.js"/g, replacement: 'src="../../../js/materia.creatorcore.js"'},
 	{match: /src="materia.storage.manager.js"/g, replacement: 'src="../../../js/materia.storage.manager.js"'},
 	{match: /src="materia.storage.table.js"/g, replacement: 'src="../../../js/materia.storage.table.js"'}
 ];
@@ -82,10 +81,6 @@ gulp.task('compress', function()
 					'!' + sourceString + '.build/**/*.coffee',
 					'!' + sourceString + '.build/*.scss',
 					'!' + sourceString + '.build/**/*.scss',
-					'!' + sourceString + '.build/*.less',
-					'!' + sourceString + '.build/**/*.less',
-					'!' + sourceString + '.build/*.jade',
-					'!' + sourceString + '.build/**/*.jade',
 					'!' + sourceString + '.build/*.zip',
 					'!' + sourceString + '.build/*.wigt',])
 				.pipe( print() )
@@ -112,10 +107,7 @@ gulp.task('copy:init-baseWidgetFiles', function()
 					sourceString + 'src/demo.json',
 					sourceString + 'src/*.html',
 					sourceString + 'src/*.js',
-					sourceString + 'src/*.css',
-					sourceString + 'src/tests/',
-					sourceString + 'src/templates/',
-					sourceString + 'src/peg/'])
+					sourceString + 'src/*.css'])
 				.on('error', function(msg) {console.log("copy:init Fail Error: ", msg.toString());})
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/'));
@@ -221,51 +213,84 @@ gulp.task('copy:init-spec', function()
 				.pipe(gulp.dest(sourceString + '.build/spec/'));
 });
 gulp.task('creator-css', ['sass'], function() {
+	gutil.log("creator-css Running");
 	return gulp
 		.src([sourceString + '.build/assets/css/creator.css'])
 		.pipe(concat('./creator.css'))
+		.pipe( print() )
 		.pipe(gulp.dest(sourceString + '.build/assets/stylesheets/'));
 });
-gulp.task('player-css', ['sass'], function() {
+gulp.task('player-css', function() {
+	gutil.log("player-css Running");
 	return gulp
 		.src([sourceString + '.build/assets/css/player.css'])
 		.pipe(concat('./player.css'))
+		.pipe( print() )
 		.pipe(gulp.dest(sourceString + '.build/assets/stylesheets/'));
 });
 gulp.task('creator-js', ['coffee', 'peg'], function() {
+	gutil.log("creator-js Running");
 	return gulp
 		.src([	sourceString + '.build/assets/js/_bootstrap.js',
 				sourceString + '.build/assets/js/latex.js',
 				sourceString + '.build/assets/js/creator.js'])
 		.pipe(concat('creator.js'))
+		.pipe( print() )
+		.pipe(gulp.dest(sourceString + '.build/assets/scripts/'))
+});
+gulp.task('creator-js-command-line', ['coffee', 'peg-command-line'], function() {
+	gutil.log("creator-js Running");
+	return gulp
+		.src([	sourceString + '.build/assets/js/_bootstrap.js',
+				sourceString + '.build/assets/js/latex.js',
+				sourceString + '.build/assets/js/creator.js'])
+		.pipe(concat('creator.js'))
+		.pipe( print() )
 		.pipe(gulp.dest(sourceString + '.build/assets/scripts/'))
 });
 gulp.task('creator-min-js', ['creator-js'], function() {
+	gutil.log("creator-min-js Running");
 	return gulp
 		.src(sourceString + '.build/assets/scripts/creator.js')
 		.pipe(uglify())
 		.pipe(concat('creator.min.js'))
+		.pipe( print() )
 		.pipe(gulp.dest(sourceString + '.build/assets/scripts/'))
 });
-gulp.task('player-js', ['coffee', 'peg'], function() {
+gulp.task('creator-min-js-command-line', ['creator-js-command-line'], function() {
+	gutil.log("creator-min-js Running");
+	return gulp
+		.src(sourceString + '.build/assets/scripts/creator.js')
+		.pipe(uglify())
+		.pipe(concat('creator.min.js'))
+		.pipe( print() )
+		.pipe(gulp.dest(sourceString + '.build/assets/scripts/'))
+});
+gulp.task('player-js', function() {
+	gutil.log("player-js Running");
 	return gulp
 		.src([	sourceString + '.build/assets/js/_bootstrap.js',
 				sourceString + '.build/assets/js/latex.js',
 				sourceString + '.build/assets/js/player.js'])
 		.pipe(concat('player.js'))
+		.pipe( print() )
 		.pipe(gulp.dest(sourceString + '.build/assets/scripts/'))
 });
 gulp.task('player-min-js', ['player-js'], function() {
+	gutil.log("player-min-js Running");
 	return gulp
 		.src(sourceString + '.build/assets/scripts/player.js')
 		.pipe(uglify())
 		.pipe(concat('player.min.js'))
+		.pipe( print() )
 		.pipe(gulp.dest(sourceString + '.build/assets/scripts/'))
 });
-gulp.task('player-controller-js', ['coffee', 'peg'], function() {
+gulp.task('player-controller-js', function() {
+	gutil.log("player-controller-js Running");
 	return gulp
 		.src([sourceString + '.build/assets/js/playerTemplateController.js'])
 		.pipe(concat('player.js'))
+		.pipe( print() )
 		.pipe(gulp.dest(sourceString + '.build/assets/scripts/'))
 });
 // Minifies the project css files
@@ -283,17 +308,21 @@ gulp.task('cssmin', function()
 	return "";
 });
 gulp.task('build-player', function() {
+	gutil.log("build-player Running");
 	return gulp
 		.src([	sourceString + '.build/templates/player.html',
 				sourceString + '.build/templates/player.template.html'])
 		.pipe(concat(sourceString + '.build/player.html'))
+		.pipe( print() )
 		.pipe(gulp.dest(sourceString + '.build/'))
 });
 gulp.task('build-creator', function() {
+	gutil.log("build-creator Running");
 	return gulp
 		.src([	sourceString + '.build/templates/creator.html',
 				sourceString + '.build/templates/player.template.html'])
 		.pipe(concat(sourceString + '.build/creator.html'))
+		.pipe( print() )
 		.pipe(gulp.dest(sourceString + '.build/'))
 });
 // Injects css and js files into the html
@@ -365,7 +394,6 @@ function minifyJs(htmlName)
 	});
 
 	return gulp.src(assets)
-				.pipe( print() )
 				.pipe(concat(htmlName + ".js"))
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/'));
@@ -404,7 +432,6 @@ function minifyCss(htmlName)
 		return "";
 	});
 	return gulp.src(assets)
-				.pipe( print() )
 				.pipe(concat(htmlName + ".css"))
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/'));
@@ -423,6 +450,8 @@ gulp.task('ngAnnotate', function()
 // --cache option turns on memoization, without it expressions like "\sin()" can
 // hang the browser really bad (see https://github.com/pegjs/pegjs/issues/205)
 gulp.task('peg', shell.task(['./sandbox/equation-sandbox/node_modules/pegjs/bin/pegjs -e window.latexParser --cache ./sandbox/equation-sandbox/.build/peg/latex.peg ./sandbox/equation-sandbox/.build/assets/js/latex.js'
+]));
+gulp.task('peg-command-line', shell.task(['./node_modules/pegjs/bin/pegjs -e window.latexParser --cache ./.build/peg/latex.peg ./.build/assets/js/latex.js'
 ]));
 // Copy zipped package into the "output" folder
 gulp.task('rename:ext', function()
@@ -510,7 +539,6 @@ gulp.task('replace-creator-links', function()
 function replaceLinkAssets(htmlName)
 {
 	return gulp.src(sourceString + '.build/' + htmlName + '.html')
-				.pipe( print() )
 				.pipe(replace(/<link.*href=(\'|\")(.*)(\'|\")(.*)>/g, function(toreplace)
 				{
 					if(toreplace.indexOf("//") != -1) return toreplace;
@@ -519,7 +547,6 @@ function replaceLinkAssets(htmlName)
 					if(toreplace.indexOf("data-embed=\"false\"") != -1) return toreplace;
 					else return "";
 				}))
-				.pipe( print() )
 				.pipe(replace(/<\/head>/g, function(toreplace)
 				{
 					return "<link rel='stylesheet' type='text/css' href=\"" + htmlName + ".css\"></head>";
@@ -532,7 +559,6 @@ gulp.task('replace:materiaJS', function()
 {
 	gutil.log("Replace Materia JS Running");
 	return gulp.src([sourceString + '.build/*.html'])
-				.pipe( print() )
 				.pipe(replaceTask( { patterns: materiaJsReplacements } ))
 				.on('error', function(msg) {console.log("replace:materiaJS Fail Error: ", msg.toString());})
 				.pipe( print() )
@@ -545,7 +571,6 @@ gulp.task('sass', function()
 	// Engine
 	return gulp.src(sourceString + 'src/sass/*.scss')
 				.pipe( sass().on('error', function(msg) {console.log("sass Fail Error: ", msg.toString());}) )
-				.pipe( print() )
 				.pipe( autoprefix().on('error', function(msg) {console.log("sass Fail Error: ", msg.toString());}) )
 				.pipe( print() )
 				.pipe(gulp.dest(sourceString + '.build/assets/css/'));
@@ -584,11 +609,8 @@ gulp.task('default', function ()
 		'copy:init-screenshots',
 		'copy:init-score',
 		'copy:init-spec',
-		'peg',
-		'coffee',
-		'sass',
-		'creator-js',
-		'creator-min-js',
+		'creator-js-command-line',
+		'creator-min-js-command-line',
 		'player-js',
 		'player-min-js',
 		'creator-css',
@@ -646,9 +668,6 @@ exports["gulp"] = function(widget, minify, mangle, embed, callback)
 		'copy:init-screenshots',
 		'copy:init-score',
 		'copy:init-spec',
-		'peg',
-		'coffee',
-		'sass',
 		'creator-js',
 		'creator-min-js',
 		'player-js',
