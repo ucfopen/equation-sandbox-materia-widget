@@ -1,3 +1,5 @@
+# latexParser = require("../peg/latex.pegjs")
+
 angular.module 'equationSandbox'
 	.controller 'PlayerTemplateController', ['$scope', '$window', '$http', '$timeout', ($scope, $window, $http, $timeout) ->
 		"use strict";
