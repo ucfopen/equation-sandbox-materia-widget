@@ -1,3 +1,2 @@
 angular.module('equationSandbox', [])
-
-import './js/player-template-controller'
+require('./js/player-template-controller')
