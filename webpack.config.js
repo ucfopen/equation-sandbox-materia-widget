@@ -1,35 +1,11 @@
+const WebpackSyncShellPlugin = require('webpack-synchronizable-shell-plugin')
 const path = require('path')
-// const latex = require('!pegjs!pegjs-loader')
-const latex = require('pegjs-loader')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 let srcPath = path.join(process.cwd(), 'src')
 let outputPath = path.join(process.cwd(), 'build')
 
-let overrideConfig = {preCopy: [
-	{
-		from: srcPath+'/app.js',
-		to: outputPath,
-	},
-	{
-		from: srcPath+'/tests',
-		to: outputPath,
-		toType: 'dir'
-	},
-	{
-		from: srcPath+'/peg',
-		to: outputPath+'/peg',
-		toType: 'dir'
-	},
-	{
-		from: srcPath+'/templates',
-		to: outputPath,
-		toType: 'dir'
-	}
-]}
-
 // load the reusable legacy webpack config from materia-widget-dev
-let webpackConfig = require('materia-widget-development-kit/webpack-widget').getLegacyWidgetBuildConfig(overrideConfig)
+let webpackConfig = require('materia-widget-development-kit/webpack-widget').getLegacyWidgetBuildConfig()
 
 delete webpackConfig.entry['creator.js']
 delete webpackConfig.entry['player.js']
@@ -37,18 +13,14 @@ delete webpackConfig.entry['creator.css']
 delete webpackConfig.entry['player.css']
 
 webpackConfig.entry['assets/js/creator.js'] = [
-	path.join(__dirname, 'src', 'coffee', '_bootstrap.coffee'),
-	path.join(__dirname, 'src', 'coffee', 'creator.coffee')
+	path.join(__dirname, 'src', 'js', 'creator.js')
 ]
 webpackConfig.entry['assets/js/player.js'] = [
-	path.join(__dirname, 'src', 'coffee', '_bootstrap.coffee'),
-	path.join(__dirname, 'src', 'coffee', 'player.coffee')
+	path.join(__dirname, 'src', 'js', 'player.js')
 ]
-webpackConfig.entry['assets/js/playerTemplateController.js'] = [
-	path.join(__dirname, 'src', 'coffee', 'playerTemplateController.coffee'),
-	path.join(__dirname, 'src', 'peg', 'latex.pegjs'),
+webpackConfig.entry['assets/js/player-template-controller.js'] = [
+	path.join(__dirname, 'src', 'js', 'player-template-controller.js'),
 ]
-
 webpackConfig.entry['assets/stylesheets/creator.css'] = [
 	path.join(__dirname, 'src', 'sass', 'creator.scss'),
 	path.join(__dirname, 'src', 'templates', 'creator.html')
@@ -62,24 +34,23 @@ webpackConfig.entry['assets/css/main.css'] = [
 	path.join(__dirname, 'src', 'sass', 'main.scss'),
 ]
 
-webpackConfig.entry['peg/latex.pegjs'] = [
-	path.join(__dirname, 'src', 'peg', 'latex.pegjs'),
-]
-
 webpackConfig.module.rules.push({
-	test: /\.pegjs$/,
-	exclude: /node_modules/,
-	loader: ExtractTextPlugin.extract({
-		use: [
-			{
-				loader: 'raw-loader'
-			},
-			{
-				loader: 'pegjs-loader',
-				options: { cache: true }
-			}
-		]
-	})
+	test: /\.js$/,
+	exclude: [/node_modules/],
+	use: {
+		loader: 'babel-loader',
+		options: {
+			presets: ['env']
+		}
+	}
 })
+
+webpackConfig.plugins.push(new WebpackSyncShellPlugin({
+	onBuildStart: {
+		scripts: ['yarn peg:build'],
+		blocking: true,
+		parallel: false
+	}
+}))
 
 module.exports = webpackConfig

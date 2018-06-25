@@ -54,15 +54,13 @@ main
 .box.eq
 {
 	position: relative;
-
+	background: white;
 	box-sizing: border-box;
 	margin: 20px auto;
 	margin-bottom: 5px;
 	width: $box-eq-width;
 	height: $box-eq-height;
-
-	border: 1px solid rgba(0, 0, 0, .25);
-	box-shadow: 0 2px 0 rgba(0, 0, 0, .25);
+	border-radius: 5px;
 
 	h2
 	{
@@ -101,10 +99,8 @@ main
 	margin: 0 20px;
 	height: 445px;
 	padding: 15px;
-
-	background: $yellow;
-	border: 1px solid rgba(0, 0, 0, .25);
-	box-shadow: 0 2px 0 rgba(0, 0, 0, .25);
+	border-radius: 5px;
+	background: white;
 
 	.help
 	{
@@ -146,7 +142,7 @@ main
 	position: relative;
 	width: 250px;
 	z-index: 2;
-
+	border-radius: 5px;
 	overflow: auto;
 
 	ul
@@ -289,6 +285,7 @@ main
 	height: 384px;
 	padding: 0;
 	box-sizing: border-box;
+	border-radius: 5px;
 
 	.graph
 	{

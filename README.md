@@ -7,14 +7,24 @@ Required dependences:
 ---------------------
 
 * node
-* npm
-* bower
+* yarn
 
-To build:
----------
+To install & develop:
+---------------------
 
-1. Run `npm install`
-2. Run `bower install`
-3. Run `gulp`
+1. Run `yarn`
+2. Run `yarn peg:build` to build the PEG parser
+3. Run `yarn start` to start the development server
 
-This will create everything you need in the /public directory
+Developing the parser:
+----------------------
+
+1. Run `yarn peg:watch`
+2. Run `yarn start`
+
+Changes to the parser will require a browser refresh
+
+To build for production:
+------------------------
+
+1. Run `yarn build`
