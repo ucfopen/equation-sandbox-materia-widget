@@ -30,7 +30,7 @@
 		<!-- MAIN PLAYER SCRIPT -->
 		<script src="./app.js"></script>
 		<script src="./assets/js/creator.js"></script>
-		<script src="./assets/js/playerTemplateController.js"></script>
+		<script src="./assets/js/player-template-controller.js"></script>
 
 
 	</head>
@@ -43,7 +43,7 @@
 		<div class="top row input-sidebar">
 			<div class="top-box input-section">
 				<h2 class="mode-heading">Mode:</h2>
-				<select ng-model="mode">
+				<select ng-model="mode" ng-change="onChangeMode()">
 					<option value="resultingY">Result value</option>
 					<option value="graphX">Graph x</option>
 				</select>
@@ -93,7 +93,7 @@
 
 				<div class="input-help">
 					<ul>
-						<li>Equation must have <code>x</code></li>
+						<li>For "Graph X" mode equation must have an <code>x</code> variable</li>
 						<li>Must be in the form of <code>variable = expression</code></li>
 						<li>Functions require a backslash (Try entering <code>\sin x</code>)</li>
 						<li>Same for special variables (Try <code>\theta</code>)</li>

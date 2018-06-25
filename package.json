@@ -8,29 +8,30 @@
   "main": "app.js",
   "dependencies": {
     "angular": "~1.5.0",
-    "angular-animate": "~1.5.0",
-    "angular-loader": "~1.5.0",
-    "angular-mocks": "~1.5.0",
-    "angular-route": "~1.5.0",
-    "angular-sanitize": "~1.5.0",
-    "del": "^1.1.1",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.7.0",
+    "materia-client-assets": "ucfcdl/materia-client-assets.git#v0.3.4",
     "materia-widget-development-kit": "git+ssh://git@clu.cdl.ucf.edu:materia/materia-widget-development-kit.git#~v1.1.0",
+    "onchange": "^4.0.0",
     "pegjs": "^0.8.0",
-    "pegjs-loader": "^0.5.4"
+    "webpack-synchronizable-shell-plugin": "^0.0.7"
   },
   "devDependencies": {
     "sass-graph": "^2.1.1"
   },
   "scripts": {
     "start": "webpack-dev-server",
-    "buildDev": "webpack",
+    "buildDev": "webpack --verbose",
     "build": "webpack -p",
     "pretest": "npm run buildDev",
     "test": "karma start ./karma.conf.js --no-auto-watch --single-run",
     "pretestFull": "npm run buildDev",
     "testFull": "karma start ./karma-full.conf.js",
     "clientAssets:link": "cd ../materia-client-assets && yarn link && cd - && yarn link materia-client-assets",
-    "devKit:link": "cd ../materia-widget-development-kit && yarn link && cd - && yarn link materia-widget-development-kit"
+    "devKit:link": "cd ../materia-widget-development-kit && yarn link && cd - && yarn link materia-widget-development-kit",
+    "peg:build": "pegjs --cache ./src/peg/latex.pegjs ./src/js/latex-parser.js",
+    "peg:watch": "onchange './src/peg/latex.pegjs' -- yarn peg:build"
   },
   "author": "New Media"
 }
