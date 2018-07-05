@@ -59,8 +59,13 @@
 						</div>
 					</li>
 				</ul>
+				<label class="variable-input-container" ng-show="mode === 'graphX'">
+				<input checked="true" type="checkbox" ng-change="update()" ng-model="showTan">
+				Show Tangent Line
+				</label>
 			</div>
 			<div class="box output" ng-show="mode === 'graphX'">
+
 				<div id="jxgbox"></div>
 			</div>
 			<div class="box output" ng-show="mode === 'resultingY'">
