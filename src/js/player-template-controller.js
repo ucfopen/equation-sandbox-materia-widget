@@ -29,6 +29,8 @@ angular.module('equationSandbox')
 		let equationFn = () => NaN;
 		let bounds = [-10, 10, 10, -10];
 		let board = null;
+		let tanPt = null;
+		let tanLine = null;
 		let lastLatex = null;
 
 		let loaded = false;
@@ -67,7 +69,6 @@ angular.module('equationSandbox')
 			if (loaded) { return $scope.update(); }
 		}), true);
 		//  =======================================
-
 
 		// Required extensions to Math
 		Math.factorial = function(n) {
@@ -166,7 +167,14 @@ angular.module('equationSandbox')
 				};
 
 				board = JXG.JSXGraph.initBoard('jxgbox', opts);
-				board.create('functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3 });
+				var curve = board.create('functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3 });
+
+				tanPt = board.create('glider', [ curve ] );
+				tanLine = board.create('tangent', [ tanPt]);
+				tanPt.setAttribute({fillColor: "orange", strokeColor: "orange"});
+				tanLine.setAttribute({strokeColor: "orange"});
+				tanPt.hideElement();
+				tanLine.hideElement();
 
 				return $scope.calculateResult();
 
@@ -195,6 +203,13 @@ angular.module('equationSandbox')
 				const _ = $scope.bounds;
 				bounds = [_.x.min, _.y.max, _.x.max, _.y.min];
 				board.setBoundingBox(bounds);
+				if($scope.showTan){
+					tanPt.showElement();
+					tanLine.showElement();
+				} else {
+					tanPt.hideElement();
+					tanLine.hideElement();
+				}
 
 				return board.update();
 			} catch (e) {
