@@ -158,9 +158,13 @@ angular.module('equationSandbox')
 				}
 
 				// grab the latex (and do nothing if it hasn't changed, i.e. user pressed <-)
-				const lastLatex = $scope.latex;
-				$scope.latex = $('#eq-input').mathquill('latex');
-				if (lastLatex === $scope.latex) { return; }
+				if($scope.latexFocus){
+					$('#eq-input').mathquill('latex', $scope.latex);
+				} else {
+					const lastLatex = $scope.latex;
+					$scope.latex = $('#eq-input').mathquill('latex');
+					if (lastLatex === $scope.latex) { return; }
+				}
 
 				if ($scope.parseError) {
 					$scope.waiting = false;
