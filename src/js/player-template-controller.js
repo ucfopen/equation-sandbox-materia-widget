@@ -151,7 +151,7 @@ angular.module('equationSandbox')
 		$scope.init = function() {
 			try {
 				$scope.safeApply(parseLatex());
-
+				$scope.tanStr="Show Tangent Line";
 				$timeout(function() { // render latex after template is done rendering
 					$('.variable-display').mathquill();
 					$('main').removeClass('loading');
@@ -196,6 +196,10 @@ angular.module('equationSandbox')
 			return $scope.calculateResult();
 		};
 
+		$scope.toggleTan = function() {
+			$scope.showTan = !$scope.showTan;
+			$scope.updateBoard();
+		}
 		$scope.updateBoard = function() {
 			if ($scope.mode !== 'graphX') { return; }
 
@@ -206,9 +210,11 @@ angular.module('equationSandbox')
 				if($scope.showTan){
 					tanPt.showElement();
 					tanLine.showElement();
+					$scope.tanStr = "Hide Tangent Line";
 				} else {
 					tanPt.hideElement();
 					tanLine.hideElement();
+					$scope.tanStr = "Show Tangent Line";
 				}
 
 				return board.update();

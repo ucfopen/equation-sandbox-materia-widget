@@ -81,13 +81,19 @@
 						{{bnds_errorMsg}}
 					</div>
 				</div>
-
+				<div ng-show="mode === 'graphX'">
+				<h2>Options:</h2>
+				<label>
+				<input type="checkbox" ng-model="tangentLineEnable">
+				Enable Tangent Line
+				</label>
+			</div>
 			</div>
 
 			<div class="top-box player-links-section">
 				<div class="player-link">
 					<span>Latex Expression:</span>
-					<div class="container"><input type="text" ng-value="latex"></div>
+					<div class="container"><input type="text" ng-value="latex" ng-focus="latexFocus = true" ng-blur="latexFocus = false"></div>
 				</div>
 				<div class="error-msg">{{errorMsg}}</div>
 
