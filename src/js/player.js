@@ -9,6 +9,7 @@ angular.module('equationSandbox')
 				$scope.latex = qset.latex;
 				$scope.bounds = qset.bounds;
 				$scope.mode = qset.mode;
+				$scope.tanEnable = qset.tanEnable;
 				jQuery('#eq-demo-input').mathquill()
 				$rootScope.$broadcast("SendDown");
 			} catch (e) {
