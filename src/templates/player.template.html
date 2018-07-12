@@ -14,10 +14,7 @@
 				</div>
 			</div>
 		</div>
-		<div ng-show="mode === 'graphX' && tangentLineEnable" class="box controls">
-			<button ng-click="toggleTan()">
-			{{tanStr}}
-		</button></div>
+
 		<div class="interactive-section">
 			<div class="help">
 				<h2>Instructions:</h2>
@@ -25,7 +22,6 @@
 					Input different values for the variables of the equation to see how it impacts the result.
 				</p>
 			</div>
-
 			<div class="box variables">
 				<h3>Variables</h3>
 				<ul>
@@ -35,6 +31,7 @@
 								<span class="variable-display">
 									{{variable.latex}}
 								</span>
+								=
 							</span>
 
 							<input 	class="variable-input"
@@ -61,12 +58,12 @@
 									ng-change="update()">
 						</div>
 					</li>
-
 				</ul>
-
 			</div>
 			<div class="box output" ng-show="mode === 'graphX'">
-
+				<button ng-click="toggleTan()" ng-show="mode === 'graphX' && tangentLineEnable">
+					{{tanStr}}
+				</button>
 				<div id="jxgbox"></div>
 			</div>
 			<div class="box output" ng-show="mode === 'resultingY'">
@@ -75,7 +72,6 @@
 					<span class="main-var"></span> = <b>{{equationResult}}</b>
 				</div>
 			</div>
-
 		</div>
 	</main>
 </div>
