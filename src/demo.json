@@ -13,8 +13,7 @@
         "y": {
           "min": -10,
           "max": 10
-        },
-        "tanEnable": false
+        }
       }
     }
   }
