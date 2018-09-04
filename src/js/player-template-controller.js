@@ -170,6 +170,7 @@ angular.module('equationSandbox')
 				var curve = board.create('functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3 });
 
 				tanPt = board.create('glider', [ curve ] );
+				tanPt.setLabelText('');
 				tanLine = board.create('tangent', [ tanPt]);
 				tanPt.setAttribute({fillColor: "orange", strokeColor: "orange"});
 				tanLine.setAttribute({strokeColor: "orange"});
