@@ -61,6 +61,9 @@
 				</ul>
 			</div>
 			<div class="box output" ng-show="mode === 'graphX'">
+				<button ng-click="toggleTan()" ng-show="mode === 'graphX' && tanLineEn">
+					{{tanStr}}
+				</button>
 				<div id="jxgbox"></div>
 			</div>
 			<div class="box output" ng-show="mode === 'resultingY'">

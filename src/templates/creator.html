@@ -81,7 +81,13 @@
 						{{bnds_errorMsg}}
 					</div>
 				</div>
-
+				<div ng-show="mode === 'graphX'">
+				<h2>Options:</h2>
+				<label>
+				<input type="checkbox" ng-model="tanLineEn">
+				Enable Tangent Line
+				</label>
+			</div>
 			</div>
 
 			<div class="top-box player-links-section">

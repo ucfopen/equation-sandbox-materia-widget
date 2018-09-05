@@ -93,7 +93,8 @@ angular.module('equationSandbox')
 				return _qset = {
 					latex: $scope.latex,
 					bounds: $scope.bounds,
-					mode: $scope.mode
+					mode: $scope.mode,
+					tanLineEn: (typeof $scope.tanLineEn === 'undefined') ? false : $scope.tanLineEn
 				};
 			} catch (e) {
 				console.log("_buildSaveData error: ", e);
