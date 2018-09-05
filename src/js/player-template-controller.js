@@ -169,10 +169,10 @@ angular.module('equationSandbox')
 				board = JXG.JSXGraph.initBoard('jxgbox', opts);
 				var curve = board.create('functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3 });
 
-				tanPt = board.create('glider', [ curve ] );
-				tanPt.setLabelText('');
+				tanPt = board.create('glider', [ curve ]);
+
 				tanLine = board.create('tangent', [ tanPt]);
-				tanPt.setAttribute({fillColor: "orange", strokeColor: "orange"});
+				tanPt.setAttribute({fillColor: "orange", strokeColor: "orange", withLabel: false});
 				tanLine.setAttribute({strokeColor: "orange"});
 				tanPt.hideElement();
 				tanLine.hideElement();
