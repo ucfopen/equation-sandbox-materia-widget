@@ -29,6 +29,8 @@ angular.module('equationSandbox')
 		let equationFn = () => NaN;
 		let bounds = [-10, 10, 10, -10];
 		let board = null;
+		let tanPt = null;
+		let tanLine = null;
 		let lastLatex = null;
 
 		let loaded = false;
@@ -67,7 +69,6 @@ angular.module('equationSandbox')
 			if (loaded) { return $scope.update(); }
 		}), true);
 		//  =======================================
-
 
 		// Required extensions to Math
 		Math.factorial = function(n) {
@@ -150,7 +151,7 @@ angular.module('equationSandbox')
 		$scope.init = function() {
 			try {
 				$scope.safeApply(parseLatex());
-
+				$scope.tanStr="Show Tangent Line";
 				$timeout(function() { // render latex after template is done rendering
 					$('.variable-display').mathquill();
 					$('main').removeClass('loading');
@@ -166,7 +167,15 @@ angular.module('equationSandbox')
 				};
 
 				board = JXG.JSXGraph.initBoard('jxgbox', opts);
-				board.create('functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3 });
+				var curve = board.create('functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3 });
+
+				tanPt = board.create('glider', [ curve ]);
+
+				tanLine = board.create('tangent', [ tanPt]);
+				tanPt.setAttribute({fillColor: "orange", strokeColor: "orange", withLabel: false});
+				tanLine.setAttribute({strokeColor: "orange"});
+				tanPt.hideElement();
+				tanLine.hideElement();
 
 				return $scope.calculateResult();
 
@@ -188,6 +197,10 @@ angular.module('equationSandbox')
 			return $scope.calculateResult();
 		};
 
+		$scope.toggleTan = function() {
+			$scope.showTan = !$scope.showTan;
+			$scope.updateBoard();
+		}
 		$scope.updateBoard = function() {
 			if ($scope.mode !== 'graphX') { return; }
 
@@ -195,6 +208,15 @@ angular.module('equationSandbox')
 				const _ = $scope.bounds;
 				bounds = [_.x.min, _.y.max, _.x.max, _.y.min];
 				board.setBoundingBox(bounds);
+				if($scope.showTan){
+					tanPt.showElement();
+					tanLine.showElement();
+					$scope.tanStr = "Hide Tangent Line";
+				} else {
+					tanPt.hideElement();
+					tanLine.hideElement();
+					$scope.tanStr = "Show Tangent Line";
+				}
 
 				return board.update();
 			} catch (e) {
