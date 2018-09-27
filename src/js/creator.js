@@ -7,15 +7,13 @@ angular.module('equationSandbox')
 
 		let _qset;
 
-
 		/* Initialize class variables */
 
 		let _title = (_qset = null);
 
 		const DEFAULT_EQUATION = 'y=2^x+a';
-		const PLAYER_WIDTH = 700;
-		const PLAYER_HEIGHT = 500;
 		const UPDATE_DEBOUNCE_DELAY_MS = 500;
+		const DEFAULT_TAN_LINE_OPTION = 'none';
 
 		let updateTimeoutId = -1;
 
@@ -27,6 +25,7 @@ angular.module('equationSandbox')
 		$scope.waiting = false;
 
 		$scope.mode = 'resultingY'; // resultingY | graphX
+		$scope.tanLineOption = DEFAULT_TAN_LINE_OPTION;
 
 		$scope.bounds = {
 			x: {
@@ -49,7 +48,7 @@ angular.module('equationSandbox')
 
 		$scope.onMediaImportComplete  = media => null;
 
-		$scope.initExistingWidget = function(title,widget,qset,version,baseUrl) {
+		$scope.initExistingWidget = function(title, widget, qset, version, baseUrl) {
 			try {
 				let _latex;
 				_qset = qset;
@@ -74,8 +73,8 @@ angular.module('equationSandbox')
 			}
 		};
 
-		$scope.onChangeMode = function() {
-			$scope.$broadcast("ModeUpdated");
+		$scope.onChangeSettings = function(setting) {
+			$scope.$broadcast("SettingsUpdated", setting);
 		}
 
 		/* Private methods */
@@ -89,12 +88,12 @@ angular.module('equationSandbox')
 				_validateBounds();
 				if ($scope.parseError) { return null; }
 
-				_qset.version = 1;
+				_qset.version = 2;
 				return _qset = {
 					latex: $scope.latex,
 					bounds: $scope.bounds,
 					mode: $scope.mode,
-					tanLineEn: (typeof $scope.tanLineEn === 'undefined') ? false : $scope.tanLineEn
+					tanLineOption: (typeof $scope.tanLineOption === 'undefined') ? DEFAULT_TAN_LINE_OPTION : $scope.tanLineOption
 				};
 			} catch (e) {
 				console.log("_buildSaveData error: ", e);

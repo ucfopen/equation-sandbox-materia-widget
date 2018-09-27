@@ -151,7 +151,6 @@ angular.module('equationSandbox')
 		$scope.init = function() {
 			try {
 				$scope.safeApply(parseLatex());
-				$scope.tanStr="Show Tangent Line";
 				$timeout(function() { // render latex after template is done rendering
 					$('.variable-display').mathquill();
 					$('main').removeClass('loading');
@@ -163,17 +162,18 @@ angular.module('equationSandbox')
 
 				const opts = {
 					boundingbox: bounds,
-					axis:true
+					axis:true,
+					showCopyright: false
 				};
 
 				board = JXG.JSXGraph.initBoard('jxgbox', opts);
-				var curve = board.create('functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3 });
+				var curve = board.create('functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3, highlight: false });
 
 				tanPt = board.create('glider', [ curve ]);
 
-				tanLine = board.create('tangent', [ tanPt]);
-				tanPt.setAttribute({fillColor: "orange", strokeColor: "orange", withLabel: false});
-				tanLine.setAttribute({strokeColor: "orange"});
+				tanLine = board.create('tangent', [ tanPt ]);
+				tanPt.setAttribute({fillColor: "orange", strokeColor: "orange", withLabel: false, strokeWidth: 8 });
+				tanLine.setAttribute({strokeColor: "orange", highlight: false});
 				tanPt.hideElement();
 				tanLine.hideElement();
 
@@ -202,20 +202,19 @@ angular.module('equationSandbox')
 			$scope.updateBoard();
 		}
 		$scope.updateBoard = function() {
-			if ($scope.mode !== 'graphX') { return; }
+			if ($scope.mode !== 'graphX') return;
 
 			try {
 				const _ = $scope.bounds;
 				bounds = [_.x.min, _.y.max, _.x.max, _.y.min];
 				board.setBoundingBox(bounds);
+
 				if($scope.showTan){
 					tanPt.showElement();
 					tanLine.showElement();
-					$scope.tanStr = "Hide Tangent Line";
 				} else {
 					tanPt.hideElement();
 					tanLine.hideElement();
-					$scope.tanStr = "Show Tangent Line";
 				}
 
 				return board.update();
@@ -247,8 +246,22 @@ angular.module('equationSandbox')
 
 		$scope.$on("SendDown", $scope.init);
 
-		$scope.$on("ModeUpdated", () => {
-			setTimeout($scope.update)
+		$scope.$on("SettingsUpdated", (event, setting) => {
+			if(setting === 'tanLineOption') {
+				switch($scope.tanLineOption) {
+					case 'always':
+						$scope.showTan = true;
+						break;
+
+					default:
+						$scope.showTan = false;
+						break;
+				}
+			}
+
+			setTimeout(() => {
+				$scope.update();
+			})
 		})
 	}
 
