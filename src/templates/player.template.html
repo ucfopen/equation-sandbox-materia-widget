@@ -61,9 +61,10 @@
 				</ul>
 			</div>
 			<div class="box output" ng-show="mode === 'graphX'">
-				<button ng-click="toggleTan()" ng-show="mode === 'graphX' && tanLineEn">
-					{{tanStr}}
+				<button ng-click="toggleTan()" ng-show="mode === 'graphX' && tanLineOption === 'toggle'">
+					{{showTan ? 'Hide Tangent Line' : 'Show Tangent Line'}}
 				</button>
+				<div ng-if="showTan" class="tan-instructions">Click &amp; drag <span class="tan-dot">•</span> to move tangent line.</div>
 				<div id="jxgbox"></div>
 			</div>
 			<div class="box output" ng-show="mode === 'resultingY'">
