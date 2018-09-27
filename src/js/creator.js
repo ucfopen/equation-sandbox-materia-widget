@@ -88,7 +88,7 @@ angular.module('equationSandbox')
 				_validateBounds();
 				if ($scope.parseError) { return null; }
 
-				_qset.version = 1;
+				_qset.version = 2;
 				return _qset = {
 					latex: $scope.latex,
 					bounds: $scope.bounds,
