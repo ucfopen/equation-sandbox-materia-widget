@@ -32,6 +32,7 @@ angular.module('equationSandbox')
 		let tanPt = null;
 		let tanLine = null;
 		let lastLatex = null;
+		let curve = null;
 
 		let loaded = false;
 
@@ -123,7 +124,7 @@ angular.module('equationSandbox')
 			}
 		};
 
-		var parseLatex = function() {
+		const parseLatex = function() {
 			try {
 				const o = latexParser.parse($scope.latex);
 
@@ -144,9 +145,33 @@ angular.module('equationSandbox')
 				return equationFn = o.fn;
 
 			} catch (e) {
-				return $scope.$parent.$parent.parseError = true;
+				return $scope.$parent.$parent.parseError = e.message;
 			}
 		};
+
+		const createTangentLine = function() {
+			tanPt = board.create('glider', [ curve ]);
+			tanLine = board.create('tangent', [ tanPt ]);
+			tanPt.setAttribute({fillColor: "#ff941e", strokeColor: "#ff941e", withLabel: false, strokeWidth: 8 });
+			tanLine.setAttribute({strokeColor: "#ff941e", highlight: false});
+		}
+
+		const removeTangentLine = function() {
+			board.removeObject(tanPt);
+			board.removeObject(tanLine);
+		}
+
+		const updateTangentLine = function(show) {
+			$scope.showTan = show;
+
+			removeTangentLine()
+			if(show) createTangentLine()
+		}
+
+		const updateGraphBounds = function(v) {
+			bounds = [v.x.min, v.y.max, v.x.max, v.y.min];
+			board.setBoundingBox(bounds);
+		}
 
 		$scope.init = function() {
 			try {
@@ -167,15 +192,9 @@ angular.module('equationSandbox')
 				};
 
 				board = JXG.JSXGraph.initBoard('jxgbox', opts);
-				var curve = board.create('functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3, highlight: false });
+				curve = board.create('functiongraph', [ graphFn ], { strokeColor: "#4DA3CE", strokeWidth: 3, highlight: false });
 
-				tanPt = board.create('glider', [ curve ]);
-
-				tanLine = board.create('tangent', [ tanPt ]);
-				tanPt.setAttribute({fillColor: "orange", strokeColor: "orange", withLabel: false, strokeWidth: 8 });
-				tanLine.setAttribute({strokeColor: "orange", highlight: false});
-				tanPt.hideElement();
-				tanLine.hideElement();
+				updateGraphBounds($scope.bounds);
 
 				return $scope.calculateResult();
 
@@ -198,25 +217,13 @@ angular.module('equationSandbox')
 		};
 
 		$scope.toggleTan = function() {
-			$scope.showTan = !$scope.showTan;
-			$scope.updateBoard();
+			updateTangentLine(!$scope.showTan);
 		}
+
 		$scope.updateBoard = function() {
 			if ($scope.mode !== 'graphX') return;
 
 			try {
-				const _ = $scope.bounds;
-				bounds = [_.x.min, _.y.max, _.x.max, _.y.min];
-				board.setBoundingBox(bounds);
-
-				if($scope.showTan){
-					tanPt.showElement();
-					tanLine.showElement();
-				} else {
-					tanPt.hideElement();
-					tanLine.hideElement();
-				}
-
 				return board.update();
 			} catch (e) {
 				return console.log("updateBoard error: ", e);
@@ -246,17 +253,15 @@ angular.module('equationSandbox')
 
 		$scope.$on("SendDown", $scope.init);
 
-		$scope.$on("SettingsUpdated", (event, setting) => {
-			if(setting === 'tanLineOption') {
-				switch($scope.tanLineOption) {
-					case 'always':
-						$scope.showTan = true;
-						break;
+		$scope.$on("SettingsUpdated", (event, setting, data) => {
+			switch(setting) {
+				case 'tanLineOption':
+					updateTangentLine($scope.tanLineOption === 'always')
+					break;
 
-					default:
-						$scope.showTan = false;
-						break;
-				}
+				case 'bounds':
+					updateGraphBounds(data);
+					break;
 			}
 
 			setTimeout(() => {

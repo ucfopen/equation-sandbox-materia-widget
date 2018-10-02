@@ -42,47 +42,26 @@
 
 		<div class="top row input-sidebar">
 			<div class="top-box input-section">
-				<h2 class="mode-heading">Mode:</h2>
-				<select ng-model="mode" ng-change="onChangeSettings('mode')">
-					<option value="resultingY">Result value</option>
-					<option value="graphX">Graph x</option>
-				</select>
+				<div class="mode-container">
+					<h2 class="mode-heading">Mode:</h2>
+					<select ng-model="mode" ng-change="onChangeSettings('mode')">
+						<option value="resultingY">Result value</option>
+						<option value="graphX">Graph x</option>
+					</select>
+				</div>
+				<div class="eq-container">
+					<h2>Enter equation:</h2>
+					<div id="eq-input" class="eq-input mathquill-editable"></div>
+				</div>
 
-				<h2>Enter equation here:</h2>
-				<div id="eq-input" class="eq-input mathquill-editable"></div>
+				<div class="latex-expression">
+					<span>Latex Expression:</span>
+					<div class="container"><input type="text" ng-model="latex" ng-focus="latexFocus = true" ng-blur="latexFocus = false"></div>
+				</div>
 
 				<div ng-show="mode === 'graphX'">
-					<h2>Enter graph bounds here:</h2>
-					<div class="graph-bounds-container">
-						<div class="graph-bounds">
-							<div>
-								<input  class="graph-bounds-input"
-										type="number"
-										ng-model="bounds.x.min"
-										ng-change="onBoundsChange()">
-								<span class="mathquill-embedded-latex">\leq \quad x \quad \leq</span>
-								<input 	class="graph-bounds-input"
-										type="number"
-										ng-model="bounds.x.max"
-										ng-change="onBoundsChange()">
-							</div>
-							<div>
-								<input 	class="graph-bounds-input"
-										type="number"
-										ng-model="bounds.y.min"
-										ng-change="onBoundsChange()">
-								<span class="mathquill-embedded-latex">\leq \quad y \quad \leq</span>
-								<input 	class="graph-bounds-input"
-										type="number"
-										ng-model="bounds.y.max"
-										ng-change="onBoundsChange()">
-							</div>
-						</div>
-						<div class="bnds-error-msg">
-							{{bnds_errorMsg}}
-						</div>
-					</div>
-					<h2>Options:</h2>
+
+					<h2>Graph Options:</h2>
 					<div class="tangent-line-option">
 						<label>Tangent Line:</label>
 						<select ng-model="tanLineOption" ng-change="onChangeSettings('tanLineOption')">
@@ -91,16 +70,28 @@
 							<option value="always">Always show tangent line</option>
 						</select>
 					</div>
+					<div class="graph-bounds-container">
+						<span>Graph bounds:</span>
+						<div class="graph-bounds">
+							<div>
+								<input class="graph-bounds-input" type="number" ng-model="bounds.x.min" ng-change="onBoundsChange()">
+								<span class="mathquill-embedded-latex">\leq \quad x \quad \leq</span>
+								<input class="graph-bounds-input" type="number" ng-model="bounds.x.max" ng-change="onBoundsChange()">
+							</div>
+							<div>
+								<input class="graph-bounds-input" type="number" ng-model="bounds.y.min" ng-change="onBoundsChange()">
+								<span class="mathquill-embedded-latex">\leq \quad y \quad \leq</span>
+								<input class="graph-bounds-input" type="number" ng-model="bounds.y.max" ng-change="onBoundsChange()">
+							</div>
+						</div>
+						<div class="bnds-error-msg">
+							{{bnds_errorMsg}}
+						</div>
+					</div>
 				</div>
 			</div>
 
 			<div class="top-box player-links-section">
-				<div class="player-link">
-					<span>Latex Expression:</span>
-					<div class="container"><input type="text" ng-model="latex" ng-focus="latexFocus = true" ng-blur="latexFocus = false"></div>
-				</div>
-				<div class="error-msg">{{errorMsg}}</div>
-
 				<div class="input-help">
 					<ul>
 						<li>For "Graph X" mode equation must have an <code>x</code> variable</li>

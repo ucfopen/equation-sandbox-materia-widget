@@ -7,10 +7,7 @@ $box-eq-height: 100px;
 
 body
 {
-	// width: 700px;
-	// height: 500px;
-
-	background: #ececec;
+	background: white;
 }
 
 .error-msg
@@ -170,7 +167,8 @@ main
 
 			.variable-input-container{
 				margin: auto;
-				width: 60%;
+				width: 100%;
+				text-align: center;
 			}
 
 			.variable-slider{
@@ -202,20 +200,12 @@ main
 
 				border: 1px solid $gray;
 
-				// &.variable-input.empty
-				// {
-				// 	border: 1px solid $orange;
-				// 	outline: 1px solid $orange;
-				// 	background: $orange-light;
-				// }
-
 				&.variable-input.invalid
 				{
 					border: 1px solid $error;
 					outline: 1px solid $error;
 					background: $error-light;
 				}
-
 
 				// RANGE INPUTS
 				&.variable-range {
@@ -361,7 +351,7 @@ main
 		display: inline-block;
 		vertical-align: middle;
 		transform: translate(0, -3px);
-		color: orange;
+		color: #ff941e;
 	}
 }
 

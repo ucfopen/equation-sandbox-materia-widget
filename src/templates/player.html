@@ -14,13 +14,11 @@
 		<link rel="stylesheet" href="assets/stylesheets/player.css">
 	</head>
 	<body ng-controller="PlayerController" ng-class="{'parse-error':parseError}">
-
-		<header>
-			<h1>Equation Sandbox</h1>
-		</header>
-
-
 		<div ng-include="'player.template.html'"></div>
+
+		<footer>
+			<h1>Equation Sandbox</h1>
+		</footer>
 
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jsxgraph/0.99.4/jsxgraphcore.js"></script>
 		<script>window.JXG || document.write('<script src="assets/vendor/jsxgraphcore.js"><\/script>')</script>

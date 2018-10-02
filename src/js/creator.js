@@ -11,7 +11,7 @@ angular.module('equationSandbox')
 
 		let _title = (_qset = null);
 
-		const DEFAULT_EQUATION = 'y=2^x+a';
+		const DEFAULT_EQUATION = 'y=5\\sin\\left(2\\cos\\left(\\frac{x}{2}\\right)+b\\right)';
 		const UPDATE_DEBOUNCE_DELAY_MS = 500;
 		const DEFAULT_TAN_LINE_OPTION = 'none';
 
@@ -145,7 +145,9 @@ angular.module('equationSandbox')
 		$scope.onBoundsChange = function() {
 			const bounds = _validateBounds(); // bounds are null if invalid
 			if ((bounds == null)) { return; }
-			return $scope.bounds = bounds;
+			$scope.bounds = bounds;
+
+			$scope.$broadcast("SettingsUpdated", 'bounds', bounds);
 		};
 
 		// we instantly update if there's a parse error so the user could
