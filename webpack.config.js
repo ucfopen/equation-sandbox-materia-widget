@@ -12,6 +12,14 @@ delete webpackConfig.entry['player.js']
 delete webpackConfig.entry['creator.css']
 delete webpackConfig.entry['player.css']
 
+webpackConfig.module.rules[0] = {
+  test: /\.js$/i,
+  exclude: /node_modules/,
+  use: {
+	loader: 'babel-loader'
+  }
+}
+
 webpackConfig.entry['assets/js/creator.js'] = [
 	path.join(__dirname, 'src', 'js', 'creator.js')
 ]
