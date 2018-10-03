@@ -10,6 +10,37 @@ body
 	background: white;
 }
 
+// Used to prevent FOUC
+.loading main {
+	// Display none causes the Symbola.tff font to glitch
+	visibility: hidden !important;
+}
+
+@keyframes loading-pulse {
+	0% {
+		opacity: 0.6;
+	}
+	50% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0.6;
+	}
+}
+
+#loading {
+	color: $purple;
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	animation: loading-pulse 1s infinite;
+}
+
+.loaded #loading {
+	display: none;
+}
+
 .error-msg
 {
 	width: 100%;

@@ -1,7 +1,7 @@
 import latexParser from './latex-parser'
 
 angular.module('equationSandbox')
-	.controller('PlayerTemplateController', ['$scope', '$window', '$http', '$timeout', function($scope, $window, $http, $timeout) {
+	.controller('PlayerTemplateController', ['$scope', '$window', '$http', '$timeout', '$rootScope', function($scope, $window, $http, $timeout, $rootScope) {
 		"use strict";
 
 		class Variable {
@@ -45,7 +45,8 @@ angular.module('equationSandbox')
 			if (loaded) {
 				return $timeout(function() {
 					$('.variable-display').mathquill();
-					return $('main').removeClass('loading');
+					$('body').addClass('loaded');
+					$('body').removeClass('loading');
 				});
 			}
 		});
@@ -178,7 +179,8 @@ angular.module('equationSandbox')
 				$scope.safeApply(parseLatex());
 				$timeout(function() { // render latex after template is done rendering
 					$('.variable-display').mathquill();
-					$('main').removeClass('loading');
+					$('body').addClass('loaded');
+					$('body').removeClass('loading');
 					return loaded = true;
 				});
 
@@ -187,7 +189,7 @@ angular.module('equationSandbox')
 
 				const opts = {
 					boundingbox: bounds,
-					axis:true,
+					axis: true,
 					showCopyright: false
 				};
 
@@ -268,6 +270,8 @@ angular.module('equationSandbox')
 				$scope.update();
 			})
 		})
+
+		$rootScope.$broadcast("Ready");
 	}
 
 	]);
