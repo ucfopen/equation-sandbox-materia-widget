@@ -27,7 +27,6 @@
     "test": "karma start ./karma.conf.js --no-auto-watch --single-run",
     "pretestFull": "npm run buildDev",
     "testFull": "karma start ./karma-full.conf.js",
-    "clientAssets:link": "cd ../materia-client-assets && yarn link && cd - && yarn link materia-client-assets",
     "devKit:link": "cd ../materia-widget-development-kit && yarn link && cd - && yarn link materia-widget-development-kit",
     "peg:build": "pegjs --cache ./src/peg/latex.pegjs ./src/js/latex-parser.js",
     "peg:watch": "onchange './src/peg/latex.pegjs' -- yarn peg:build"
