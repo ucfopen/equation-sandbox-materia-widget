@@ -1,30 +1,22 @@
-About:
-======
+<h1>
+    <img src="src/_icons/icon-60.png" width="36px"/>
+    Equation Sandbox: A Materia Widget
+</h1>
 
-Non-authenticated widget that allows faculty to input equations (using MathQuill) to create study tool widgets. This allows students to modify equation variables and see how it impacts the result.
+A tool that allows faculty to input equations (using MathQuill) to create study tool widgets. This allows students to modify equation variables and see how it impacts the result.. Equation Sandbox is designed for use with [Materia](https://github.com/ucfopen/Materia), an open-source platform for interactive course content developed by the University of Central Florida.
 
-Required dependences:
----------------------
+![Equation Sandbox Player](src/_screen-shots/2.png)
 
-* node
-* yarn
+### Basic Use
 
-To install & develop:
----------------------
+In a production evironment, Equation Sandbox is installed to your Materia instance and is accessed via the Widget Catalog. For development, Equation Sandbox is bundled with the [Materia Widget Development Kit](https://github.com/ucfopen/Materia-Widget-Dev-Kit), which allows for rapid development in a local context using express.js.
 
-1. Run `yarn`
-2. Run `yarn peg:build` to build the PEG parser
-3. Run `yarn start` to start the development server
+### Local Development
 
-Developing the parser:
-----------------------
+Equation Sandbox uses the Materia Widget Development Kit for location development. Check out [the docs for the MDK](https://ucfopen.github.io/Materia-Docs/develop/materia-widget-development-kit.html) to learn more about starting up the local express environment.
 
-1. Run `yarn peg:watch`
-2. Run `yarn start`
+### Installation to Materia
 
-Changes to the parser will require a browser refresh
+Widget installation options are covered in the [Installing Widgets](https://ucfopen.github.io/Materia-Docs/admin/installing-widgets.html) section of the Materia Docs.
 
-To build for production:
-------------------------
-
-1. Run `yarn build`
+For more information about the widget development process, be sure to visit the [widget developer guide](https://ucfopen.github.io/Materia-Docs/develop/widget-developer-guide.html) for Materia.

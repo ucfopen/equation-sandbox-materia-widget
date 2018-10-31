@@ -1,48 +1,36 @@
-const WebpackSyncShellPlugin = require('webpack-synchronizable-shell-plugin')
 const path = require('path')
+const srcPath = path.join(__dirname, 'src') + path.sep
+const outputPath = path.join(__dirname, 'build')
+const widgetWebpack = require('materia-widget-development-kit/webpack-widget')
+const WebpackSyncShellPlugin = require('webpack-synchronizable-shell-plugin')
 
-let srcPath = path.join(process.cwd(), 'src')
-let outputPath = path.join(process.cwd(), 'build')
+const rules = widgetWebpack.getDefaultRules()
+const copy = widgetWebpack.getDefaultCopyList()
+const entries = {}
 
-// load the reusable legacy webpack config from materia-widget-dev
-let webpackConfig = require('materia-widget-development-kit/webpack-widget').getLegacyWidgetBuildConfig()
-
-delete webpackConfig.entry['creator.js']
-delete webpackConfig.entry['player.js']
-delete webpackConfig.entry['creator.css']
-delete webpackConfig.entry['player.css']
-
-webpackConfig.module.rules[0] = {
-  test: /\.js$/i,
-  exclude: /node_modules/,
-  use: {
-	loader: 'babel-loader'
-  }
-}
-
-webpackConfig.entry['assets/js/creator.js'] = [
+entries['assets/js/creator.js'] = [
 	path.join(__dirname, 'src', 'js', 'creator.js')
 ]
-webpackConfig.entry['assets/js/player.js'] = [
+entries['assets/js/player.js'] = [
 	path.join(__dirname, 'src', 'js', 'player.js')
 ]
-webpackConfig.entry['assets/js/player-template-controller.js'] = [
+entries['assets/js/player-template-controller.js'] = [
 	path.join(__dirname, 'src', 'js', 'player-template-controller.js'),
 ]
-webpackConfig.entry['assets/stylesheets/creator.css'] = [
+entries['assets/stylesheets/creator.css'] = [
 	path.join(__dirname, 'src', 'sass', 'creator.scss'),
 	path.join(__dirname, 'src', 'templates', 'creator.html')
 ]
-webpackConfig.entry['assets/stylesheets/player.css'] = [
+entries['assets/stylesheets/player.css'] = [
 	path.join(__dirname, 'src', 'sass', 'player.scss'),
 	path.join(__dirname, 'src', 'templates', 'player.html'),
 	path.join(__dirname, 'src', 'templates', 'player.template.html')
 ]
-webpackConfig.entry['assets/css/main.css'] = [
+entries['assets/css/main.css'] = [
 	path.join(__dirname, 'src', 'sass', 'main.scss'),
 ]
 
-webpackConfig.module.rules.push({
+const babelLoaderRule = {
 	test: /\.js$/,
 	exclude: [/node_modules/],
 	use: {
@@ -51,9 +39,40 @@ webpackConfig.module.rules.push({
 			presets: ['env']
 		}
 	}
-})
+}
 
-webpackConfig.plugins.push(new WebpackSyncShellPlugin({
+let customRules = [
+	// rules.loaderDoNothingToJs,
+	//rules.loaderCompileCoffe,
+	rules.copyImages,
+	rules.loadHTMLAndReplaceMateriaScripts,
+	rules.loadAndPrefixCSS,
+	rules.loadAndPrefixSASS,
+	babelLoaderRule
+]
+
+const customCopy = copy.concat([
+	{
+		from: path.join(__dirname, 'node_modules', 'jsxgraph', 'distrib', 'jsxgraphcore.js'),
+		to: path.join(outputPath, 'vendor', 'jsxgraph')
+	},
+	{
+		from: path.join(__dirname, 'node_modules', 'mathquill', 'build'),
+		to: path.join(outputPath, 'vendor', 'mathquill')
+	},
+])
+
+
+// options for the build
+let options = {
+	entries: entries,
+	moduleRules: customRules,
+	copyList: customCopy
+}
+
+const ourFinalWebpackConfig = widgetWebpack.getLegacyWidgetBuildConfig(options)
+
+ourFinalWebpackConfig.plugins.push(new WebpackSyncShellPlugin({
 	onBuildStart: {
 		scripts: ['yarn peg:build'],
 		blocking: true,
@@ -61,4 +80,5 @@ webpackConfig.plugins.push(new WebpackSyncShellPlugin({
 	}
 }))
 
-module.exports = webpackConfig
+module.exports = ourFinalWebpackConfig
+

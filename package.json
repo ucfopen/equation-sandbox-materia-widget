@@ -1,35 +1,37 @@
 {
-  "name": "equation-sandbox",
+  "name": "@ucfopen/equation-sandbox",
   "materia": {
     "cleanName": "equation-sandbox"
   },
-  "version": "1.0.0",
-  "private": true,
-  "main": "app.js",
+  "version": "1.0.1",
   "dependencies": {
     "angular": "~1.5.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.7.0",
-    "materia-widget-development-kit": "v1.2.2",
+    "materia-widget-development-kit": "^2.0.0",
     "onchange": "^4.0.0",
     "pegjs": "^0.8.0",
-    "webpack-synchronizable-shell-plugin": "^0.0.7"
+    "webpack-synchronizable-shell-plugin": "^0.0.7",
+    "mathquill": "0.9.1",
+    "jsxgraph": "^0.99.7"
   },
   "devDependencies": {
     "sass-graph": "^2.1.1"
   },
   "scripts": {
     "start": "webpack-dev-server",
-    "buildDev": "webpack --verbose",
     "build": "webpack -p",
-    "pretest": "npm run buildDev",
+    "build-dev": "webpack --verbose",
     "test": "karma start ./karma.conf.js --no-auto-watch --single-run",
-    "pretestFull": "npm run buildDev",
+    "test-ci": "karma start ./karma.conf.js --no-auto-watch --single-run",
+    "pretest": "npm run build-dev",
+    "pretestFull": "npm run build-dev",
     "testFull": "karma start ./karma-full.conf.js",
-    "devKit:link": "cd ../materia-widget-development-kit && yarn link && cd - && yarn link materia-widget-development-kit",
     "peg:build": "pegjs --cache ./src/peg/latex.pegjs ./src/js/latex-parser.js",
     "peg:watch": "onchange './src/peg/latex.pegjs' -- yarn peg:build"
   },
-  "author": "New Media"
+  "author": "University of Central Florida, Center for Distributed Learning",
+  "description": "Template widget to use as an example.",
+  "license": "AGPL-3.0"
 }
