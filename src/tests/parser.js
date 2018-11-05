@@ -1,17 +1,9 @@
 var fs = require("fs");
 var PEG = require("pegjs");
 
-fs.readFile('../src/peg/latex.peg', function(err, data) {
+fs.readFile('../peg/latex.pegjs', function(err, data) {
 	var grammar = data.toString();
-
-	//console.log(grammar);
-
 	var parser = PEG.buildParser(grammar);
-
-	//var input = "\\sin #A + \\sin(#A-#B*2) * \\frac{1}{2} + \\frac{3}{4} - 2 * 3";
-	//var input = "\\frac{#B}{\\sqrt{\\frac{#A}{4.9}}}";
-	//var input = "\\frac{#B}{\\sqrt{2}}";
-	//var input = "\\frac{%A}{%B}";
 
 	tp(
 		"Y=1+2",
@@ -29,17 +21,13 @@ fs.readFile('../src/peg/latex.peg', function(err, data) {
 		"Y=\\frac{b-a}{4}",
 		"(b-a)/(4)"
 	);
-	// tp(
-	// 	"\\funtime(3)",
-	// 	"__unknown_function['\\funtime'](3)"
-	// );
 	tp(
 		"Y=2+(3+x)",
 		"2+(3+x)"
 	);
 	tp(
 		"Y=3+\\sin(\\beta \\times 2)",
-		"3+Math.sin(_beta*2)"
+		"3+Math.sin($backslash_beta*2)"
 	);
 	tp(
 		"Y=3(x)",
@@ -103,7 +91,7 @@ fs.readFile('../src/peg/latex.peg', function(err, data) {
 	);
 	tp(
 		"Y=x_{k+1}",
-		"x_k_plus_1"
+		"x_$leftBracket_k$plus_1$rightBracket_"
 	);
 	tp(
 		"Y=x^2",
@@ -119,7 +107,7 @@ fs.readFile('../src/peg/latex.peg', function(err, data) {
 	);
 	tp(
 		"Y=k_n^2",
-		"k_n_exponent_2"
+		"Math.pow(k_n,2)"
 	);
 	tp(
 		"Y=k^{22}",
@@ -130,16 +118,12 @@ fs.readFile('../src/peg/latex.peg', function(err, data) {
 		"a_x_i"
 	);
 	tp(
-		"Y=a_{2_{33}}",
-		"a_2_33"
-	);
-	tp(
 		"Y=x_{t_{y^a}}",
-		"x_t_y_exponent_a"
+		"x_$leftBracket_t_$leftBracket_y$caret_a$rightBracket_$rightBracket_"
 	);
 	tp(
 		"Y=x_{t_{y^2}}",
-		"x_t_y_exponent_2"
+		"x_$leftBracket_t_$leftBracket_y$caret_2$rightBracket_$rightBracket_"
 	);
 	tp(
 		"Y=\\sqrt{2}",
@@ -183,7 +167,7 @@ fs.readFile('../src/peg/latex.peg', function(err, data) {
 	);
 	tp(
 		"Y=a'+a''",
-		"a_prime+a_prime_prime"
+		"a$prime_+a$prime_$prime_"
 	);
 	tp(
 		"Y=\\binom{10}{2}",
@@ -254,24 +238,24 @@ fs.readFile('../src/peg/latex.peg', function(err, data) {
 		"x*Math.sin(5)"
 	);
 	tp(
-		"Y=\\frac{a}{b}5",
-		"(a)/(b)*5"
+		"Y=5\\frac{a}{b}",
+		"5*(a)/(b)"
 	);
 	tp(
-		"Y=\\frac{a}{b}\\sin5",
-		"(a)/(b)*Math.sin(5)"
+		"Y=\\sin5\\frac{a}{b}",
+		"Math.sin(5*(a)/(b))"
 	);
 	tp(
-		"Y=x^2\\sin5",
-		"Math.pow(x,2)*Math.sin(5)"
+		"Y=\\sin5x^2",
+		"Math.pow(Math.sin(5*x),2)"
 	);
 	tp(
 		"y=aa^{2a^3}",
-		"y=a*Math.pow(2*Math.pow(a,3),2)"
+		"Math.pow(a*a,Math.pow(2*a,3))"
 	);
 	tp(
-		"y=aa^2a^3",
-		"y=a*Math.pow(a,2)*Math.pow(a,3)"
+		"y=aa^2 \\cdot a^3",
+		"Math.pow(a*a,2)*Math.pow(a,3)"
 	);
 	tp(
 		"Y=((3+x)(2-y))(4*z)",
@@ -287,47 +271,34 @@ fs.readFile('../src/peg/latex.peg', function(err, data) {
 	);
 	tp(
 		"y=2x_{k-1}+3",
-		"2*x_k_minus_1+3"
+		"2*x_$leftBracket_k$minus_1$rightBracket_+3"
 	);
 	tp(
-		"Y=\\sin3-9+x'_{i'_{2^3}}*9",
-		"Math.sin(3)-9+x_prime_i_prime_2_exponent_3*9"
+		"Y=\\sin3-9+x'_{i'_{r^3}}*9",
+		"Math.sin(3)-9+x$prime__$leftBracket_i$prime__$leftBracket_r$caret_3$rightBracket_$rightBracket_*9"
 	);
 
 	// test parser
 	function tp(input, expected)
 	{
-		// try
-		// {
-			console.log(input);
-			console.log('---------------');
+		try
+		{
 			var output = parser.parse(input);
-			helpers = output.helpers;
+			var fnLines = output.fn.toString().split("\n")
+			var actual = fnLines.slice(2, fnLines.length - 1).join("\n").replace("return ", "").replace(/;/, '');
 
-			expected = "function anonymous(" + output.variables.join(",") + ") {\nreturn " + expected + ";\n}";
-
-			if(output.fn.toString() == expected)
-			{
+			if(actual == expected) {
 				console.log('PASS');
+			} else {
+				console.log('FAIL: ' + input);
+				console.log('Expected=' + expected)
+				console.log('Actual=' + actual)
+				console.log('');
+				console.log('');
 			}
-			else
-			{
-				console.log(output);
-				console.log('actual=');
-				console.log(output.fn.toString());
-				console.log('expected=');
-				console.log(expected);
-				console.log('FAIL!');
-			}
-
-			console.log("=" + output.fn(1,2,3,4,5,6,7,8,9,10));
-			console.log('');
-			console.log('');
-		// }
-		// catch(e)
-		// {
-		// 	console.log('FAIL - Error!');
-		// 	console.log(e);
-		// }
+		} catch(e) {
+			console.log('input', input)
+			console.error('Fatal error!', e);
+		}
 	}
 });

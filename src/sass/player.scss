@@ -1,8 +1,3 @@
-#jxgbox
-{
-	width: 100%;
-	height: 100%;
-}
 @import "main";
 
 $interactive-box-height: 350px;
@@ -12,10 +7,38 @@ $box-eq-height: 100px;
 
 body
 {
-	// width: 700px;
-	// height: 500px;
+	background: white;
+}
 
-	background: $light-gray;
+// Used to prevent FOUC
+.loading main {
+	// Display none causes the Symbola.tff font to glitch
+	visibility: hidden !important;
+}
+
+@keyframes loading-pulse {
+	0% {
+		opacity: 0.6;
+	}
+	50% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0.6;
+	}
+}
+
+#loading {
+	color: $purple;
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	animation: loading-pulse 1s infinite;
+}
+
+.loaded #loading {
+	display: none;
 }
 
 .error-msg
@@ -54,15 +77,17 @@ main
 .box.eq
 {
 	position: relative;
-
+	background: #fafafa;
+	border: 1px solid #ececec;
+	border-bottom: none;
 	box-sizing: border-box;
 	margin: 20px auto;
-	margin-bottom: 5px;
+	margin-bottom: 0;
 	width: $box-eq-width;
 	height: $box-eq-height;
-
-	border: 1px solid rgba(0, 0, 0, .25);
-	box-shadow: 0 2px 0 rgba(0, 0, 0, .25);
+	border-radius: 5px;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
 
 	h2
 	{
@@ -101,14 +126,16 @@ main
 	margin: 0 20px;
 	height: 445px;
 	padding: 15px;
-
-	background: $yellow;
-	border: 1px solid rgba(0, 0, 0, .25);
-	box-shadow: 0 2px 0 rgba(0, 0, 0, .25);
+	border-radius: 5px;
+	background: white;
+	border: 1px solid #ececec;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
 
 	.help
 	{
 		text-align: center;
+		transform: translate(0, -4px);
 
 		h2
 		{
@@ -146,7 +173,9 @@ main
 	position: relative;
 	width: 250px;
 	z-index: 2;
-
+	border-radius: 5px;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
 	overflow: auto;
 
 	ul
@@ -169,7 +198,8 @@ main
 
 			.variable-input-container{
 				margin: auto;
-				width: 60%;
+				width: 100%;
+				text-align: center;
 			}
 
 			.variable-slider{
@@ -201,20 +231,12 @@ main
 
 				border: 1px solid $gray;
 
-				// &.variable-input.empty
-				// {
-				// 	border: 1px solid $orange;
-				// 	outline: 1px solid $orange;
-				// 	background: $orange-light;
-				// }
-
 				&.variable-input.invalid
 				{
 					border: 1px solid $error;
 					outline: 1px solid $error;
 					background: $error-light;
 				}
-
 
 				// RANGE INPUTS
 				&.variable-range {
@@ -289,6 +311,32 @@ main
 	height: 384px;
 	padding: 0;
 	box-sizing: border-box;
+	border-radius: 5px;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+
+	> button {
+		position: absolute;
+		z-index: 2;
+		background: #4da3ce;
+		color: white;
+		font-family: $font;
+		font-size: 12pt;
+		border: none;
+		border-radius: 4px;
+		padding: 4px 10px;
+		font-weight: bold;
+		border-bottom: 2px solid #265d79;
+		left: 10px;
+		top: 10px;
+		user-select: none;
+		cursor: pointer;
+		opacity: 0.9;
+
+		&:hover {
+			opacity: 1;
+		}
+	}
 
 	.graph
 	{
@@ -316,10 +364,46 @@ main
 	}
 }
 
+.tan-instructions {
+	z-index: 2;
+	position: absolute;
+	background: white;
+	padding: 2px 5px;
+	top: 10px;
+	right: 10px;
+	width: 100px;
+	font-size: 9pt;
+	text-align: right;
+	pointer-events: none;
+
+	> .tan-dot {
+		font-size: 20pt;
+		line-height: 0;
+		display: inline-block;
+		vertical-align: middle;
+		transform: translate(0, -3px);
+		color: #ff941e;
+	}
+}
+
 .parse-error
 {
 	.error-msg
 	{
 		display: block !important;
+	}
+}
+
+#jxgbox
+{
+	width: 100%;
+	height: 100%;
+
+	> .JXGinfobox {
+		background: rgba(0, 0, 0, 0.65);
+		padding: 1px 5px;
+		border-radius: 2px;
+		color: white !important;
+		font-weight: bold !important;
 	}
 }

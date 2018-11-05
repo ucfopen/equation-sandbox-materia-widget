@@ -1,10 +1,11 @@
 {
   "name": "Equation Sandbox",
   "qset": {
-    "version": 1,
+    "version": 2,
     "data": {
-      "latex": "y=2^x+a",
+      "latex": "y=5\\sin\\left(2\\cos\\left(\\frac{x}{2}\\right)+b\\right)",
       "mode": "graphX",
+      "tanLineOption": "toggle",
       "bounds": {
         "x": {
           "min": -10,

@@ -10,29 +10,21 @@
 		<!-- REQUIRED MATERIA JAVASCRIPT -->
 		<script src="materia.creatorcore.js"></script>
 
-		<link rel="stylesheet" href="assets/vendor/mathquill-0.9.4/mathquill.css">
+		<link rel="stylesheet" href="vendor/mathquill/mathquill.css">
 		<link rel="stylesheet" href="assets/stylesheets/creator.css">
 		<link rel="stylesheet" href="assets/stylesheets/player.css">
 
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-		<script>window.jQuery || document.write('<script src="assets/vendor/jquery.min.js"><\/script>')</script>
+		<script src="vendor/mathquill/mathquill.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
 
-		<script src="assets/vendor/mathquill-0.9.4/mathquill.min.js"></script>
-
-		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js"></script>
-		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular-route.js"></script>
-		<script>window.angular || document.write('<script src="assets/vendor/angular.min.js"><\/script>')</script>
-
-		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jsxgraph/0.99.4/jsxgraphcore.js"></script>
-		<script>window.JXG || document.write('<script src="assets/vendor/jsxgraphcore.js"><\/script>')</script>
+		<script type="text/javascript" src="vendor/jsxgraph/jsxgraphcore.js"></script>
 
 		<!-- MAIN PLAYER SCRIPT -->
-		<script src="./app.js"></script>
-		<script src="./assets/js/latex.js"></script>
 		<script src="./assets/js/creator.js"></script>
-		<script src="./assets/js/playerTemplateController.js"></script>
-
+		<script src="./assets/js/player-template-controller.js"></script>
 
 	</head>
 	<body ng-controller="CreatorController" ng-keyup="onKeyup($event)" ng-class="{'parse-error':parseError, 'bounds-error':boundsError, 'waiting':waiting}">
@@ -43,58 +35,59 @@
 
 		<div class="top row input-sidebar">
 			<div class="top-box input-section">
-				<h2 class="mode-heading">Mode:</h2>
-				<select ng-model="mode">
-					<option value="resultingY">Result value</option>
-					<option value="graphX">Graph x</option>
-				</select>
-
-				<h2>Enter equation here:</h2>
-				<div id="eq-input" class="eq-input mathquill-editable"></div>
-
-				<h2>Enter graph bounds here:</h2>
-				<div class="graph-bounds-container">
-					<div class="graph-bounds">
-						<div>
-							<input  class="graph-bounds-input"
-									type="number"
-									ng-model="bounds.x.min"
-									ng-change="onBoundsChange()">
-							<span class="mathquill-embedded-latex">\leq \quad x \quad \leq</span>
-							<input 	class="graph-bounds-input"
-									type="number"
-									ng-model="bounds.x.max"
-									ng-change="onBoundsChange()">
-						</div>
-						<div>
-							<input 	class="graph-bounds-input"
-									type="number"
-									ng-model="bounds.y.min"
-									ng-change="onBoundsChange()">
-							<span class="mathquill-embedded-latex">\leq \quad y \quad \leq</span>
-							<input 	class="graph-bounds-input"
-									type="number"
-									ng-model="bounds.y.max"
-									ng-change="onBoundsChange()">
-						</div>
-					</div>
-					<div class="bnds-error-msg">
-						{{bnds_errorMsg}}
-					</div>
+				<div class="mode-container">
+					<h2 class="mode-heading">Mode:</h2>
+					<select ng-model="mode" ng-change="onChangeSettings('mode')">
+						<option value="resultingY">Result value</option>
+						<option value="graphX">Graph x</option>
+					</select>
+				</div>
+				<div class="eq-container">
+					<h2>Enter equation:</h2>
+					<div id="eq-input" class="eq-input mathquill-editable"></div>
 				</div>
 
+				<div class="latex-expression">
+					<span>Latex Expression:</span>
+					<div class="container"><input type="text" ng-model="latex" ng-focus="latexFocus = true" ng-blur="latexFocus = false"></div>
+				</div>
+
+				<div ng-show="mode === 'graphX'">
+
+					<h2>Graph Options:</h2>
+					<div class="tangent-line-option">
+						<label>Tangent Line:</label>
+						<select ng-model="tanLineOption" ng-change="onChangeSettings('tanLineOption')">
+							<option value="none">No tangent line</option>
+							<option value="toggle">Include button for student to show/hide tangent line</option>
+							<option value="always">Always show tangent line</option>
+						</select>
+					</div>
+					<div class="graph-bounds-container">
+						<span>Graph bounds:</span>
+						<div class="graph-bounds">
+							<div>
+								<input class="graph-bounds-input" type="number" ng-model="bounds.x.min" ng-change="onBoundsChange()">
+								<span class="mathquill-embedded-latex">\leq \quad x \quad \leq</span>
+								<input class="graph-bounds-input" type="number" ng-model="bounds.x.max" ng-change="onBoundsChange()">
+							</div>
+							<div>
+								<input class="graph-bounds-input" type="number" ng-model="bounds.y.min" ng-change="onBoundsChange()">
+								<span class="mathquill-embedded-latex">\leq \quad y \quad \leq</span>
+								<input class="graph-bounds-input" type="number" ng-model="bounds.y.max" ng-change="onBoundsChange()">
+							</div>
+						</div>
+						<div class="bnds-error-msg">
+							{{bnds_errorMsg}}
+						</div>
+					</div>
+				</div>
 			</div>
 
 			<div class="top-box player-links-section">
-				<div class="player-link">
-					<span>Latex Expression:</span>
-					<div class="container"><input type="text" ng-value="latex"></div>
-				</div>
-				<div class="error-msg">{{errorMsg}}</div>
-
 				<div class="input-help">
 					<ul>
-						<li>Equation must have <code>x</code></li>
+						<li>For "Graph X" mode equation must have an <code>x</code> variable</li>
 						<li>Must be in the form of <code>variable = expression</code></li>
 						<li>Functions require a backslash (Try entering <code>\sin x</code>)</li>
 						<li>Same for special variables (Try <code>\theta</code>)</li>

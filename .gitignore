@@ -1,9 +1,10 @@
-.build
+*build
+yarn-error.log
 .DS_Store
 .sass-cache
 node_modules
 bower_components
 css
-js
 stylesheets
 scripts
+src/js/latex-parser.js

@@ -7,38 +7,27 @@
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
+		<script src="vendor/jsxgraph/jsxgraphcore.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+		<script src="vendor/mathquill/mathquill.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
 		<!-- REQUIRED MATERIA JAVASCRIPT -->
 		<script src="materia.enginecore.js"></script>
-		<script src="materia.score.js"></script>
 
-		<link rel="stylesheet" href="assets/vendor/mathquill-0.9.4/mathquill.css">
+		<link rel="stylesheet" href="vendor/mathquill/mathquill.css">
 		<link rel="stylesheet" href="assets/stylesheets/player.css">
 	</head>
-	<body ng-controller="PlayerController" ng-class="{'parse-error':parseError}">
+	<body class="loading" ng-controller="PlayerController" ng-class="{'parse-error':parseError}">
+		<div ng-include="'player.template.html'"></div>
 
-		<header>
+		<footer>
 			<h1>Equation Sandbox</h1>
-		</header>
+		</footer>
 
-		<ng-include src="'player.template.html'"></ng-include>
-
-
-		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jsxgraph/0.99.4/jsxgraphcore.js"></script>
-		<script>window.JXG || document.write('<script src="assets/vendor/jsxgraphcore.js"><\/script>')</script>
-
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-		<script>window.jQuery || document.write('<script src="assets/vendor/jquery.min.js"><\/script>')</script>
-
-		<script src="assets/vendor/mathquill-0.9.4/mathquill.min.js"></script>
-
-		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js"></script>
-		<script>window.angular || document.write('<script src="assets/vendor/angular.min.js"><\/script>')</script>
-
+		<div id="loading">Loading...</div>
 
 		<!-- MAIN PLAYER SCRIPT -->
-		<script src="./app.js"></script>
-		<script src="./assets/js/latex.js"></script>
-		<script src="./assets/scripts/player.js"></script>
-		<script src="./assets/js/playerTemplateController.js"></script>
+		<script src="./assets/js/player.js"></script>
 	</body>
 </html>

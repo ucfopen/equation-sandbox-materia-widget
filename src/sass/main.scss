@@ -1,5 +1,5 @@
 $dark-gray: #333;
-$light-gray: #F1EFEF;
+$light-gray: #ececec;
 $gray: gray;
 $purple: #8d5a9f;
 $blue: #74a2cc;
@@ -14,13 +14,7 @@ $font: "Lato", Arial, sans;
 $monospace-font: "Droid Sans Mono", monospace;
 $math-font: "Times New Roman", serif;
 
-$header-height: 60px;
-
-// Used to prevent FOUC
-.loading {
-	// Display none causes the Symbola.tff font to glitch
-	visibility: hidden !important;
-}
+$footer-height: 36px;
 
 body
 {
@@ -32,23 +26,24 @@ body
 	background: $light-gray;
 }
 
-header
+footer
 {
 	width: 100%;
-	height: $header-height;
-	background: $dark-gray;
+	height: $footer-height;
+	position: absolute;
+	left: 0;
+	bottom: 0;
 
 	h1
 	{
 		margin: 0;
-		padding: $header-height/2 0 0 100px;
-
-		height: $header-height;
-
-		font-size: 18pt;
+		padding: $footer-height/2 0 0 66px;
+		height: $footer-height;
+		font-size: 10pt;
 		font-weight: 300;
-		color: white;
+		color: rgba(0, 0, 0, 0.7);
 		line-height: 0;
+		box-sizing: border-box;
 	}
 
 	&:before
@@ -56,13 +51,13 @@ header
 		content: " ";
 
 		position: absolute;
-		left: 20px;
-		top: 12px;
-
+		left: 14px;
+		top: 3px;
 		width: 53px;
 		height: 29px;
 		display: block;
+		transform: scale(0.7);
 
-		background-image: url('assets/img/materialogo.png');
+		background-image: url('../img/materialogo.png');
 	}
 }

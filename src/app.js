@@ -1,1 +1,1 @@
-angular.module('equationSandbox', []);
+angular.module('equationSandbox', [])

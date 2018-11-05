@@ -1,7 +1,6 @@
 @import "main";
 
 $row-padding: 20px;
-$error-msg-ptr-size: 14px;
 
 select
 {
@@ -21,7 +20,27 @@ code
 {
 	font-family: $monospace-font;
 
-	background: $light-gray;
+	background: rgba(255, 255, 255, 0.5);
+}
+
+header
+{
+	$header-height: 60px;
+	background: $dark-gray;
+	width: 100%;
+	height: $header-height;
+
+	h1
+	{
+		color: white;
+		margin: 0;
+		padding: $header-height/2 0 0 20px;
+		height: $header-height;
+		font-size: 18pt;
+		font-weight: 300;
+		line-height: 0;
+		box-sizing: border-box;
+	}
 }
 
 .row
@@ -37,7 +56,12 @@ code
 
 	width: 100%;
 
-	background: white;
+	background: #f6fbfd;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+
+	&.row {
+		min-height: 275px;
+	}
 
 	.top-box
 	{
@@ -51,6 +75,11 @@ code
 			.graph-bounds-container
 			{
 				display: flex;
+				margin-bottom: 20px;
+
+				> span {
+					width: 115px;
+				}
 
 				.graph-bounds
 				{
@@ -75,52 +104,22 @@ code
 				}
 			}
 		}
-	}
 
-	.input-section
-	{
-		h2
-		{
-			margin: 0 0 10px 0;
+		.eq-container {
+			margin-bottom: 10px;
 
-			color: $purple;
-		}
-
-		.mode-heading
-		{
-			display: inline-block;
-			margin: 0 10px 10px 0;
-		}
-
-		.eq-input
-		{
-			padding: 10px;
-			margin: 0 0 20px 0;
-
-			font-size: 20pt;
-
-			background: white;
-		}
-
-		.input-help
-		{
-			ul
-			{
-				padding: 0 $row-padding;
-
-				font-size: 11pt;
+			h2 {
+				display: inline-block;
+				margin: 0;
+				vertical-align: middle;
+				width: 180px;
 			}
 		}
-	}
 
-	.player-links-section
-	{
-		position: relative;
-
-		.player-link
+		.latex-expression
 		{
 			position: relative;
-
+			width: 100%;
 			margin: 0 0 1em 0;
 
 			span
@@ -130,12 +129,17 @@ code
 
 				display: inline-block;
 
-				color: $purple;
+				color: $dark-gray;
 			}
 
 			.container
 			{
 				box-sizing: border-box;
+				display: inline-block;
+				position: absolute;
+				left: 184px;
+				top: 0;
+				width: 290px;
 
 				input, textarea
 				{
@@ -144,6 +148,7 @@ code
 					padding: 1em;
 					margin: 0;
 					width: 100%;
+
 
 					font-family: $monospace-font;
 					font-size: 9pt;
@@ -158,25 +163,73 @@ code
 			}
 		}
 
-		.error-msg
+		.tangent-line-option {
+			margin-bottom: 10px;
+
+			> label {
+				vertical-align: middle;
+				width: 110px;
+				display: inline-block;
+			}
+
+			> select {
+				font-size: 11pt;
+				display: inline-block;
+				vertical-align: middle;
+				transform: translate(0, 1px);
+			}
+		}
+	}
+
+	.input-section
+	{
+		h2
 		{
-			position: absolute;
-			left: 0;
-			top: 0;
-
-			z-index: 2;
-
-			display: none;
-			box-sizing: border-box;
-			// width: 400px;
-			border-radius: 4px;
-			padding: 16px;
-
-			font-family: $monospace-font;
-			font-size: 12pt;
+			margin: 0 0 10px 0;
 			color: $dark-gray;
+		}
 
-			background: $error-light;
+		.mode-heading
+		{
+			display: inline-block;
+			margin: 0 10px 10px 0;
+			width: 169px;
+		}
+
+		.eq-input
+		{
+			vertical-align: middle;
+			padding: 10px;
+			margin: 0;
+
+			font-size: 20pt;
+
+			background: white;
+		}
+	}
+
+	.player-links-section
+	{
+		position: relative;
+
+		.input-help
+		{
+			background: #faf0fa;
+			border: 1px solid #d5a6d6;
+			position: absolute;
+			top: 0;
+			right: 0;
+			border-radius: 4px;
+			color: rgba(0,0,0,.9);
+
+			ul
+			{
+				padding: 0 $row-padding;
+				padding-left: 2em;
+				width: 370px;
+
+				font-size: 11pt;
+			}
 		}
 	}
 }
@@ -208,7 +261,7 @@ code
 		{
 			width: 800px;
 			height: 670px;
-			margin: -$header-height auto 0 auto;
+			margin: -$footer-height auto 0 auto;
 			display: block;
 
 			border: 1px solid black;
@@ -227,11 +280,6 @@ code
 
 .parse-error
 {
-	.error-msg
-	{
-		display: block !important;
-	}
-
 	.eq-input
 	{
 		color: $error;
