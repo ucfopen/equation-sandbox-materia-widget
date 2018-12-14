@@ -30,16 +30,28 @@ header
 	width: 100%;
 	height: $header-height;
 
-	h1
+	input
 	{
+		box-sizing: border-box;
+		height: $header-height - 20;
+		width: 400px;
+
+		margin: 10px 0px 10px 20px;
+		padding-left: 20px;
+
 		color: white;
-		margin: 0;
-		padding: $header-height/2 0 0 20px;
-		height: $header-height;
+		background: #333;
+		
+		border-width: 0 0 2px 0;
+		
 		font-size: 18pt;
 		font-weight: 300;
 		line-height: 0;
-		box-sizing: border-box;
+
+		&:focus {
+			outline: none;
+			background: #555;
+		}
 	}
 }
 

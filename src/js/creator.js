@@ -5,11 +5,11 @@ angular.module('equationSandbox')
 	.controller('CreatorController', ['$scope', '$http', function($scope, $http) {
 		"use strict";
 
-		let _qset;
+		let _qset = null;
 
 		/* Initialize class variables */
 
-		let _title = (_qset = null);
+		// let _title = (_qset = null);
 
 		const DEFAULT_EQUATION = 'y=5\\sin\\left(2\\cos\\left(\\frac{x}{2}\\right)+b\\right)';
 		const UPDATE_DEBOUNCE_DELAY_MS = 500;
@@ -40,7 +40,11 @@ angular.module('equationSandbox')
 
 		/* Materia Interface Methods */
 
-		$scope.initNewWidget = (widget, baseUrl) => true;
+		$scope.initNewWidget = (widget, baseUrl) => {
+			$scope.$apply(() => {
+				$scope.title = 'My Equation Sandbox Widget';
+			})			
+		};
 
 		$scope.onSaveComplete = (title, widget, qset, version) => true;
 
@@ -52,11 +56,14 @@ angular.module('equationSandbox')
 			try {
 				let _latex;
 				_qset = qset;
-				return _latex = qset.data;
+				_latex = qset.data;
 
 			} catch (e) {
 				return console.log("initExistingWidget error: ", e);
 			}
+			$scope.$apply(() => {
+				$scope.title = title;
+			})
 		};
 
 		$scope.onSaveClicked = function(mode) {
@@ -67,7 +74,7 @@ angular.module('equationSandbox')
 					return;
 				}
 
-				return Materia.CreatorCore.save(_title, _qset);
+				return Materia.CreatorCore.save($scope.title, _qset);
 			} catch (e) {
 				return console.log("onSaveClicked error: ", e);
 			}
@@ -83,7 +90,7 @@ angular.module('equationSandbox')
 			try {
 				if ((_qset == null)) { _qset = {}; }
 
-				_title = 'Equation Sandbox';
+				if ($scope.title.length == 0) { $scope.title.length = 'My Equation Sandbox Widget'}
 
 				_validateBounds();
 				if ($scope.parseError) { return null; }

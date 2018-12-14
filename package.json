@@ -9,7 +9,7 @@
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.7.0",
-    "materia-widget-development-kit": "^2.0.0",
+    "materia-widget-development-kit": "^2.2.0",
     "onchange": "^4.0.0",
     "pegjs": "^0.8.0",
     "webpack-synchronizable-shell-plugin": "^0.0.7",

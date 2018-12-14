@@ -30,7 +30,8 @@
 	<body ng-controller="CreatorController" ng-keyup="onKeyup($event)" ng-class="{'parse-error':parseError, 'bounds-error':boundsError, 'waiting':waiting}">
 
 		<header>
-			<h1>Equation Sandbox</h1>
+			<!-- <h1>Equation Sandbox</h1> -->
+			<input ng-model="title" placeholder="My Equation Sandbox Widget" />
 		</header>
 
 		<div class="top row input-sidebar">
