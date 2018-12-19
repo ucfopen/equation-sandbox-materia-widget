@@ -3,18 +3,18 @@
   "materia": {
     "cleanName": "equation-sandbox"
   },
-  "version": "1.0.1",
+  "version": "2.0.0",
   "dependencies": {
     "angular": "~1.5.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.7.0",
+    "jsxgraph": "^0.99.7",
     "materia-widget-development-kit": "^2.2.0",
+    "mathquill": "0.9.1",
     "onchange": "^4.0.0",
     "pegjs": "^0.8.0",
-    "webpack-synchronizable-shell-plugin": "^0.0.7",
-    "mathquill": "0.9.1",
-    "jsxgraph": "^0.99.7"
+    "webpack-synchronizable-shell-plugin": "^0.0.7"
   },
   "devDependencies": {
     "sass-graph": "^2.1.1"
