@@ -10,7 +10,7 @@
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.7.0",
     "jsxgraph": "^0.99.7",
-    "materia-widget-development-kit": "^2.2.0",
+    "materia-widget-development-kit": "^2.3.0",
     "mathquill": "0.9.1",
     "onchange": "^4.0.0",
     "pegjs": "^0.8.0",

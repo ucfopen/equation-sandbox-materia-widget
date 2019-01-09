@@ -1,0 +1,28 @@
+language: node_js
+node_js:
+  - '6'
+cache:
+  yarn: true
+  directories:
+    - node_modules
+before_install:
+  - npm config set spin false
+  - npm install -g npm@^5
+script:
+  - yarn test-ci
+  - yarn build
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: "wk30rcvjcb7p/fsDczLjaXBAEJQQcYJgOhz6CMQcvVHk8Yl8jrZuImVm3OYDCVF3+XHiQMG52Hjgs2BOTauxbCOilp4MRjvyMmOrsZIl7QwgO/B5gqvIl2WhWsh1YUye/yuR3wkZsrn26NSG8QZwaHBdSg5LJlUy1Sg9DOZEiTCgj41N3ZZZjf1pOeGUVik68NIlBtQevenbZst/3+qfkT9NhgsISTVvq7qn79S/CYdm8iEv9ioWHG47Xmxp90eGX2osA3hniaRhGGC+kJ0o2wg9wmC024Upqyp1NTYFy0JFxQoNGcAX2IG//MAaexzzL4wN5dgi8toCRUqtSjPMXRJ2PqGBcrf3czDvz4f1+oicjLHV0k3PMs4WBg2KLMXneOe0e6O1nSEtgj1Evf1k+JyYsGK8NZrWnLC2T1bur7Be6DkQUg4nlW+PVb03WE+r2qNyV/P9gj5xInIAk8GDOy50NUflWb7sTHXrf+2t2dwQ7kheh2hroa6jbOQoh5BPxSxkLFnjwOOfOEDzJzMTdsquwhmuRkS6pmJrC++5KWm5ccMidXLM63CJskMIy1/jyWVOOuvJrfGyHqXZJ09ltr1wffYYKWvnR+tLJYJUjgd5+pIMkC//qiGGqhB1hP3MdSiT/vJ5ehIrnDj7YOCg7J98KtAjbSurhHOmQFuhctY="
+  file:
+    - build/_output/equation-sandbox.wigt
+    - build/_output/equation-sandbox-build-info.yml
+  on:
+    tags: true
+    repo: ucfopen/equation-sandbox-materia-widget
+notifications:
+  email: false
+  slack:
+    secure: "UhmGJj7/pmZ7S+ngg3EXR+iJkWGRbzfcsUtuXSy0GNOv1b0KzCJRSJP7SprwX2yOZt0+Mkl2ZJMER/3N6HjlZIviyKlpdBuovPJMp/qpHX1MZOjGdvG3GCtS93J1Iws1+muD2nIYKtfUu9Wg2hQKcJkVQb7SKBMjgeXa7PaHqsQd3nhGLFKRtYwWeX+q13eNiyz2VH7nNOVXSJSwhL+XD+Lz3Q7aFNqvzMfB/AsYAH2iNTg/HO1WM7PC/SfCM4hb7KOQ9f712GrNVfrbEKAFIcwC1kWN7gaT2IK7y8h2vuh6dXBDbyXkaskuxq+g2ntf9T2L1kgXaUWyqM+SuEJyrvnR8sPcGFVUVYARZ0WX3OzqwuXzI2vXMBvPn+HZeFB9br0V5crWrLxC6LvY2UOjbp7dv+od562DTSurwVB0voJHNntoedkd7T1SUWJs8sHkPJjs0rhl1Tolqe/838u6+I+RfzYPzu96mmoEoifNsYBNNIZC7DuxVP1oLrCRTsegNo7UKtmKH7dMJE1VAnTQJxB3TbZ6Jm8lACdJ9iftT2dNpiAuxZTPknnAChI+OtHfQY3THSg5yCqhEsnzaIofu86FgbuZeww8u8KiJgynAZ8wUEBD7vhG/nQ/RqZ32Wl+xKF4L8dn6h3n5JUKB8f+MfgbUsWLw21atMsii4jtzUw="
