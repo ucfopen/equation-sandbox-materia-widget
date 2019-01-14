@@ -28,7 +28,9 @@
     "build": "webpack -p",
     "build-dev": "webpack",
     "test": "TZ='America/New_York' jest --verbose",
-    "test-ci": "TZ='America/New_York' CI=true jest --ci --useStderr --coverage --coverageReporters text-summary cobertura"
+    "test-ci": "TZ='America/New_York' CI=true jest --ci --useStderr --coverage --coverageReporters text-summary cobertura",
+    "peg:build": "pegjs --cache ./src/peg/latex.pegjs ./src/js/latex-parser.js",
+    "peg:watch": "onchange './src/peg/latex.pegjs' -- yarn peg:build"
   },
   "babel": {
     "presets": ["env"]
