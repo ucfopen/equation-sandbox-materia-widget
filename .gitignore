@@ -4,3 +4,5 @@
 node_modules
 *build
 coverage
+# the latex parser is built using peg:build
+src/js/latex-parser.js
