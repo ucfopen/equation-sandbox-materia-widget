@@ -9,6 +9,7 @@
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.7.0",
+    "jest": "^23.6.0",
     "jsxgraph": "^0.99.7",
     "materia-widget-development-kit": "^2.3.0",
     "mathquill": "0.9.1",
@@ -16,20 +17,42 @@
     "pegjs": "^0.8.0",
     "webpack-synchronizable-shell-plugin": "^0.0.7"
   },
+  "resolutions": {
+    "jest/**/tough-cookie": "2.3.4"
+  },
   "devDependencies": {
     "sass-graph": "^2.1.1"
   },
   "scripts": {
     "start": "webpack-dev-server",
     "build": "webpack -p",
-    "build-dev": "webpack --verbose",
-    "test": "karma start ./karma.conf.js --no-auto-watch --single-run",
-    "test-ci": "karma start ./karma.conf.js --no-auto-watch --single-run",
-    "pretest": "npm run build-dev",
-    "pretestFull": "npm run build-dev",
-    "testFull": "karma start ./karma-full.conf.js",
-    "peg:build": "pegjs --cache ./src/peg/latex.pegjs ./src/js/latex-parser.js",
-    "peg:watch": "onchange './src/peg/latex.pegjs' -- yarn peg:build"
+    "build-dev": "webpack",
+    "test": "TZ='America/New_York' jest --verbose",
+    "test-ci": "TZ='America/New_York' CI=true jest --ci --useStderr --coverage --coverageReporters text-summary cobertura"
+  },
+  "babel": {
+    "presets": ["env"]
+  },
+  "jest": {
+    "coverageReporters": [
+      "text",
+      "lcov"
+    ],
+    "verbose": false,
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "statements": 0,
+        "branches": 0,
+        "functions": 0,
+        "lines": 0
+      }
+    }
   },
   "author": "University of Central Florida, Center for Distributed Learning",
   "description": "Template widget to use as an example.",
