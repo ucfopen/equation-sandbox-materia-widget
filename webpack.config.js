@@ -9,12 +9,36 @@ const copy = widgetWebpack.getDefaultCopyList()
 const entries = {}
 
 entries['assets/js/creator.js'] = [
+	'core-js/es6/array',
+	'core-js/fn/array/map',
+	'core-js/es6/symbol',
+	'core-js/es6/promise',
+	'core-js/fn/set',
+	'core-js/fn/object/assign',
+	'core-js/fn/string/includes',
+	'core-js/web/dom-collections',
 	path.join(__dirname, 'src', 'js', 'creator.js')
 ]
 entries['assets/js/player.js'] = [
+	'core-js/es6/array',
+	'core-js/fn/array/map',
+	'core-js/es6/symbol',
+	'core-js/es6/promise',
+	'core-js/fn/set',
+	'core-js/fn/object/assign',
+	'core-js/fn/string/includes',
+	'core-js/web/dom-collections',
 	path.join(__dirname, 'src', 'js', 'player.js')
 ]
 entries['assets/js/player-template-controller.js'] = [
+	'core-js/es6/array',
+	'core-js/fn/array/map',
+	'core-js/es6/symbol',
+	'core-js/es6/promise',
+	'core-js/fn/set',
+	'core-js/fn/object/assign',
+	'core-js/fn/string/includes',
+	'core-js/web/dom-collections',
 	path.join(__dirname, 'src', 'js', 'player-template-controller.js'),
 ]
 entries['assets/stylesheets/creator.css'] = [
@@ -36,7 +60,13 @@ const babelLoaderRule = {
 	use: {
 		loader: 'babel-loader',
 		options: {
-			presets: ['env']
+			presets: [
+				'es2015',
+				['env', {
+					targets: { browsers: ["last 2 versions", "ie >= 11"]},
+					debug: true
+				}]
+			]
 		}
 	}
 }
