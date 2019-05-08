@@ -34,7 +34,15 @@
   },
   "babel": {
     "presets": [
-      "env"
+      "es2015",
+      {
+        "env": {
+          "targets": {
+            "browsers": ["last 2 versions", "ie >= 11"]
+          },
+          "debug": true
+        }
+      }
     ]
   },
   "jest": {
