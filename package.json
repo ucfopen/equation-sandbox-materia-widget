@@ -9,7 +9,7 @@
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.7.0",
-    "jest": "^23.6.0",
+    "jest": "^24.8.0",
     "jsxgraph": "^0.99.7",
     "materia-widget-development-kit": "^2.4.2",
     "mathquill": "0.9.1",
