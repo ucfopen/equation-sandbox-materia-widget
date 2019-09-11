@@ -37,11 +37,14 @@ entries['assets/css/main.css'] = [
 	path.join(__dirname, 'src', 'sass', 'main.scss'),
 ]
 
-const babelLoaderRule = {
+const babelLoaderWithPolyfillRule = {
 	test: /\.js$/,
-	exclude: [/node_modules/],
+	exclude: /node_modules/,
 	use: {
-		loader: 'babel-loader'
+		loader: 'babel-loader',
+		options: {
+			presets: ['@babel/preset-env']
+		}
 	}
 }
 
@@ -50,7 +53,7 @@ let customRules = [
 	rules.loadHTMLAndReplaceMateriaScripts,
 	rules.loadAndPrefixCSS,
 	rules.loadAndPrefixSASS,
-	babelLoaderRule
+	babelLoaderWithPolyfillRule
 ]
 
 const customCopy = copy.concat([
