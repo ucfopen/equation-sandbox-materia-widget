@@ -6,12 +6,9 @@
   "version": "2.0.2",
   "dependencies": {
     "angular": "~1.6.0",
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.4",
-    "babel-preset-env": "^1.7.0",
     "jest": "^24.8.0",
     "jsxgraph": "^0.99.7",
-    "materia-widget-development-kit": "^2.4.2",
+    "materia-widget-development-kit": "^2.5.0-alpha5",
     "mathquill": "0.9.1",
     "onchange": "^4.0.0",
     "pegjs": "^0.8.0",
@@ -31,11 +28,6 @@
     "test-ci": "TZ='America/New_York' CI=true jest --ci --useStderr --coverage --coverageReporters text-summary cobertura",
     "peg:build": "pegjs --cache ./src/peg/latex.pegjs ./src/js/latex-parser.js",
     "peg:watch": "onchange './src/peg/latex.pegjs' -- yarn peg:build"
-  },
-  "babel": {
-    "presets": [
-      "env"
-    ]
   },
   "jest": {
     "coverageReporters": [

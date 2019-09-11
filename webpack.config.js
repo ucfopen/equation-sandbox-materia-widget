@@ -8,13 +8,20 @@ const rules = widgetWebpack.getDefaultRules()
 const copy = widgetWebpack.getDefaultCopyList()
 const entries = {}
 
+const shims = [
+	'core-js/es6/symbol'
+]
+
 entries['assets/js/creator.js'] = [
+	...shims,
 	path.join(__dirname, 'src', 'js', 'creator.js')
 ]
 entries['assets/js/player.js'] = [
+	...shims,
 	path.join(__dirname, 'src', 'js', 'player.js')
 ]
 entries['assets/js/player-template-controller.js'] = [
+	...shims,
 	path.join(__dirname, 'src', 'js', 'player-template-controller.js'),
 ]
 entries['assets/stylesheets/creator.css'] = [
@@ -30,25 +37,23 @@ entries['assets/css/main.css'] = [
 	path.join(__dirname, 'src', 'sass', 'main.scss'),
 ]
 
-const babelLoaderRule = {
+const babelLoaderWithPolyfillRule = {
 	test: /\.js$/,
-	exclude: [/node_modules/],
+	exclude: /node_modules/,
 	use: {
 		loader: 'babel-loader',
 		options: {
-			presets: ['env']
+			presets: ['@babel/preset-env']
 		}
 	}
 }
 
 let customRules = [
-	// rules.loaderDoNothingToJs,
-	//rules.loaderCompileCoffe,
 	rules.copyImages,
 	rules.loadHTMLAndReplaceMateriaScripts,
 	rules.loadAndPrefixCSS,
 	rules.loadAndPrefixSASS,
-	babelLoaderRule
+	babelLoaderWithPolyfillRule
 ]
 
 const customCopy = copy.concat([
