@@ -36,6 +36,12 @@ entries['assets/stylesheets/player.css'] = [
 entries['assets/css/main.css'] = [
 	path.join(__dirname, 'src', 'sass', 'main.scss'),
 ]
+entries['guides/creator.temp.html'] = [
+	path.join(__dirname, 'src', '_guides', 'creator.md')
+]
+entries['guides/player.temp.html'] = [
+	path.join(__dirname, 'src', '_guides', 'player.md')
+]
 
 const babelLoaderWithPolyfillRule = {
 	test: /\.js$/,
@@ -53,6 +59,7 @@ let customRules = [
 	rules.loadHTMLAndReplaceMateriaScripts,
 	rules.loadAndPrefixCSS,
 	rules.loadAndPrefixSASS,
+	rules.loadAndCompileMarkdown,
 	babelLoaderWithPolyfillRule
 ]
 
@@ -65,8 +72,12 @@ const customCopy = copy.concat([
 		from: path.join(__dirname, 'node_modules', 'mathquill', 'build'),
 		to: path.join(outputPath, 'vendor', 'mathquill')
 	},
+	{
+		from: path.join(__dirname, 'src','_guides','assets'),
+		to: path.join(outputPath, 'guides', 'assets'),
+		toType: 'dir'
+	}
 ])
-
 
 // options for the build
 let options = {
