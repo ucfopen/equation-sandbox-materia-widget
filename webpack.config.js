@@ -8,13 +8,20 @@ const rules = widgetWebpack.getDefaultRules()
 const copy = widgetWebpack.getDefaultCopyList()
 const entries = {}
 
+const shims = [
+	'core-js/es6/symbol'
+]
+
 entries['assets/js/creator.js'] = [
+	...shims,
 	path.join(__dirname, 'src', 'js', 'creator.js')
 ]
 entries['assets/js/player.js'] = [
+	...shims,
 	path.join(__dirname, 'src', 'js', 'player.js')
 ]
 entries['assets/js/player-template-controller.js'] = [
+	...shims,
 	path.join(__dirname, 'src', 'js', 'player-template-controller.js'),
 ]
 entries['assets/stylesheets/creator.css'] = [
@@ -29,26 +36,31 @@ entries['assets/stylesheets/player.css'] = [
 entries['assets/css/main.css'] = [
 	path.join(__dirname, 'src', 'sass', 'main.scss'),
 ]
+entries['guides/creator.temp.html'] = [
+	path.join(__dirname, 'src', '_guides', 'creator.md')
+]
+entries['guides/player.temp.html'] = [
+	path.join(__dirname, 'src', '_guides', 'player.md')
+]
 
-const babelLoaderRule = {
+const babelLoaderWithPolyfillRule = {
 	test: /\.js$/,
-	exclude: [/node_modules/],
+	exclude: /node_modules/,
 	use: {
 		loader: 'babel-loader',
 		options: {
-			presets: ['env']
+			presets: ['@babel/preset-env']
 		}
 	}
 }
 
 let customRules = [
-	// rules.loaderDoNothingToJs,
-	//rules.loaderCompileCoffe,
 	rules.copyImages,
 	rules.loadHTMLAndReplaceMateriaScripts,
 	rules.loadAndPrefixCSS,
 	rules.loadAndPrefixSASS,
-	babelLoaderRule
+	rules.loadAndCompileMarkdown,
+	babelLoaderWithPolyfillRule
 ]
 
 const customCopy = copy.concat([
@@ -60,8 +72,12 @@ const customCopy = copy.concat([
 		from: path.join(__dirname, 'node_modules', 'mathquill', 'build'),
 		to: path.join(outputPath, 'vendor', 'mathquill')
 	},
+	{
+		from: path.join(__dirname, 'src','_guides','assets'),
+		to: path.join(outputPath, 'guides', 'assets'),
+		toType: 'dir'
+	}
 ])
-
 
 // options for the build
 let options = {
