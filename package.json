@@ -8,11 +8,10 @@
     "angular": "~1.6.0",
     "jest": "^24.8.0",
     "jsxgraph": "^0.99.7",
-    "materia-widget-development-kit": "^2.5.0",
+    "materia-widget-development-kit": "~3.0.0",
     "mathquill": "0.9.1",
     "onchange": "^4.0.0",
-    "pegjs": "^0.8.0",
-    "webpack-synchronizable-shell-plugin": "^0.0.7"
+    "pegjs": "^0.8.0"
   },
   "resolutions": {
     "jest/**/tough-cookie": "2.3.4"
@@ -21,9 +20,9 @@
     "sass-graph": "^2.1.1"
   },
   "scripts": {
-    "start": "webpack-dev-server",
-    "build": "webpack -p",
-    "build-dev": "webpack",
+    "start": "mwdk-start",
+    "build": "mwdk-build-prod",
+    "build-dev": "mwdk-build-dev",
     "test": "TZ='America/New_York' jest --verbose",
     "test-ci": "TZ='America/New_York' CI=true jest --ci --useStderr --coverage --coverageReporters text-summary cobertura",
     "peg:build": "pegjs --cache ./src/peg/latex.pegjs ./src/js/latex-parser.js",

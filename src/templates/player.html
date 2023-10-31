@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="equationSandbox">
+<html>
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -16,7 +16,7 @@
 		<script src="materia.enginecore.js"></script>
 
 		<link rel="stylesheet" href="vendor/mathquill/mathquill.css">
-		<link rel="stylesheet" href="assets/stylesheets/player.css">
+		<link rel="stylesheet" href="player.css">
 	</head>
 	<body class="loading" ng-controller="PlayerController" ng-class="{'parse-error':parseError}">
 		<div ng-include="'player.template.html'"></div>
@@ -28,6 +28,6 @@
 		<div id="loading">Loading...</div>
 
 		<!-- MAIN PLAYER SCRIPT -->
-		<script src="./assets/js/player.js"></script>
+		<script src="player.js"></script>
 	</body>
 </html>
