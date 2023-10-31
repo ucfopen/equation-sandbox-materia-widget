@@ -26,3 +26,5 @@ angular.module('equationSandbox')
 
 	}
 ]);
+
+angular.bootstrap(document, ['equationSandbox'])
